@@ -60,14 +60,13 @@ export interface FinancialData {
 }
 
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState(1);
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
     return saved
       ? JSON.parse(saved)
       : {
           income: {
-            earned1: 0,
+            earned1: 7224.38,
             earned2: 0,
             realEstate: 0,
             business: 0,
@@ -91,8 +90,8 @@ const Index = () => {
             shopping: 0,
             travelVacation: 0,
             medicalExpenses: 0,
-            medicalInsurance: 0,
-            taxes: 0,
+            medicalInsurance: 214.56,
+            taxes: 447.09,
           },
           assets: {
             bankAccounts: 0,
@@ -182,22 +181,6 @@ const Index = () => {
   const netWorthBanker = totalAssets - totalLiabilities;
   const netWorthRichDad = totalAssets - totalDoodads - totalLiabilities;
 
-  const totalSteps = 5;
-
-  const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <div className="container mx-auto px-4 py-8">
@@ -208,84 +191,56 @@ const Index = () => {
           <p className="text-muted-foreground">
             Monitor your path to financial independence
           </p>
-          <div className="mt-4 flex justify-center items-center gap-2">
-            <span className="text-sm text-muted-foreground">
-              Step {currentStep} of {totalSteps}
-            </span>
-          </div>
         </header>
 
-        <div className="max-w-4xl mx-auto">
-          {currentStep === 1 && (
-            <IncomeSection
-              income={financialData.income}
-              updateIncome={updateIncome}
-              totalEarned={totalEarned}
-              totalPassive={totalPassive}
-              totalPortfolio={totalPortfolio}
-              totalIncome={totalIncome}
-            />
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <IncomeSection
+            income={financialData.income}
+            updateIncome={updateIncome}
+            totalEarned={totalEarned}
+            totalPassive={totalPassive}
+            totalPortfolio={totalPortfolio}
+            totalIncome={totalIncome}
+          />
 
-          {currentStep === 2 && (
-            <ExpenseSection
-              expenses={financialData.expenses}
-              updateExpenses={updateExpenses}
-              totalExpenses={totalExpenses}
-              netMonthlyCashFlow={netMonthlyCashFlow}
-            />
-          )}
+          <AnalysisSection
+            totalIncome={totalIncome}
+            netMonthlyCashFlow={netMonthlyCashFlow}
+            totalExpenses={totalExpenses}
+            totalPassive={totalPassive}
+            totalPortfolio={totalPortfolio}
+            totalAssets={totalAssets}
+            totalDoodads={totalDoodads}
+            netWorthRichDad={netWorthRichDad}
+          />
+        </div>
 
-          {currentStep === 3 && (
-            <AssetsSection
-              assets={financialData.assets}
-              updateAssets={updateAssets}
-              totalAssets={totalAssets}
-              totalDoodads={totalDoodads}
-              netWorthBanker={netWorthBanker}
-              netWorthRichDad={netWorthRichDad}
-            />
-          )}
+        <div className="mb-6">
+          <ExpenseSection
+            expenses={financialData.expenses}
+            updateExpenses={updateExpenses}
+            totalExpenses={totalExpenses}
+            netMonthlyCashFlow={netMonthlyCashFlow}
+          />
+        </div>
 
-          {currentStep === 4 && (
-            <LiabilitiesSection
-              liabilities={financialData.liabilities}
-              updateLiabilities={updateLiabilities}
-              totalLiabilities={totalLiabilities}
-              netWorthBanker={netWorthBanker}
-              netWorthRichDad={netWorthRichDad}
-            />
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AssetsSection
+            assets={financialData.assets}
+            updateAssets={updateAssets}
+            totalAssets={totalAssets}
+            totalDoodads={totalDoodads}
+            netWorthBanker={netWorthBanker}
+            netWorthRichDad={netWorthRichDad}
+          />
 
-          {currentStep === 5 && (
-            <AnalysisSection
-              totalIncome={totalIncome}
-              netMonthlyCashFlow={netMonthlyCashFlow}
-              totalExpenses={totalExpenses}
-              totalPassive={totalPassive}
-              totalPortfolio={totalPortfolio}
-              totalAssets={totalAssets}
-              totalDoodads={totalDoodads}
-              netWorthRichDad={netWorthRichDad}
-            />
-          )}
-
-          <div className="flex justify-between mt-8">
-            <button
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              className="px-6 py-3 rounded-lg font-semibold transition-all bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              ← Go Back
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={currentStep === totalSteps}
-              className="px-6 py-3 rounded-lg font-semibold transition-all bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next →
-            </button>
-          </div>
+          <LiabilitiesSection
+            liabilities={financialData.liabilities}
+            updateLiabilities={updateLiabilities}
+            totalLiabilities={totalLiabilities}
+            netWorthBanker={netWorthBanker}
+            netWorthRichDad={netWorthRichDad}
+          />
         </div>
       </div>
     </div>
