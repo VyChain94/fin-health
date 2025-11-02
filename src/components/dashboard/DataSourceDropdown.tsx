@@ -65,13 +65,16 @@ const DataSourceDropdown = ({
             </div>
           ) : (
             dataSources.map((source) => (
-              <DropdownMenuItem key={source.id} className="flex items-center justify-between gap-2 group">
+              <DropdownMenuItem 
+                key={source.id} 
+                className="flex items-center justify-between gap-2 group"
+                onSelect={(e) => e.preventDefault()}
+              >
                 <a
                   href={source.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 flex-1 min-w-0"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <ExternalLink className="h-4 w-4 flex-shrink-0" />
                   <span className="truncate">{source.name}</span>
