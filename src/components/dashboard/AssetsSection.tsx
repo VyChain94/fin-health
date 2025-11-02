@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
+import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
 
 interface AssetsSectionProps {
   assets: FinancialData["assets"];
@@ -10,6 +11,9 @@ interface AssetsSectionProps {
   totalDoodads: number;
   netWorthBanker: number;
   netWorthRichDad: number;
+  dataSources: DataSource[];
+  onAddSource: (source: Omit<DataSource, "id">) => void;
+  onRemoveSource: (id: string) => void;
 }
 
 const AssetsSection = ({
@@ -19,6 +23,9 @@ const AssetsSection = ({
   totalDoodads,
   netWorthBanker,
   netWorthRichDad,
+  dataSources,
+  onAddSource,
+  onRemoveSource,
 }: AssetsSectionProps) => {
   const handleChange = (field: keyof FinancialData["assets"], value: string) => {
     updateAssets(field, parseFloat(value) || 0);
@@ -27,7 +34,15 @@ const AssetsSection = ({
   return (
     <Card className="shadow-lg border-primary/10 bg-gradient-to-br from-card to-card/80">
       <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
-        <CardTitle className="text-2xl">Assets</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-2xl">Assets</CardTitle>
+          <DataSourceDropdown
+            sectionName="Assets"
+            dataSources={dataSources}
+            onAddSource={onAddSource}
+            onRemoveSource={onRemoveSource}
+          />
+        </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         <div className="space-y-4">

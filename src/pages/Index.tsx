@@ -7,6 +7,7 @@ import ExpenseSection from "@/components/dashboard/ExpenseSection";
 import AssetsSection from "@/components/dashboard/AssetsSection";
 import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
+import { DataSource } from "@/components/dashboard/DataSourceDropdown";
 
 export interface FinancialData {
   income: {
@@ -66,7 +67,7 @@ const Index = () => {
       ? JSON.parse(saved)
       : {
           income: {
-            earned1: 7224.38,
+            earned1: 0,
             earned2: 0,
             realEstate: 0,
             business: 0,
@@ -90,8 +91,8 @@ const Index = () => {
             shopping: 0,
             travelVacation: 0,
             medicalExpenses: 0,
-            medicalInsurance: 214.56,
-            taxes: 447.09,
+            medicalInsurance: 0,
+            taxes: 0,
           },
           assets: {
             bankAccounts: 0,
@@ -116,9 +117,25 @@ const Index = () => {
         };
   });
 
+  const [dataSources, setDataSources] = useState<{
+    income: DataSource[];
+    expenses: DataSource[];
+    assets: DataSource[];
+    liabilities: DataSource[];
+  }>(() => {
+    const saved = localStorage.getItem("dataSources");
+    return saved
+      ? JSON.parse(saved)
+      : { income: [], expenses: [], assets: [], liabilities: [] };
+  });
+
   useEffect(() => {
     localStorage.setItem("financialData", JSON.stringify(financialData));
   }, [financialData]);
+
+  useEffect(() => {
+    localStorage.setItem("dataSources", JSON.stringify(dataSources));
+  }, [dataSources]);
 
   const updateIncome = (field: keyof FinancialData["income"], value: number) => {
     setFinancialData((prev) => ({
@@ -145,6 +162,21 @@ const Index = () => {
     setFinancialData((prev) => ({
       ...prev,
       liabilities: { ...prev.liabilities, [field]: value },
+    }));
+  };
+
+  const addDataSource = (section: keyof typeof dataSources, source: Omit<DataSource, "id">) => {
+    const newSource = { ...source, id: crypto.randomUUID() };
+    setDataSources((prev) => ({
+      ...prev,
+      [section]: [...prev[section], newSource],
+    }));
+  };
+
+  const removeDataSource = (section: keyof typeof dataSources, id: string) => {
+    setDataSources((prev) => ({
+      ...prev,
+      [section]: prev[section].filter((s) => s.id !== id),
     }));
   };
 
@@ -201,6 +233,9 @@ const Index = () => {
             totalPassive={totalPassive}
             totalPortfolio={totalPortfolio}
             totalIncome={totalIncome}
+            dataSources={dataSources.income}
+            onAddSource={(source) => addDataSource("income", source)}
+            onRemoveSource={(id) => removeDataSource("income", id)}
           />
 
           <AnalysisSection
@@ -221,6 +256,9 @@ const Index = () => {
             updateExpenses={updateExpenses}
             totalExpenses={totalExpenses}
             netMonthlyCashFlow={netMonthlyCashFlow}
+            dataSources={dataSources.expenses}
+            onAddSource={(source) => addDataSource("expenses", source)}
+            onRemoveSource={(id) => removeDataSource("expenses", id)}
           />
         </div>
 
@@ -232,6 +270,9 @@ const Index = () => {
             totalDoodads={totalDoodads}
             netWorthBanker={netWorthBanker}
             netWorthRichDad={netWorthRichDad}
+            dataSources={dataSources.assets}
+            onAddSource={(source) => addDataSource("assets", source)}
+            onRemoveSource={(id) => removeDataSource("assets", id)}
           />
 
           <LiabilitiesSection
@@ -240,6 +281,9 @@ const Index = () => {
             totalLiabilities={totalLiabilities}
             netWorthBanker={netWorthBanker}
             netWorthRichDad={netWorthRichDad}
+            dataSources={dataSources.liabilities}
+            onAddSource={(source) => addDataSource("liabilities", source)}
+            onRemoveSource={(id) => removeDataSource("liabilities", id)}
           />
         </div>
       </div>
