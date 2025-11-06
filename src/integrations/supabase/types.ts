@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      reports: {
+        Row: {
+          assets_data: Json | null
+          created_at: string
+          data_sources: Json | null
+          expenses_data: Json | null
+          id: string
+          income_data: Json | null
+          is_archived: boolean
+          liabilities_data: Json | null
+          notes: string | null
+          report_date: string
+          report_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assets_data?: Json | null
+          created_at?: string
+          data_sources?: Json | null
+          expenses_data?: Json | null
+          id?: string
+          income_data?: Json | null
+          is_archived?: boolean
+          liabilities_data?: Json | null
+          notes?: string | null
+          report_date?: string
+          report_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assets_data?: Json | null
+          created_at?: string
+          data_sources?: Json | null
+          expenses_data?: Json | null
+          id?: string
+          income_data?: Json | null
+          is_archived?: boolean
+          liabilities_data?: Json | null
+          notes?: string | null
+          report_date?: string
+          report_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
