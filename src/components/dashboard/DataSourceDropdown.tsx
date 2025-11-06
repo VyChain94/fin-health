@@ -48,7 +48,7 @@ const DataSourceDropdown = ({
     <div className="flex items-center gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="secondary" size="sm" className="gap-2">
             <LinkIcon className="h-4 w-4" />
             Data Sources
           </Button>
