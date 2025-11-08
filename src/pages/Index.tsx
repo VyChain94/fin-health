@@ -7,6 +7,7 @@ import ExpenseSection from "@/components/dashboard/ExpenseSection";
 import AssetsSection from "@/components/dashboard/AssetsSection";
 import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { DataSource } from "@/components/dashboard/DataSourceDropdown";
 
 export interface FinancialData {
@@ -215,15 +216,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
+      <DashboardHeader />
       <div className="container mx-auto px-4 py-8">
-        <header className="mb-8 text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
-            Financial Freedom Tracker
-          </h1>
-          <p className="text-muted-foreground">
-            Monitor your path to financial independence
-          </p>
-        </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <IncomeSection
