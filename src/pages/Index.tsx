@@ -2,6 +2,18 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import IncomeSection from "@/components/dashboard/IncomeSection";
 import ExpenseSection from "@/components/dashboard/ExpenseSection";
 import AssetsSection from "@/components/dashboard/AssetsSection";
@@ -9,6 +21,10 @@ import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { DataSource } from "@/components/dashboard/DataSourceDropdown";
+import { AuthForm } from "@/components/auth/AuthForm";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export interface FinancialData {
   income: {
@@ -62,6 +78,10 @@ export interface FinancialData {
 }
 
 const Index = () => {
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
+  const [reportName, setReportName] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
     return saved
@@ -214,6 +234,53 @@ const Index = () => {
   const netWorthBanker = totalAssets - totalLiabilities;
   const netWorthRichDad = totalAssets - totalDoodads - totalLiabilities;
 
+  const handleSaveReport = async () => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.from("reports").insert({
+        user_id: user.id,
+        report_name: reportName || `Report ${new Date().toLocaleDateString()}`,
+        report_date: new Date().toISOString(),
+        income_data: financialData.income as any,
+        assets_data: financialData.assets as any,
+        expenses_data: financialData.expenses as any,
+        liabilities_data: financialData.liabilities as any,
+        data_sources: dataSources as any,
+      } as any);
+
+      if (error) throw error;
+
+      toast({
+        title: "Report Saved!",
+        description: "Your financial report has been saved to archives.",
+      });
+
+      setReportName("");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthForm />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader />
@@ -279,6 +346,46 @@ const Index = () => {
             onAddSource={(source) => addDataSource("liabilities", source)}
             onRemoveSource={(id) => removeDataSource("liabilities", id)}
           />
+        </div>
+
+        <div className="mt-8 mb-6 flex justify-center">
+          <Card className="w-full max-w-2xl">
+            <CardHeader>
+              <CardTitle>Submit Report</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="reportName">Report Name (Optional)</Label>
+                <Input
+                  id="reportName"
+                  placeholder={`Report ${new Date().toLocaleDateString()}`}
+                  value={reportName}
+                  onChange={(e) => setReportName(e.target.value)}
+                />
+              </div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="w-full" size="lg" disabled={isSaving}>
+                    {isSaving ? "Saving..." : "Submit Report to Archives"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will save your current financial report to the archives. You can review it later by selecting the month and year from the header.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleSaveReport}>
+                      Yes, Submit Report
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
