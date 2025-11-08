@@ -4,6 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -82,6 +89,11 @@ const Index = () => {
   const { toast } = useToast();
   const [reportName, setReportName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [showArchives, setShowArchives] = useState(false);
+  const [archivedReports, setArchivedReports] = useState<any[]>([]);
+  const [loadingArchives, setLoadingArchives] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedYear, setSelectedYear] = useState<string>("");
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
     return saved
@@ -269,6 +281,55 @@ const Index = () => {
     }
   };
 
+  const handleMonthYearChange = async (month: string, year: string) => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    setShowArchives(true);
+    setLoadingArchives(true);
+
+    try {
+      const monthNum = new Date(`${month} 1, 2000`).getMonth() + 1;
+      const startDate = new Date(`${year}-${monthNum.toString().padStart(2, '0')}-01`);
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
+
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("user_id", user?.id)
+        .gte("report_date", startDate.toISOString())
+        .lt("report_date", endDate.toISOString())
+        .order("report_date", { ascending: false });
+
+      if (error) throw error;
+
+      setArchivedReports(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingArchives(false);
+    }
+  };
+
+  const loadReport = (report: any) => {
+    setFinancialData({
+      income: report.income_data || {},
+      expenses: report.expenses_data || {},
+      assets: report.assets_data || {},
+      liabilities: report.liabilities_data || {},
+    });
+    setDataSources(report.data_sources || { income: [], expenses: [], assets: [], liabilities: [] });
+    setShowArchives(false);
+    toast({
+      title: "Report Loaded",
+      description: `Loaded: ${report.report_name}`,
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -283,7 +344,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
-      <DashboardHeader />
+      <DashboardHeader onMonthYearChange={handleMonthYearChange} />
       <div className="container mx-auto px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -388,6 +449,35 @@ const Index = () => {
           </Card>
         </div>
       </div>
+
+      <Sheet open={showArchives} onOpenChange={setShowArchives}>
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Archived Reports</SheetTitle>
+            <SheetDescription>
+              {selectedMonth} {selectedYear}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            {loadingArchives ? (
+              <p className="text-muted-foreground text-center py-8">Loading archives...</p>
+            ) : archivedReports.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">No reports found for this period.</p>
+            ) : (
+              archivedReports.map((report) => (
+                <Card key={report.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => loadReport(report)}>
+                  <CardHeader>
+                    <CardTitle className="text-base">{report.report_name}</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(report.report_date).toLocaleDateString()}
+                    </p>
+                  </CardHeader>
+                </Card>
+              ))
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
