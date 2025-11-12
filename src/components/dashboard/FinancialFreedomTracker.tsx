@@ -216,9 +216,6 @@ export default function FinancialFreedomTracker({
                 {isNumberHidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2 italic">
-              Freedom Number = Annual Expenses ÷ Withdrawal Rate
-            </p>
           </div>
 
           {/* Current Level Badge */}
@@ -520,6 +517,11 @@ export default function FinancialFreedomTracker({
             <div className="border-l-4 border-primary pl-4 py-2 bg-primary/5 rounded">
               <p className="text-sm font-medium italic">
                 Put simply: When your money makes enough money to pay your bills, you've hit Financial Freedom.
+              </p>
+            </div>
+            <div className="mt-4 p-3 bg-muted/50 rounded text-center">
+              <p className="text-sm font-mono font-semibold">
+                Freedom Number = Annual Expenses ÷ Withdrawal Rate
               </p>
             </div>
           </div>
