@@ -1,4 +1,4 @@
-import { Calendar, Archive } from "lucide-react";
+import { Calendar as CalendarIcon, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -7,14 +7,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import logo from "@/assets/logo.png";
 
 interface DashboardHeaderProps {
   onMonthYearChange?: (month: string, year: string) => void;
   onArchiveClick?: () => void;
+  onDateSelect?: (date: Date) => void;
+  datesWithReports?: Date[];
 }
 
-const DashboardHeader = ({ onMonthYearChange, onArchiveClick }: DashboardHeaderProps) => {
+const DashboardHeader = ({ onMonthYearChange, onArchiveClick, onDateSelect, datesWithReports = [] }: DashboardHeaderProps) => {
   const currentDate = new Date();
   const currentMonth = (currentDate.getMonth() + 1).toString();
   const currentYear = currentDate.getFullYear().toString();
@@ -100,9 +108,26 @@ const DashboardHeader = ({ onMonthYearChange, onArchiveClick }: DashboardHeaderP
               </SelectContent>
             </Select>
 
-            <Button variant="outline" size="icon">
-              <Calendar className="h-5 w-5" />
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="icon" title="Select a date">
+                  <CalendarIcon className="h-5 w-5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  onSelect={(date) => date && onDateSelect?.(date)}
+                  modifiers={{
+                    hasReport: datesWithReports,
+                  }}
+                  modifiersClassNames={{
+                    hasReport: "bg-primary/20 font-bold",
+                  }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>

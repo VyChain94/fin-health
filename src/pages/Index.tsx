@@ -94,6 +94,7 @@ const Index = () => {
   const [loadingArchives, setLoadingArchives] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
+  const [datesWithReports, setDatesWithReports] = useState<Date[]>([]);
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
     return saved
@@ -300,9 +301,48 @@ const Index = () => {
       if (error) throw error;
 
       setArchivedReports(data || []);
+      
+      // Extract unique dates that have reports
+      const uniqueDates = data?.map(report => new Date(report.report_date)) || [];
+      setDatesWithReports(uniqueDates);
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Error loading archives",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingArchives(false);
+    }
+  };
+
+  const handleDateSelect = async (date: Date) => {
+    setShowArchives(true);
+    setLoadingArchives(true);
+
+    try {
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("user_id", user?.id)
+        .gte("report_date", startOfDay.toISOString())
+        .lte("report_date", endOfDay.toISOString())
+        .order("report_date", { ascending: false });
+
+      if (error) throw error;
+
+      setArchivedReports(data || []);
+      setSelectedMonth("");
+      setSelectedYear("");
+    } catch (error: any) {
+      toast({
+        title: "Error loading reports",
         description: error.message,
         variant: "destructive",
       });
@@ -340,7 +380,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
-      <DashboardHeader onMonthYearChange={handleMonthYearChange} onArchiveClick={handleArchiveClick} />
+      <DashboardHeader 
+        onMonthYearChange={handleMonthYearChange} 
+        onArchiveClick={handleArchiveClick}
+        onDateSelect={handleDateSelect}
+        datesWithReports={datesWithReports}
+      />
       <div className="container mx-auto px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
