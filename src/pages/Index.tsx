@@ -414,6 +414,7 @@ const Index = () => {
           <FinancialFreedomTracker 
             currentAssets={totalAssets}
             netMonthlyCashFlow={netMonthlyCashFlow}
+            totalExpenses={totalExpenses}
             levelTargets={levelTargets}
             onUpdateLevelTarget={handleUpdateLevelTarget}
           />
