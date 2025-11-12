@@ -231,18 +231,9 @@ export default function FinancialFreedomTracker({
     const levelName = selectedLevel === 'custom' 
       ? 'Custom Goal' 
       : LEVEL_INFO[selectedLevel as LevelKey].title;
-    
-    if (progressPct >= 100) {
-      // Calculate months and years can maintain
-      const monthlyExpenses = goal / 12;
-      const monthsCanMaintain = monthlyExpenses > 0 ? currentAssets / monthlyExpenses : 0;
-      const years = Math.floor(monthsCanMaintain / 12);
-      const months = Math.round(monthsCanMaintain % 12);
-      
-      return `Goal reached for ${levelName} - Can maintain: ${years} year(s), ${months} month(s)`;
-    }
-    
-    return `Building toward ${levelName}`;
+    return progressPct >= 100 
+      ? `Goal reached for ${levelName}` 
+      : `Building toward ${levelName}`;
   };
 
   return (
@@ -397,6 +388,11 @@ export default function FinancialFreedomTracker({
                     const isCurrent = currentLevel?.level === level;
                     const target = levelTargets[level];
                     
+                    // Calculate how long current assets can sustain this level
+                    const monthsCanMaintain = monthlyExpenses > 0 ? currentAssets / monthlyExpenses : 0;
+                    const years = Math.floor(monthsCanMaintain / 12);
+                    const months = Math.round(monthsCanMaintain % 12);
+                    
                     return (
                       <div
                         key={level}
@@ -426,6 +422,14 @@ export default function FinancialFreedomTracker({
                               <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
                                 {LEVEL_INFO[level].description}
                               </p>
+                              {monthlyExpenses > 0 && (
+                                <p className="text-xs font-medium text-primary mt-1">
+                                  Can maintain: {years > 0 && `${years} ${years === 1 ? 'year' : 'years'}`}
+                                  {years > 0 && months > 0 && ', '}
+                                  {months > 0 && `${months} ${months === 1 ? 'month' : 'months'}`}
+                                  {monthsCanMaintain === 0 && 'Not yet funded'}
+                                </p>
+                              )}
                             </div>
                             {target > 0 && (
                               <div className="text-right flex-shrink-0 flex items-center gap-1">
