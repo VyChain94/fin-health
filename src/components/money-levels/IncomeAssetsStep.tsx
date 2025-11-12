@@ -2,10 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, RefreshCw } from "lucide-react";
 import { Income, AssetBucket } from "@/types/moneyLevels";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface IncomeAssetsStepProps {
   incomes: Income[];
@@ -27,6 +29,8 @@ export function IncomeAssetsStep({
   onUpdateContribution
 }: IncomeAssetsStepProps) {
   const [showAssetTypeDialog, setShowAssetTypeDialog] = useState(false);
+  const [loadingPrices, setLoadingPrices] = useState<Set<number>>(new Set());
+  const { toast } = useToast();
 
   const addIncome = () => {
     onUpdateIncomes([...incomes, { label: 'New Income', annual: 0 }]);
@@ -47,8 +51,77 @@ export function IncomeAssetsStep({
   };
 
   const addRegularAsset = () => {
-    onUpdateAssets([...assets, { label: 'New Asset', balance: 0, yieldPct: mode === 'advanced' ? 4 : undefined }]);
+    onUpdateAssets([...assets, { 
+      label: 'New Asset', 
+      balance: 0, 
+      yieldPct: mode === 'advanced' ? 4 : undefined,
+      assetType: 'regular'
+    }]);
     setShowAssetTypeDialog(false);
+  };
+
+  const addStockAsset = () => {
+    onUpdateAssets([...assets, { 
+      label: 'Stock', 
+      balance: 0,
+      assetType: 'stock',
+      ticker: '',
+      quantity: 0,
+      currentPrice: 0
+    }]);
+    setShowAssetTypeDialog(false);
+  };
+
+  const addCryptoAsset = () => {
+    onUpdateAssets([...assets, { 
+      label: 'Crypto', 
+      balance: 0,
+      assetType: 'crypto',
+      ticker: '',
+      quantity: 0,
+      currentPrice: 0
+    }]);
+    setShowAssetTypeDialog(false);
+  };
+
+  const fetchAssetPrice = async (index: number, asset: AssetBucket) => {
+    if (!asset.ticker || !asset.assetType || asset.assetType === 'regular') return;
+
+    setLoadingPrices(prev => new Set(prev).add(index));
+
+    try {
+      const { data, error } = await supabase.functions.invoke('get-asset-price', {
+        body: { assetType: asset.assetType, ticker: asset.ticker }
+      });
+
+      if (error) throw error;
+
+      const newPrice = data.price;
+      const newBalance = (asset.quantity || 0) * newPrice;
+
+      updateAsset(index, {
+        currentPrice: newPrice,
+        balance: newBalance,
+        lastPriceUpdate: new Date().toISOString()
+      });
+
+      toast({
+        title: "Price Updated",
+        description: `${asset.ticker.toUpperCase()}: $${newPrice.toFixed(2)}`
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch price. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingPrices(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(index);
+        return newSet;
+      });
+    }
   };
 
   const addAmortizingAsset = () => {
@@ -131,10 +204,16 @@ export function IncomeAssetsStep({
             {showAssetTypeDialog ? (
               <>
                 <Button onClick={addRegularAsset} size="sm" variant="outline">
-                  Regular Asset
+                  Regular
+                </Button>
+                <Button onClick={addStockAsset} size="sm" variant="outline">
+                  Stock
+                </Button>
+                <Button onClick={addCryptoAsset} size="sm" variant="outline">
+                  Crypto
                 </Button>
                 <Button onClick={addAmortizingAsset} size="sm" variant="outline">
-                  Amortizing Asset
+                  Amortizing
                 </Button>
                 <Button onClick={() => setShowAssetTypeDialog(false)} size="sm" variant="ghost">
                   Cancel
@@ -226,6 +305,76 @@ export function IncomeAssetsStep({
                       <p>Balance: ${asset.balance.toLocaleString()} | Months Remaining: {calculateRemainingMonths(asset)}</p>
                     </div>
                   </>
+                ) : asset.assetType === 'stock' || asset.assetType === 'crypto' ? (
+                  <>
+                    <div className="grid grid-cols-[1fr,auto] gap-3 items-end">
+                      <div className="space-y-2">
+                        <Label>Asset Name</Label>
+                        <Input
+                          value={asset.label}
+                          onChange={(e) => updateAsset(idx, { label: e.target.value })}
+                          placeholder={asset.assetType === 'stock' ? 'Apple Stock' : 'Bitcoin'}
+                        />
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => removeAsset(idx)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-2">
+                        <Label>{asset.assetType === 'stock' ? 'Ticker Symbol' : 'Crypto ID'}</Label>
+                        <Input
+                          value={asset.ticker || ''}
+                          onChange={(e) => updateAsset(idx, { ticker: e.target.value })}
+                          placeholder={asset.assetType === 'stock' ? 'AAPL' : 'bitcoin'}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Quantity</Label>
+                        <Input
+                          type="number"
+                          step="0.00000001"
+                          value={asset.quantity || 0}
+                          onChange={(e) => {
+                            const newQuantity = parseFloat(e.target.value) || 0;
+                            const newBalance = newQuantity * (asset.currentPrice || 0);
+                            updateAsset(idx, { quantity: newQuantity, balance: newBalance });
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Current Price</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            type="number"
+                            value={asset.currentPrice || 0}
+                            disabled
+                            className="bg-muted"
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => fetchAssetPrice(idx, asset)}
+                            disabled={loadingPrices.has(idx) || !asset.ticker}
+                          >
+                            {loadingPrices.has(idx) ? (
+                              <RefreshCw className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <RefreshCw className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="pt-2 border-t text-sm">
+                      <p className="font-semibold">Total Value: ${asset.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                      {asset.lastPriceUpdate && (
+                        <p className="text-muted-foreground text-xs">
+                          Last updated: {new Date(asset.lastPriceUpdate).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                  </>
                 ) : (
                   <div className={`grid gap-3 items-end ${mode === 'advanced' ? 'grid-cols-[1fr,1fr,1fr,auto]' : 'grid-cols-[1fr,1fr,auto]'}`}>
                     <div className="space-y-2">
@@ -233,7 +382,7 @@ export function IncomeAssetsStep({
                       <Input
                         value={asset.label}
                         onChange={(e) => updateAsset(idx, { label: e.target.value })}
-                        placeholder="Cash, Stocks, etc."
+                        placeholder="Cash, Savings, etc."
                       />
                     </div>
                     <div className="space-y-2">

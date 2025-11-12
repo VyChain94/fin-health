@@ -15,6 +15,11 @@ export interface AssetBucket {
   monthlyPayment?: number;
   remainingTerm?: number;
   startDate?: string;
+  assetType?: 'regular' | 'stock' | 'crypto';
+  ticker?: string;
+  quantity?: number;
+  currentPrice?: number;
+  lastPriceUpdate?: string;
 }
 
 export interface ExpenseCategory {
