@@ -8,13 +8,14 @@ import { IncomeAssetsStep } from "@/components/money-levels/IncomeAssetsStep";
 import { ExpensesStep } from "@/components/money-levels/ExpensesStep";
 import { ResultsStep } from "@/components/money-levels/ResultsStep";
 import { LevelKey } from "@/types/moneyLevels";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
 export default function MoneyLevels() {
   const [currentStep, setCurrentStep] = useState(0);
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
+  const navigate = useNavigate();
   
   const {
     state,
@@ -33,6 +34,12 @@ export default function MoneyLevels() {
   const isLastStep = currentStep === totalSteps - 1;
 
   const handleNext = () => {
+    if (isLastStep) {
+      // On last step, finish and return to dashboard
+      navigate('/');
+      return;
+    }
+    
     if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
       if (currentStep >= 2 && currentStep < 2 + LEVELS.length - 1) {
@@ -164,7 +171,6 @@ export default function MoneyLevels() {
             </Button>
             <Button
               onClick={handleNext}
-              disabled={isLastStep}
             >
               {isLastStep ? "Finish" : "Next"}
               <ChevronRight className="h-4 w-4 ml-2" />
