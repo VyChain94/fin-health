@@ -44,6 +44,8 @@ interface FinancialFreedomTrackerProps {
   currentAssets: number;
   netMonthlyCashFlow: number;
   totalExpenses: number;
+  totalPassive: number;
+  totalPortfolio: number;
   levelTargets: Record<LevelKey, number>;
   onUpdateLevelTarget?: (level: LevelKey, newTarget: number) => void;
   withdrawalRate?: number;
@@ -55,6 +57,8 @@ export default function FinancialFreedomTracker({
   currentAssets,
   netMonthlyCashFlow,
   totalExpenses,
+  totalPassive,
+  totalPortfolio,
   levelTargets, 
   onUpdateLevelTarget,
   withdrawalRate = 0.04 
@@ -65,8 +69,8 @@ export default function FinancialFreedomTracker({
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [use4PercentRule, setUse4PercentRule] = useState(true);
   
-  // Progress bar state - current is auto-calculated from NET MONTHLY CASH FLOW × 12
-  const current = netMonthlyCashFlow * 12;
+  // Progress bar state - current is Passive Total + Portfolio Total
+  const current = totalPassive + totalPortfolio;
   const [goal, setGoal] = useState(600);
   const [selectedLevel, setSelectedLevel] = useState<LevelKey | 'custom'>('security');
   
@@ -340,7 +344,7 @@ export default function FinancialFreedomTracker({
                   disabled
                 />
                 <p className="text-xs text-muted-foreground">
-                  Net Monthly Cash Flow × 12
+                  Passive Total + Portfolio Total
                 </p>
               </div>
               <div className="space-y-1">

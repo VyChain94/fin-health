@@ -415,6 +415,8 @@ const Index = () => {
             currentAssets={totalAssets}
             netMonthlyCashFlow={netMonthlyCashFlow}
             totalExpenses={totalExpenses}
+            totalPassive={totalPassive}
+            totalPortfolio={totalPortfolio}
             levelTargets={levelTargets}
             onUpdateLevelTarget={handleUpdateLevelTarget}
           />
