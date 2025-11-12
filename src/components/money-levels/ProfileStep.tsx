@@ -62,7 +62,7 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
-                  <p className="text-sm">How much of your savings you plan to live on each year. (4% just means you'd take out 4% of your total savings yearly.)</p>
+                  <p className="text-sm">How much of your savings you plan to live on each year. (4% just means you'd take out 4% of your total savings yearly.) The average recommended rate is 4%.</p>
                 </PopoverContent>
               </Popover>
             </div>
