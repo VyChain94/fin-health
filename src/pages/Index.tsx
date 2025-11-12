@@ -26,15 +26,14 @@ import ExpenseSection from "@/components/dashboard/ExpenseSection";
 import AssetsSection from "@/components/dashboard/AssetsSection";
 import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
-import DashboardHeader, { VisibilitySettings } from "@/components/dashboard/DashboardHeader";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import FinancialFreedomTracker from "@/components/dashboard/FinancialFreedomTracker";
 import { DataSource } from "@/components/dashboard/DataSourceDropdown";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LevelKey, LEVEL_INFO } from "@/types/moneyLevels";
-import { useMoneyLevels } from "@/hooks/useMoneyLevels";
+import { LevelKey } from "@/types/moneyLevels";
 
 export interface FinancialData {
   income: {
@@ -90,7 +89,6 @@ export interface FinancialData {
 const Index = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
-  const { calculateLevelMetrics, state: moneyLevelsState } = useMoneyLevels();
   const [reportName, setReportName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showArchives, setShowArchives] = useState(false);
@@ -99,18 +97,6 @@ const Index = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [datesWithReports, setDatesWithReports] = useState<Date[]>([]);
-  
-  const [visibilitySettings, setVisibilitySettings] = useState<VisibilitySettings>(() => {
-    const saved = localStorage.getItem("visibilitySettings");
-    return saved ? JSON.parse(saved) : {
-      freedomNumber: true,
-      income: true,
-      expenses: true,
-      assets: true,
-      liabilities: true,
-    };
-  });
-  
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
     return saved
@@ -186,10 +172,6 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem("dataSources", JSON.stringify(dataSources));
   }, [dataSources]);
-  
-  useEffect(() => {
-    localStorage.setItem("visibilitySettings", JSON.stringify(visibilitySettings));
-  }, [visibilitySettings]);
 
   const updateIncome = (field: keyof FinancialData["income"], value: number) => {
     setFinancialData((prev) => ({
@@ -267,35 +249,17 @@ const Index = () => {
   const netWorthBanker = totalAssets - totalLiabilities;
   const netWorthRichDad = totalAssets - totalDoodads - totalLiabilities;
 
-  // Calculate Money Levels targets using the calculator data if available
-  const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
-  const levelTargets: Record<LevelKey, number> = {} as Record<LevelKey, number>;
+  // Calculate Money Levels targets using annual expenses and 4% rule
+  const annualExpenses = totalExpenses * 12;
+  const withdrawalRate = 0.04; // 4% rule
   
-  // Try to use Money Levels calculator data first
-  let hasCalculatorData = false;
-  LEVELS.forEach(level => {
-    const metrics = calculateLevelMetrics(level);
-    if (metrics.targetAssets > 0) {
-      levelTargets[level] = metrics.targetAssets;
-      hasCalculatorData = true;
-    }
-  });
-  
-  // Fallback to simple calculation if no calculator data exists
-  if (!hasCalculatorData) {
-    const annualExpenses = totalExpenses * 12;
-    const withdrawalRate = 0.04; // 4% rule
-    
-    levelTargets.security = annualExpenses > 0 ? annualExpenses * 0.5 / withdrawalRate : 0;
-    levelTargets.vitality = annualExpenses > 0 ? annualExpenses * 0.7 / withdrawalRate : 0;
-    levelTargets.independence = annualExpenses > 0 ? annualExpenses / withdrawalRate : 0;
-    levelTargets.freedom = annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0;
-    levelTargets.absoluteFreedom = annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0;
-  }
-  
-  // Calculate current total assets from Money Levels calculator
-  const calculatorTotalAssets = moneyLevelsState.assets.reduce((sum, asset) => sum + asset.balance, 0);
-  const currentAssetsForTracker = calculatorTotalAssets > 0 ? calculatorTotalAssets : totalAssets;
+  const levelTargets: Record<LevelKey, number> = {
+    security: annualExpenses > 0 ? annualExpenses * 0.5 / withdrawalRate : 0, // 50% of expenses
+    vitality: annualExpenses > 0 ? annualExpenses * 0.7 / withdrawalRate : 0, // 70% of expenses
+    independence: annualExpenses > 0 ? annualExpenses / withdrawalRate : 0, // 100% of expenses
+    freedom: annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0, // 150% of expenses
+    absoluteFreedom: annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0, // 250% of expenses
+  };
 
   const handleSaveReport = async () => {
     if (!user) return;
@@ -435,16 +399,13 @@ const Index = () => {
         onArchiveClick={handleArchiveClick}
         onDateSelect={handleDateSelect}
         datesWithReports={datesWithReports}
-        visibilitySettings={visibilitySettings}
-        onVisibilityChange={setVisibilitySettings}
       />
       <div className="container mx-auto px-4 py-8">
         {/* Financial Freedom Progress Tracker */}
         <div className="mb-6">
           <FinancialFreedomTracker 
-            currentAssets={currentAssetsForTracker}
+            currentAssets={totalAssets}
             levelTargets={levelTargets}
-            showAmounts={visibilitySettings.freedomNumber}
           />
         </div>
 
@@ -459,7 +420,6 @@ const Index = () => {
             dataSources={dataSources.income}
             onAddSource={(source) => addDataSource("income", source)}
             onRemoveSource={(id) => removeDataSource("income", id)}
-            showAmounts={visibilitySettings.income}
           />
 
           <AnalysisSection
@@ -483,7 +443,6 @@ const Index = () => {
             dataSources={dataSources.expenses}
             onAddSource={(source) => addDataSource("expenses", source)}
             onRemoveSource={(id) => removeDataSource("expenses", id)}
-            showAmounts={visibilitySettings.expenses}
           />
         </div>
 
@@ -498,7 +457,6 @@ const Index = () => {
             dataSources={dataSources.assets}
             onAddSource={(source) => addDataSource("assets", source)}
             onRemoveSource={(id) => removeDataSource("assets", id)}
-            showAmounts={visibilitySettings.assets}
           />
 
           <LiabilitiesSection
@@ -510,7 +468,6 @@ const Index = () => {
             dataSources={dataSources.liabilities}
             onAddSource={(source) => addDataSource("liabilities", source)}
             onRemoveSource={(id) => removeDataSource("liabilities", id)}
-            showAmounts={visibilitySettings.liabilities}
           />
         </div>
 

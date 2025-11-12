@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
-import { formatCurrency } from "@/lib/formatters";
 
 interface LiabilitiesSectionProps {
   liabilities: FinancialData["liabilities"];
@@ -14,7 +13,6 @@ interface LiabilitiesSectionProps {
   dataSources: DataSource[];
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
-  showAmounts?: boolean;
 }
 
 const LiabilitiesSection = ({
@@ -26,7 +24,6 @@ const LiabilitiesSection = ({
   dataSources,
   onAddSource,
   onRemoveSource,
-  showAmounts = true,
 }: LiabilitiesSectionProps) => {
   const handleChange = (field: keyof FinancialData["liabilities"], value: string) => {
     updateLiabilities(field, parseFloat(value) || 0);
@@ -115,7 +112,7 @@ const LiabilitiesSection = ({
         <div className="grid grid-cols-2 gap-3 pt-4 border-t-2 border-primary">
           <Label className="self-center font-bold text-lg">J. TOTAL LIABILITIES</Label>
           <div className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-right font-bold text-lg">
-            {formatCurrency(totalLiabilities, showAmounts)}
+            ${totalLiabilities.toFixed(2)}
           </div>
         </div>
 
@@ -125,7 +122,7 @@ const LiabilitiesSection = ({
               K. NET WORTH per Banker
             </Label>
             <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md text-right font-bold">
-              {formatCurrency(netWorthBanker, showAmounts)}
+              ${netWorthBanker.toFixed(2)}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -133,7 +130,7 @@ const LiabilitiesSection = ({
               L. NET WORTH per Rich Dad
             </Label>
             <div className="px-3 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-md text-right font-bold">
-              {formatCurrency(netWorthRichDad, showAmounts)}
+              ${netWorthRichDad.toFixed(2)}
             </div>
           </div>
         </div>

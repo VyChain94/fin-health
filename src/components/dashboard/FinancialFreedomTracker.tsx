@@ -1,16 +1,20 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
   levelTargets: Record<LevelKey, number>;
-  showAmounts?: boolean;
 }
 
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
-export default function FinancialFreedomTracker({ currentAssets, levelTargets, showAmounts = true }: FinancialFreedomTrackerProps) {
+export default function FinancialFreedomTracker({ currentAssets, levelTargets }: FinancialFreedomTrackerProps) {
+  const [isNumberHidden, setIsNumberHidden] = useState(false);
+  
   // Determine current level based on assets
   const getCurrentLevel = (): { level: LevelKey; index: number } | null => {
     for (let i = LEVELS.length - 1; i >= 0; i--) {
@@ -51,9 +55,19 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets, s
           {/* Current Number */}
           <div className="text-center">
             <p className="text-sm text-muted-foreground mb-1">Your Financial Freedom Number</p>
-            <p className="text-4xl font-bold text-primary">
-              {showAmounts ? formatCurrency(currentAssets) : "$•••••"}
-            </p>
+            <div className="flex items-center justify-center gap-2">
+              <p className="text-4xl font-bold text-primary">
+                {isNumberHidden ? "$•••••" : formatCurrency(currentAssets)}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsNumberHidden(!isNumberHidden)}
+                className="h-8 w-8 p-0"
+              >
+                {isNumberHidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
 
           {/* Current Level Badge */}
@@ -87,7 +101,7 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets, s
               <span className="font-medium">{progressToNextLevel.toFixed(1)}%</span>
             </div>
             <Progress value={progressToNextLevel} className="h-3" />
-            {nextLevelTarget > 0 && showAmounts && (
+            {nextLevelTarget > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>{formatCurrency(currentAssets)}</span>
                 <span>{formatCurrency(nextLevelTarget)}</span>
@@ -133,7 +147,7 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets, s
                           {LEVEL_INFO[level].description}
                         </p>
                       </div>
-                      {target > 0 && showAmounts && (
+                      {target > 0 && (
                         <div className="text-right flex-shrink-0">
                           <p className={`text-xs font-medium ${isAchieved ? 'text-primary' : 'text-muted-foreground'}`}>
                             {formatCurrency(target)}

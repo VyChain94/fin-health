@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Calendar as CalendarIcon, Archive, Eye, EyeOff, Home } from "lucide-react";
+import { Calendar as CalendarIcon, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -14,61 +13,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import logo from "@/assets/logo.png";
-
-export interface VisibilitySettings {
-  freedomNumber: boolean;
-  income: boolean;
-  expenses: boolean;
-  assets: boolean;
-  liabilities: boolean;
-}
 
 interface DashboardHeaderProps {
   onMonthYearChange?: (month: string, year: string) => void;
   onArchiveClick?: () => void;
   onDateSelect?: (date: Date) => void;
   datesWithReports?: Date[];
-  visibilitySettings: VisibilitySettings;
-  onVisibilityChange: (settings: VisibilitySettings) => void;
 }
 
-const DashboardHeader = ({ 
-  onMonthYearChange, 
-  onArchiveClick, 
-  onDateSelect, 
-  datesWithReports = [],
-  visibilitySettings,
-  onVisibilityChange 
-}: DashboardHeaderProps) => {
-  const [date, setDate] = useState<Date | undefined>(undefined);
+const DashboardHeader = ({ onMonthYearChange, onArchiveClick, onDateSelect, datesWithReports = [] }: DashboardHeaderProps) => {
   const currentDate = new Date();
   const currentMonth = (currentDate.getMonth() + 1).toString();
   const currentYear = currentDate.getFullYear().toString();
-  
-  const allHidden = Object.values(visibilitySettings).every(v => v === false);
-  const allVisible = Object.values(visibilitySettings).every(v => v === true);
-  
-  const toggleAll = () => {
-    const newValue = !allVisible;
-    onVisibilityChange({
-      freedomNumber: newValue,
-      income: newValue,
-      expenses: newValue,
-      assets: newValue,
-      liabilities: newValue,
-    });
-  };
-  
-  const toggleSetting = (key: keyof VisibilitySettings) => {
-    onVisibilityChange({
-      ...visibilitySettings,
-      [key]: !visibilitySettings[key],
-    });
-  };
 
   const months = [
     { value: "1", label: "January" },
@@ -107,124 +64,6 @@ const DashboardHeader = ({
           </div>
 
           <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => window.location.href = '/money-levels'}
-              title="Money Levels Calculator"
-            >
-              <Home className="h-5 w-5" />
-            </Button>
-            
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" title="Visibility Settings">
-                  {allHidden ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64" align="end">
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-sm mb-3">Show/Hide Amounts</h4>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="toggle-all" 
-                          checked={allVisible}
-                          onCheckedChange={toggleAll}
-                        />
-                        <Label htmlFor="toggle-all" className="font-medium cursor-pointer">
-                          {allVisible ? "Hide All" : "Show All"}
-                        </Label>
-                      </div>
-                      
-                      <Separator />
-                      
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="freedom-number" 
-                          checked={visibilitySettings.freedomNumber}
-                          onCheckedChange={() => toggleSetting('freedomNumber')}
-                        />
-                        <Label htmlFor="freedom-number" className="cursor-pointer">
-                          Freedom Number
-                        </Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="income" 
-                          checked={visibilitySettings.income}
-                          onCheckedChange={() => toggleSetting('income')}
-                        />
-                        <Label htmlFor="income" className="cursor-pointer">
-                          Income
-                        </Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="expenses" 
-                          checked={visibilitySettings.expenses}
-                          onCheckedChange={() => toggleSetting('expenses')}
-                        />
-                        <Label htmlFor="expenses" className="cursor-pointer">
-                          Expenses
-                        </Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="assets" 
-                          checked={visibilitySettings.assets}
-                          onCheckedChange={() => toggleSetting('assets')}
-                        />
-                        <Label htmlFor="assets" className="cursor-pointer">
-                          Assets
-                        </Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="liabilities" 
-                          checked={visibilitySettings.liabilities}
-                          onCheckedChange={() => toggleSetting('liabilities')}
-                        />
-                        <Label htmlFor="liabilities" className="cursor-pointer">
-                          Liabilities
-                        </Label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-            
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" title="Select a date">
-                  <CalendarIcon className="h-5 w-5" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(newDate) => {
-                    setDate(newDate);
-                    newDate && onDateSelect?.(newDate);
-                  }}
-                  modifiers={{
-                    hasReport: datesWithReports,
-                  }}
-                  modifiersClassNames={{
-                    hasReport: "bg-primary text-primary-foreground font-bold rounded-full",
-                  }}
-                />
-              </PopoverContent>
-            </Popover>
-            
             <Button 
               variant="outline" 
               size="icon"
@@ -268,6 +107,27 @@ const DashboardHeader = ({
                 ))}
               </SelectContent>
             </Select>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="icon" title="Select a date">
+                  <CalendarIcon className="h-5 w-5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  onSelect={(date) => date && onDateSelect?.(date)}
+                  modifiers={{
+                    hasReport: datesWithReports,
+                  }}
+                  modifiersClassNames={{
+                    hasReport: "bg-primary/20 font-bold",
+                  }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>
