@@ -330,9 +330,6 @@ export default function FinancialFreedomTracker({
                   placeholder="$0"
                   disabled
                 />
-                <p className="text-xs text-muted-foreground">
-                  Net Monthly Cash Flow × 12
-                </p>
               </div>
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">GOAL</Label>
