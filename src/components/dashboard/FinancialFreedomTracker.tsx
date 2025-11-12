@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Pencil, Info } from "lucide-react";
+import { Eye, EyeOff, Pencil, HelpCircle } from "lucide-react";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -21,12 +21,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface LevelExpenses {
   housing: number;
@@ -57,6 +51,7 @@ export default function FinancialFreedomTracker({
   const { toast } = useToast();
   const [isNumberHidden, setIsNumberHidden] = useState(false);
   const [editingLevel, setEditingLevel] = useState<LevelKey | null>(null);
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [use4PercentRule, setUse4PercentRule] = useState(true);
   
   // Store expense breakdowns and 4% rule settings for each level
@@ -191,22 +186,23 @@ export default function FinancialFreedomTracker({
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5">
       <CardContent className="pt-6">
         <div className="space-y-6">
+          {/* Header with Info Button */}
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Financial Freedom Progress</h3>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowInfoDialog(true)}
+              className="gap-2"
+            >
+              <HelpCircle className="h-4 w-4" />
+              What's a Freedom Number?
+            </Button>
+          </div>
+
           {/* Financial Freedom Target Number */}
           <div className="text-center">
-            <div className="flex items-center justify-center gap-1 mb-1">
-              <p className="text-sm text-muted-foreground">Your Financial Freedom Number</p>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-sm p-4">
-                    <p className="font-semibold mb-2">Your Financial Freedom Number = the amount of passive income (from investments, notes, real estate, dividends, etc.) you need to fully cover your living expenses — so you no longer rely on a paycheck.</p>
-                    <p className="text-sm italic">Put simply: When your money makes enough money to pay your bills, you've hit Financial Freedom.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <p className="text-sm text-muted-foreground mb-1">Your Financial Freedom Number</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-4xl font-bold text-primary">
                 {isNumberHidden ? "$•••••" : formatCurrency(levelTargets.freedom || 0)}
@@ -506,6 +502,30 @@ export default function FinancialFreedomTracker({
             </Button>
             <Button onClick={handleSaveExpenses}>
               Save Target
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Info Dialog */}
+      <Dialog open={showInfoDialog} onOpenChange={setShowInfoDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>What's a Freedom Number?</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm">
+              Your <span className="font-semibold">Financial Freedom Number</span> = the amount of passive income (from investments, notes, real estate, dividends, etc.) you need to fully cover your living expenses — so you no longer rely on a paycheck.
+            </p>
+            <div className="border-l-4 border-primary pl-4 py-2 bg-primary/5 rounded">
+              <p className="text-sm font-medium italic">
+                Put simply: When your money makes enough money to pay your bills, you've hit Financial Freedom.
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={() => setShowInfoDialog(false)}>
+              Got it
             </Button>
           </div>
         </DialogContent>
