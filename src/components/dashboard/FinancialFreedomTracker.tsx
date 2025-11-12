@@ -11,6 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { TrendingUp } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -113,6 +114,24 @@ export default function FinancialFreedomTracker({
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
+  };
+
+  const calculateMonthsOfWealth = (level: LevelKey): number | null => {
+    const monthlyExpenses = Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0);
+    if (monthlyExpenses === 0) return null;
+    return currentAssets / monthlyExpenses;
+  };
+
+  const getOverallMonthsOfWealth = (): number | null => {
+    // Calculate based on the highest level with expenses set
+    for (let i = LEVELS.length - 1; i >= 0; i--) {
+      const level = LEVELS[i];
+      const monthlyExpenses = Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0);
+      if (monthlyExpenses > 0) {
+        return currentAssets / monthlyExpenses;
+      }
+    }
+    return null;
   };
 
   const handleEditClick = (level: LevelKey) => {
@@ -257,7 +276,69 @@ export default function FinancialFreedomTracker({
             )}
           </div>
 
-          {/* All 5 Levels - Collapsible */}
+          {/* How Wealthy Are You? */}
+          <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-accent" />
+                  <h4 className="font-semibold text-accent">How Wealthy Are You?</h4>
+                </div>
+                
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-accent">
+                    {getOverallMonthsOfWealth() 
+                      ? getOverallMonthsOfWealth()!.toFixed(1) 
+                      : '—'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Measured in months</p>
+                </div>
+
+                {/* Per-Level Breakdown */}
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="breakdown" className="border-none">
+                    <AccordionTrigger className="text-sm py-2 hover:no-underline">
+                      View breakdown by level
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2 pt-2">
+                        {LEVELS.map((level, index) => {
+                          const months = calculateMonthsOfWealth(level);
+                          const hasExpenses = Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0) > 0;
+                          
+                          return (
+                            <div
+                              key={level}
+                              className="flex items-center justify-between p-2 rounded bg-background/50"
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-bold">
+                                  {index + 1}
+                                </div>
+                                <span className="text-sm font-medium">{LEVEL_INFO[level].title}</span>
+                              </div>
+                              <div className="text-right">
+                                {hasExpenses ? (
+                                  <>
+                                    <p className="text-sm font-bold text-accent">
+                                      {months?.toFixed(1) || '0'} months
+                                    </p>
+                                  </>
+                                ) : (
+                                  <p className="text-xs text-muted-foreground">No expenses set</p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </CardContent>
+          </Card>
+
           <Accordion type="single" collapsible className="border-t pt-2">
             <AccordionItem value="levels" className="border-none">
               <AccordionTrigger className="text-sm font-semibold hover:no-underline py-3">
