@@ -9,6 +9,12 @@ export interface AssetBucket {
   label: string;
   balance: number;
   yieldPct?: number;
+  isAmortizing?: boolean;
+  originalLoanAmount?: number;
+  interestRate?: number;
+  monthlyPayment?: number;
+  remainingTerm?: number;
+  startDate?: string;
 }
 
 export interface ExpenseCategory {
