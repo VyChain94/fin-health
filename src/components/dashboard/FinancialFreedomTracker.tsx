@@ -134,32 +134,20 @@ export default function FinancialFreedomTracker({
   const handleSaveExpenses = () => {
     if (!editingLevel || !onUpdateLevelTarget) return;
 
-    let newTarget: number;
-
-    if (use4PercentRule) {
-      const totalMonthly = Object.values(levelExpenses).reduce((sum, val) => sum + val, 0);
-      
-      if (totalMonthly === 0) {
-        toast({
-          title: "No expenses entered",
-          description: "Please enter at least one expense category.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      newTarget = calculateTargetFromExpenses();
-    } else {
-      if (directTarget <= 0) {
-        toast({
-          title: "Invalid target",
-          description: "Please enter a target amount greater than $0.",
-          variant: "destructive",
-        });
-        return;
-      }
-      newTarget = directTarget;
+    const totalMonthly = Object.values(levelExpenses).reduce((sum, val) => sum + val, 0);
+    
+    if (totalMonthly === 0) {
+      toast({
+        title: "No expenses entered",
+        description: "Please enter at least one expense category.",
+        variant: "destructive",
+      });
+      return;
     }
+
+    const newTarget = use4PercentRule 
+      ? calculateTargetFromExpenses() 
+      : totalMonthly * 12;
 
     onUpdateLevelTarget(editingLevel, newTarget);
     
@@ -314,16 +302,16 @@ export default function FinancialFreedomTracker({
               Set Target for {editingLevel && LEVEL_INFO[editingLevel].title}
             </DialogTitle>
             <DialogDescription>
-              Enter your monthly expenses to calculate required savings (4% rule), or set a direct target amount.
+              Enter your expected monthly expenses. Toggle the 4% rule to calculate required savings.
             </DialogDescription>
           </DialogHeader>
 
           {/* 4% Rule Toggle */}
           <div className="flex items-center justify-between py-4 border-b">
             <div className="space-y-0.5">
-              <Label htmlFor="use-4-percent" className="text-base">Use 4% Rule</Label>
+              <Label htmlFor="use-4-percent" className="text-base">Apply 4% Rule</Label>
               <p className="text-sm text-muted-foreground">
-                Calculate savings needed assuming 4% safe annual withdrawal rate
+                Calculate savings needed for 4% annual withdrawal rate
               </p>
             </div>
             <Switch
@@ -333,9 +321,7 @@ export default function FinancialFreedomTracker({
             />
           </div>
 
-          {use4PercentRule ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="housing">Housing (Rent/Mortgage)</Label>
               <Input
@@ -449,8 +435,8 @@ export default function FinancialFreedomTracker({
             </div>
           </div>
 
-              {/* Summary */}
-              <div className="border-t pt-4 space-y-2">
+          {/* Summary */}
+          <div className="border-t pt-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="font-medium">Total Monthly Expenses:</span>
               <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0))}</span>
@@ -459,34 +445,20 @@ export default function FinancialFreedomTracker({
               <span className="font-medium">Annual Expenses:</span>
               <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0) * 12)}</span>
             </div>
-                <div className="flex justify-between text-lg border-t pt-2">
-                  <span className="font-semibold text-primary">Target Savings Needed:</span>
-                  <span className="font-bold text-primary">{formatCurrency(calculateTargetFromExpenses())}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Savings needed to withdraw {(withdrawalRate * 100).toFixed(1)}% annually to cover expenses
-                </p>
-              </div>
-            </>
-          ) : (
-            <div className="py-4 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="direct-target">Target Amount</Label>
-                <Input
-                  id="direct-target"
-                  type="number"
-                  min="0"
-                  step="1000"
-                  placeholder="$0"
-                  value={directTarget || ''}
-                  onChange={(e) => setDirectTarget(parseFloat(e.target.value) || 0)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Enter your desired target amount directly without expense-based calculations.
-                </p>
-              </div>
+            <div className="flex justify-between text-lg border-t pt-2">
+              <span className="font-semibold text-primary">
+                {use4PercentRule ? 'Target Savings Needed:' : 'Target Amount:'}
+              </span>
+              <span className="font-bold text-primary">
+                {formatCurrency(use4PercentRule ? calculateTargetFromExpenses() : Object.values(levelExpenses).reduce((sum, val) => sum + val, 0) * 12)}
+              </span>
             </div>
-          )}
+            {use4PercentRule && (
+              <p className="text-xs text-muted-foreground">
+                Savings needed to withdraw {(withdrawalRate * 100).toFixed(1)}% annually to cover expenses
+              </p>
+            )}
+          </div>
 
           <div className="flex gap-3 justify-end pt-4">
             <Button variant="outline" onClick={handleCancelEdit}>
