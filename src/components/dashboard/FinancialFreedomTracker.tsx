@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Pencil } from "lucide-react";
+import { Eye, EyeOff, Pencil, Info } from "lucide-react";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -21,6 +21,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface LevelExpenses {
   housing: number;
@@ -187,7 +193,20 @@ export default function FinancialFreedomTracker({
         <div className="space-y-6">
           {/* Financial Freedom Target Number */}
           <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-1">Your Financial Freedom Number</p>
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <p className="text-sm text-muted-foreground">Your Financial Freedom Number</p>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-sm p-4">
+                    <p className="font-semibold mb-2">Your Financial Freedom Number = the amount of passive income (from investments, notes, real estate, dividends, etc.) you need to fully cover your living expenses — so you no longer rely on a paycheck.</p>
+                    <p className="text-sm italic">Put simply: When your money makes enough money to pay your bills, you've hit Financial Freedom.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="flex items-center justify-center gap-2">
               <p className="text-4xl font-bold text-primary">
                 {isNumberHidden ? "$•••••" : formatCurrency(levelTargets.freedom || 0)}
