@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Pencil, Check, X } from "lucide-react";
+import { Eye, EyeOff, Pencil } from "lucide-react";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
 import {
   Accordion,
@@ -11,25 +11,55 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+
+interface LevelExpenses {
+  housing: number;
+  utilities: number;
+  food: number;
+  transportation: number;
+  healthcare: number;
+  insurance: number;
+  entertainment: number;
+  other: number;
+}
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
   levelTargets: Record<LevelKey, number>;
   onUpdateLevelTarget?: (level: LevelKey, newTarget: number) => void;
+  withdrawalRate?: number;
 }
 
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
-export default function FinancialFreedomTracker({ currentAssets, levelTargets, onUpdateLevelTarget }: FinancialFreedomTrackerProps) {
+export default function FinancialFreedomTracker({ 
+  currentAssets, 
+  levelTargets, 
+  onUpdateLevelTarget,
+  withdrawalRate = 0.04 
+}: FinancialFreedomTrackerProps) {
+  const { toast } = useToast();
   const [isNumberHidden, setIsNumberHidden] = useState(false);
   const [editingLevel, setEditingLevel] = useState<LevelKey | null>(null);
-  const [editValue, setEditValue] = useState("");
+  const [levelExpenses, setLevelExpenses] = useState<LevelExpenses>({
+    housing: 0,
+    utilities: 0,
+    food: 0,
+    transportation: 0,
+    healthcare: 0,
+    insurance: 0,
+    entertainment: 0,
+    other: 0,
+  });
   
   // Determine current level based on assets
   const getCurrentLevel = (): { level: LevelKey; index: number } | null => {
@@ -64,23 +94,65 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets, o
     }).format(value);
   };
 
-  const handleEditClick = (level: LevelKey, currentTarget: number) => {
+  const handleEditClick = (level: LevelKey) => {
     setEditingLevel(level);
-    setEditValue(currentTarget.toString());
+    // Reset form
+    setLevelExpenses({
+      housing: 0,
+      utilities: 0,
+      food: 0,
+      transportation: 0,
+      healthcare: 0,
+      insurance: 0,
+      entertainment: 0,
+      other: 0,
+    });
   };
 
-  const handleSaveEdit = (level: LevelKey) => {
-    const newTarget = parseFloat(editValue);
-    if (!isNaN(newTarget) && newTarget >= 0 && onUpdateLevelTarget) {
-      onUpdateLevelTarget(level, newTarget);
+  const handleExpenseChange = (field: keyof LevelExpenses, value: string) => {
+    const numValue = parseFloat(value) || 0;
+    // Validate input is positive and reasonable (max $1M per category)
+    if (numValue < 0 || numValue > 1000000) return;
+    
+    setLevelExpenses(prev => ({
+      ...prev,
+      [field]: numValue,
+    }));
+  };
+
+  const calculateTargetFromExpenses = () => {
+    const monthlyExpenses = Object.values(levelExpenses).reduce((sum, val) => sum + val, 0);
+    const annualExpenses = monthlyExpenses * 12;
+    return annualExpenses / withdrawalRate;
+  };
+
+  const handleSaveExpenses = () => {
+    if (!editingLevel || !onUpdateLevelTarget) return;
+
+    const totalMonthly = Object.values(levelExpenses).reduce((sum, val) => sum + val, 0);
+    
+    if (totalMonthly === 0) {
+      toast({
+        title: "No expenses entered",
+        description: "Please enter at least one expense category.",
+        variant: "destructive",
+      });
+      return;
     }
+
+    const newTarget = calculateTargetFromExpenses();
+    onUpdateLevelTarget(editingLevel, newTarget);
+    
+    toast({
+      title: "Target Updated",
+      description: `${LEVEL_INFO[editingLevel].title} target set to ${formatCurrency(newTarget)}`,
+    });
+    
     setEditingLevel(null);
-    setEditValue("");
   };
 
   const handleCancelEdit = () => {
     setEditingLevel(null);
-    setEditValue("");
   };
 
   return (
@@ -192,52 +264,14 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets, o
                                 <p className={`text-xs font-medium ${isAchieved ? 'text-primary' : 'text-muted-foreground'}`}>
                                   {formatCurrency(target)}
                                 </p>
-                                <Popover open={editingLevel === level} onOpenChange={(open) => !open && handleCancelEdit()}>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-6 w-6 p-0"
-                                      onClick={() => handleEditClick(level, target)}
-                                    >
-                                      <Pencil className="h-3 w-3" />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-72" align="end">
-                                    <div className="space-y-4">
-                                      <div className="space-y-2">
-                                        <Label htmlFor={`target-${level}`}>
-                                          Edit Target for {LEVEL_INFO[level].title}
-                                        </Label>
-                                        <Input
-                                          id={`target-${level}`}
-                                          type="number"
-                                          value={editValue}
-                                          onChange={(e) => setEditValue(e.target.value)}
-                                          placeholder="Enter target amount"
-                                          className="w-full"
-                                        />
-                                      </div>
-                                      <div className="flex gap-2 justify-end">
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={handleCancelEdit}
-                                        >
-                                          <X className="h-4 w-4 mr-1" />
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          onClick={() => handleSaveEdit(level)}
-                                        >
-                                          <Check className="h-4 w-4 mr-1" />
-                                          Save
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </PopoverContent>
-                                </Popover>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0"
+                                  onClick={() => handleEditClick(level)}
+                                >
+                                  <Pencil className="h-3 w-3" />
+                                </Button>
                               </div>
                             )}
                           </div>
@@ -251,6 +285,163 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets, o
           </Accordion>
         </div>
       </CardContent>
+
+      {/* Expense Input Modal */}
+      <Dialog open={editingLevel !== null} onOpenChange={(open) => !open && handleCancelEdit()}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              Set Monthly Expenses for {editingLevel && LEVEL_INFO[editingLevel].title}
+            </DialogTitle>
+            <DialogDescription>
+              Enter your expected monthly expenses for this financial freedom level. 
+              The target will be calculated using the {(withdrawalRate * 100).toFixed(1)}% withdrawal rule.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="housing">Housing (Rent/Mortgage)</Label>
+              <Input
+                id="housing"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.housing || ''}
+                onChange={(e) => handleExpenseChange('housing', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="utilities">Utilities (Electric, Water, Gas)</Label>
+              <Input
+                id="utilities"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.utilities || ''}
+                onChange={(e) => handleExpenseChange('utilities', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="food">Food & Groceries</Label>
+              <Input
+                id="food"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.food || ''}
+                onChange={(e) => handleExpenseChange('food', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="transportation">Transportation (Car, Gas, Transit)</Label>
+              <Input
+                id="transportation"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.transportation || ''}
+                onChange={(e) => handleExpenseChange('transportation', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="healthcare">Healthcare & Medical</Label>
+              <Input
+                id="healthcare"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.healthcare || ''}
+                onChange={(e) => handleExpenseChange('healthcare', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="insurance">Insurance (Health, Life, Auto)</Label>
+              <Input
+                id="insurance"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.insurance || ''}
+                onChange={(e) => handleExpenseChange('insurance', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="entertainment">Entertainment & Lifestyle</Label>
+              <Input
+                id="entertainment"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.entertainment || ''}
+                onChange={(e) => handleExpenseChange('entertainment', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="other">Other Expenses</Label>
+              <Input
+                id="other"
+                type="number"
+                min="0"
+                max="1000000"
+                step="10"
+                placeholder="$0"
+                value={levelExpenses.other || ''}
+                onChange={(e) => handleExpenseChange('other', e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Summary */}
+          <div className="border-t pt-4 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="font-medium">Total Monthly Expenses:</span>
+              <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0))}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="font-medium">Annual Expenses:</span>
+              <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0) * 12)}</span>
+            </div>
+            <div className="flex justify-between text-lg border-t pt-2">
+              <span className="font-semibold text-primary">Target Assets Needed:</span>
+              <span className="font-bold text-primary">{formatCurrency(calculateTargetFromExpenses())}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Based on {(withdrawalRate * 100).toFixed(1)}% withdrawal rate (4% rule)
+            </p>
+          </div>
+
+          <div className="flex gap-3 justify-end pt-4">
+            <Button variant="outline" onClick={handleCancelEdit}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveExpenses}>
+              Save Target
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
