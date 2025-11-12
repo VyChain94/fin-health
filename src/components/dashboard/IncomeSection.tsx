@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
+import { formatCurrency } from "@/lib/formatters";
 
 interface IncomeSectionProps {
   income: FinancialData["income"];
@@ -14,6 +15,7 @@ interface IncomeSectionProps {
   dataSources: DataSource[];
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
+  showAmounts?: boolean;
 }
 
 const IncomeSection = ({
@@ -26,6 +28,7 @@ const IncomeSection = ({
   dataSources,
   onAddSource,
   onRemoveSource,
+  showAmounts = true,
 }: IncomeSectionProps) => {
   const handleChange = (field: keyof FinancialData["income"], value: string) => {
     updateIncome(field, parseFloat(value) || 0);
@@ -72,7 +75,7 @@ const IncomeSection = ({
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
             <Label className="self-center font-semibold">Earned Total</Label>
             <div className="px-3 py-2 bg-secondary rounded-md text-right font-semibold">
-              ${totalEarned.toFixed(2)}
+              {formatCurrency(totalEarned, showAmounts)}
             </div>
           </div>
         </div>
@@ -104,7 +107,7 @@ const IncomeSection = ({
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
             <Label className="self-center font-semibold">Passive Total</Label>
             <div className="px-3 py-2 bg-secondary rounded-md text-right font-semibold">
-              ${totalPassive.toFixed(2)}
+              {formatCurrency(totalPassive, showAmounts)}
             </div>
           </div>
         </div>
@@ -146,7 +149,7 @@ const IncomeSection = ({
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
             <Label className="self-center font-semibold">Portfolio Total</Label>
             <div className="px-3 py-2 bg-secondary rounded-md text-right font-semibold">
-              ${totalPortfolio.toFixed(2)}
+              {formatCurrency(totalPortfolio, showAmounts)}
             </div>
           </div>
         </div>
@@ -154,7 +157,7 @@ const IncomeSection = ({
         <div className="grid grid-cols-2 gap-3 pt-4 border-t-2 border-primary">
           <Label className="self-center font-bold text-lg">D. TOTAL INCOME</Label>
           <div className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-right font-bold text-lg">
-            ${totalIncome.toFixed(2)}
+            {formatCurrency(totalIncome, showAmounts)}
           </div>
         </div>
       </CardContent>

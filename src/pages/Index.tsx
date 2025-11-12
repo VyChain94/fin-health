@@ -26,7 +26,7 @@ import ExpenseSection from "@/components/dashboard/ExpenseSection";
 import AssetsSection from "@/components/dashboard/AssetsSection";
 import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardHeader, { VisibilitySettings } from "@/components/dashboard/DashboardHeader";
 import FinancialFreedomTracker from "@/components/dashboard/FinancialFreedomTracker";
 import { DataSource } from "@/components/dashboard/DataSourceDropdown";
 import { AuthForm } from "@/components/auth/AuthForm";
@@ -97,6 +97,18 @@ const Index = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [datesWithReports, setDatesWithReports] = useState<Date[]>([]);
+  
+  const [visibilitySettings, setVisibilitySettings] = useState<VisibilitySettings>(() => {
+    const saved = localStorage.getItem("visibilitySettings");
+    return saved ? JSON.parse(saved) : {
+      freedomNumber: true,
+      income: true,
+      expenses: true,
+      assets: true,
+      liabilities: true,
+    };
+  });
+  
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
     return saved
@@ -172,6 +184,10 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem("dataSources", JSON.stringify(dataSources));
   }, [dataSources]);
+  
+  useEffect(() => {
+    localStorage.setItem("visibilitySettings", JSON.stringify(visibilitySettings));
+  }, [visibilitySettings]);
 
   const updateIncome = (field: keyof FinancialData["income"], value: number) => {
     setFinancialData((prev) => ({
@@ -399,6 +415,8 @@ const Index = () => {
         onArchiveClick={handleArchiveClick}
         onDateSelect={handleDateSelect}
         datesWithReports={datesWithReports}
+        visibilitySettings={visibilitySettings}
+        onVisibilityChange={setVisibilitySettings}
       />
       <div className="container mx-auto px-4 py-8">
         {/* Financial Freedom Progress Tracker */}
@@ -406,6 +424,7 @@ const Index = () => {
           <FinancialFreedomTracker 
             currentAssets={totalAssets}
             levelTargets={levelTargets}
+            showAmounts={visibilitySettings.freedomNumber}
           />
         </div>
 
@@ -420,6 +439,7 @@ const Index = () => {
             dataSources={dataSources.income}
             onAddSource={(source) => addDataSource("income", source)}
             onRemoveSource={(id) => removeDataSource("income", id)}
+            showAmounts={visibilitySettings.income}
           />
 
           <AnalysisSection
@@ -443,6 +463,7 @@ const Index = () => {
             dataSources={dataSources.expenses}
             onAddSource={(source) => addDataSource("expenses", source)}
             onRemoveSource={(id) => removeDataSource("expenses", id)}
+            showAmounts={visibilitySettings.expenses}
           />
         </div>
 
@@ -457,6 +478,7 @@ const Index = () => {
             dataSources={dataSources.assets}
             onAddSource={(source) => addDataSource("assets", source)}
             onRemoveSource={(id) => removeDataSource("assets", id)}
+            showAmounts={visibilitySettings.assets}
           />
 
           <LiabilitiesSection
@@ -468,6 +490,7 @@ const Index = () => {
             dataSources={dataSources.liabilities}
             onAddSource={(source) => addDataSource("liabilities", source)}
             onRemoveSource={(id) => removeDataSource("liabilities", id)}
+            showAmounts={visibilitySettings.liabilities}
           />
         </div>
 

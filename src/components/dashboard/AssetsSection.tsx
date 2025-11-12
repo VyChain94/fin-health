@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
+import { formatCurrency } from "@/lib/formatters";
 
 interface AssetsSectionProps {
   assets: FinancialData["assets"];
@@ -14,6 +15,7 @@ interface AssetsSectionProps {
   dataSources: DataSource[];
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
+  showAmounts?: boolean;
 }
 
 const AssetsSection = ({
@@ -26,6 +28,7 @@ const AssetsSection = ({
   dataSources,
   onAddSource,
   onRemoveSource,
+  showAmounts = true,
 }: AssetsSectionProps) => {
   const handleChange = (field: keyof FinancialData["assets"], value: string) => {
     updateAssets(field, parseFloat(value) || 0);
@@ -122,49 +125,18 @@ const AssetsSection = ({
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
             <Label className="self-center font-semibold">F. ASSETS SUBTOTAL</Label>
             <div className="px-3 py-2 bg-secondary rounded-md text-right font-semibold">
-              ${totalAssets.toFixed(2)}
+              {formatCurrency(totalAssets, showAmounts)}
             </div>
           </div>
         </div>
 
         <div className="space-y-4">
           <h3 className="font-semibold text-lg border-b pb-2">G. Doodads</h3>
-          <div className="grid gap-3">
-            <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Home</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={assets.doodadsHome}
-                onChange={(e) => handleChange("doodadsHome", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Car(s)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={assets.doodadsCar}
-                onChange={(e) => handleChange("doodadsCar", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Other</Label>
-              <Input
-                type="number"
-                step="0.01"
-                value={assets.doodadsOther}
-                onChange={(e) => handleChange("doodadsOther", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
+...
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
             <Label className="self-center font-semibold">G. DOODADS TOTAL</Label>
             <div className="px-3 py-2 bg-secondary rounded-md text-right font-semibold">
-              ${totalDoodads.toFixed(2)}
+              {formatCurrency(totalDoodads, showAmounts)}
             </div>
           </div>
         </div>
@@ -173,13 +145,13 @@ const AssetsSection = ({
           <div className="grid grid-cols-2 gap-3">
             <Label className="self-center font-bold">H. TOTAL ASSETS per Banker</Label>
             <div className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-right font-bold">
-              ${totalAssets.toFixed(2)}
+              {formatCurrency(totalAssets, showAmounts)}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Label className="self-center font-bold">I. TOTAL ASSETS per Rich Dad</Label>
             <div className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-right font-bold">
-              ${(totalAssets - totalDoodads).toFixed(2)}
+              {formatCurrency(totalAssets - totalDoodads, showAmounts)}
             </div>
           </div>
         </div>

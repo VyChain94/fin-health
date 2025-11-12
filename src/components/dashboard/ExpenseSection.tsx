@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
+import { formatCurrency } from "@/lib/formatters";
 
 interface ExpenseSectionProps {
   expenses: FinancialData["expenses"];
@@ -12,6 +13,7 @@ interface ExpenseSectionProps {
   dataSources: DataSource[];
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
+  showAmounts?: boolean;
 }
 
 const ExpenseSection = ({
@@ -22,6 +24,7 @@ const ExpenseSection = ({
   dataSources,
   onAddSource,
   onRemoveSource,
+  showAmounts = true,
 }: ExpenseSectionProps) => {
   const handleChange = (field: keyof FinancialData["expenses"], value: string) => {
     updateExpenses(field, parseFloat(value) || 0);
@@ -218,7 +221,7 @@ const ExpenseSection = ({
           <div className="grid grid-cols-2 gap-3">
             <Label className="self-center font-bold text-lg">E. TOTAL EXPENSES</Label>
             <div className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-right font-bold text-lg">
-              ${totalExpenses.toFixed(2)}
+              {formatCurrency(totalExpenses, showAmounts)}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
@@ -226,7 +229,7 @@ const ExpenseSection = ({
               NET MONTHLY CASH FLOW
             </Label>
             <div className="px-3 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-md text-right font-bold text-lg">
-              ${netMonthlyCashFlow.toFixed(2)}
+              {formatCurrency(netMonthlyCashFlow, showAmounts)}
             </div>
           </div>
         </div>
