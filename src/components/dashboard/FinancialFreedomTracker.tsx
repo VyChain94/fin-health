@@ -4,6 +4,12 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
@@ -109,57 +115,65 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets }:
             )}
           </div>
 
-          {/* All 5 Levels */}
-          <div className="space-y-3 pt-2 border-t">
-            <p className="text-sm font-semibold text-center mb-3">The 5 Levels of Financial Freedom</p>
-            {LEVELS.map((level, index) => {
-              const isAchieved = levelTargets[level] > 0 && currentAssets >= levelTargets[level];
-              const isCurrent = currentLevel?.level === level;
-              const target = levelTargets[level];
-              
-              return (
-                <div
-                  key={level}
-                  className={`flex items-start gap-3 p-3 rounded-lg transition-all ${
-                    isCurrent
-                      ? 'bg-primary/10 border-2 border-primary'
-                      : isAchieved
-                      ? 'bg-primary/5 border border-primary/30'
-                      : 'bg-muted/30 border border-border'
-                  }`}
-                >
-                  <div
-                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                      isAchieved
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-muted-foreground'
-                    }`}
-                  >
-                    {index + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <p className={`font-semibold text-sm ${isAchieved ? 'text-primary' : 'text-foreground'}`}>
-                          {LEVEL_INFO[level].title}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                          {LEVEL_INFO[level].description}
-                        </p>
-                      </div>
-                      {target > 0 && (
-                        <div className="text-right flex-shrink-0">
-                          <p className={`text-xs font-medium ${isAchieved ? 'text-primary' : 'text-muted-foreground'}`}>
-                            {formatCurrency(target)}
-                          </p>
+          {/* All 5 Levels - Collapsible */}
+          <Accordion type="single" collapsible className="border-t pt-2">
+            <AccordionItem value="levels" className="border-none">
+              <AccordionTrigger className="text-sm font-semibold hover:no-underline py-3">
+                The 5 Levels of Financial Freedom
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-3 pt-1">
+                  {LEVELS.map((level, index) => {
+                    const isAchieved = levelTargets[level] > 0 && currentAssets >= levelTargets[level];
+                    const isCurrent = currentLevel?.level === level;
+                    const target = levelTargets[level];
+                    
+                    return (
+                      <div
+                        key={level}
+                        className={`flex items-start gap-3 p-3 rounded-lg transition-all ${
+                          isCurrent
+                            ? 'bg-primary/10 border-2 border-primary'
+                            : isAchieved
+                            ? 'bg-primary/5 border border-primary/30'
+                            : 'bg-muted/30 border border-border'
+                        }`}
+                      >
+                        <div
+                          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                            isAchieved
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-muted text-muted-foreground'
+                          }`}
+                        >
+                          {index + 1}
                         </div>
-                      )}
-                    </div>
-                  </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1">
+                              <p className={`font-semibold text-sm ${isAchieved ? 'text-primary' : 'text-foreground'}`}>
+                                {LEVEL_INFO[level].title}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                                {LEVEL_INFO[level].description}
+                              </p>
+                            </div>
+                            {target > 0 && (
+                              <div className="text-right flex-shrink-0">
+                                <p className={`text-xs font-medium ${isAchieved ? 'text-primary' : 'text-muted-foreground'}`}>
+                                  {formatCurrency(target)}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </CardContent>
     </Card>
