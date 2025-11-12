@@ -302,16 +302,16 @@ export default function FinancialFreedomTracker({
               Set Target for {editingLevel && LEVEL_INFO[editingLevel].title}
             </DialogTitle>
             <DialogDescription>
-              Enter your expected monthly expenses. Toggle the 4% rule to calculate required savings.
+              Enter your expected monthly expenses. Toggle the 4% rule to calculate the savings needed based on the standard 4% annual withdrawal rate in retirement.
             </DialogDescription>
           </DialogHeader>
 
           {/* 4% Rule Toggle */}
           <div className="flex items-center justify-between py-4 border-b">
             <div className="space-y-0.5">
-              <Label htmlFor="use-4-percent" className="text-base">Apply 4% Rule</Label>
+              <Label htmlFor="use-4-percent" className="text-base">Apply 4% Withdrawal Rule</Label>
               <p className="text-sm text-muted-foreground">
-                Calculate savings needed for 4% annual withdrawal rate
+                Standard safe withdrawal rate for retirees (4% annually from savings)
               </p>
             </div>
             <Switch
@@ -455,7 +455,7 @@ export default function FinancialFreedomTracker({
             </div>
             {use4PercentRule && (
               <p className="text-xs text-muted-foreground">
-                Savings needed to withdraw {(withdrawalRate * 100).toFixed(1)}% annually to cover expenses
+                Based on {(withdrawalRate * 100).toFixed(1)}% safe annual withdrawal rate in retirement
               </p>
             )}
           </div>
