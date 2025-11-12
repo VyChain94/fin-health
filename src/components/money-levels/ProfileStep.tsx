@@ -54,7 +54,7 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label htmlFor="withdrawal">Withdrawal Rate (%) <span className="text-destructive">*</span></Label>
+              <Label htmlFor="withdrawal">Savings Withdrawal Rate (%) <span className="text-destructive">*</span></Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <button type="button" className="text-muted-foreground hover:text-foreground">
