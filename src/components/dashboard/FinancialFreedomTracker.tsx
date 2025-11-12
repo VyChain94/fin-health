@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -71,52 +71,20 @@ export default function FinancialFreedomTracker({
   const [selectedLevel, setSelectedLevel] = useState<LevelKey | 'custom'>('security');
   
   // Store expense breakdowns and 4% rule settings for each level
-  const [savedExpenses, setSavedExpenses] = useState<Record<LevelKey, LevelExpenses>>(() => {
-    const stored = localStorage.getItem('financialFreedomExpenses');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return {
-          security: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-          vitality: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-          independence: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-          freedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-          absoluteFreedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-        };
-      }
-    }
-    return {
-      security: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-      vitality: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-      independence: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-      freedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-      absoluteFreedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
-    };
+  const [savedExpenses, setSavedExpenses] = useState<Record<LevelKey, LevelExpenses>>({
+    security: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    vitality: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    independence: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    freedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    absoluteFreedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
   });
   
-  const [saved4PercentRule, setSaved4PercentRule] = useState<Record<LevelKey, boolean>>(() => {
-    const stored = localStorage.getItem('financialFreedom4PercentRule');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return {
-          security: true,
-          vitality: true,
-          independence: true,
-          freedom: true,
-          absoluteFreedom: true,
-        };
-      }
-    }
-    return {
-      security: true,
-      vitality: true,
-      independence: true,
-      freedom: true,
-      absoluteFreedom: true,
-    };
+  const [saved4PercentRule, setSaved4PercentRule] = useState<Record<LevelKey, boolean>>({
+    security: true,
+    vitality: true,
+    independence: true,
+    freedom: true,
+    absoluteFreedom: true,
   });
   
   const [levelExpenses, setLevelExpenses] = useState<LevelExpenses>({
@@ -129,15 +97,6 @@ export default function FinancialFreedomTracker({
     entertainment: 0,
     other: 0,
   });
-
-  // Persist expenses and 4% rule to localStorage
-  useEffect(() => {
-    localStorage.setItem('financialFreedomExpenses', JSON.stringify(savedExpenses));
-  }, [savedExpenses]);
-
-  useEffect(() => {
-    localStorage.setItem('financialFreedom4PercentRule', JSON.stringify(saved4PercentRule));
-  }, [saved4PercentRule]);
   
   // Get monthly expenses for a level from saved expenses
   const getMonthlyExpenses = (level: LevelKey): number => {
