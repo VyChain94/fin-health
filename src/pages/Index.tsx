@@ -413,7 +413,8 @@ const Index = () => {
         <div className="mb-6">
           <FinancialFreedomTracker 
             currentAssets={totalAssets}
-            netMonthlyCashFlow={netMonthlyCashFlow}
+            totalExpenses={totalExpenses}
+            passiveIncome={totalPassive}
             levelTargets={levelTargets}
             onUpdateLevelTarget={handleUpdateLevelTarget}
           />

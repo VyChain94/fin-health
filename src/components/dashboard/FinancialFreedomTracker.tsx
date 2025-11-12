@@ -35,7 +35,8 @@ interface LevelExpenses {
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
-  netMonthlyCashFlow: number;
+  totalExpenses: number;
+  passiveIncome: number;
   levelTargets: Record<LevelKey, number>;
   onUpdateLevelTarget?: (level: LevelKey, newTarget: number) => void;
   withdrawalRate?: number;
@@ -45,7 +46,8 @@ const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', '
 
 export default function FinancialFreedomTracker({ 
   currentAssets,
-  netMonthlyCashFlow, 
+  totalExpenses,
+  passiveIncome, 
   levelTargets, 
   onUpdateLevelTarget,
   withdrawalRate = 0.04 
@@ -89,12 +91,12 @@ export default function FinancialFreedomTracker({
     return Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0);
   };
 
-  // Determine current level based on monthly cash flow vs expenses
+  // Determine current level based on passive income vs expenses
   const getCurrentLevel = (): { level: LevelKey; index: number } | null => {
     for (let i = LEVELS.length - 1; i >= 0; i--) {
       const level = LEVELS[i];
       const monthlyExpenses = getMonthlyExpenses(level);
-      if (monthlyExpenses > 0 && netMonthlyCashFlow >= monthlyExpenses) {
+      if (monthlyExpenses > 0 && passiveIncome >= monthlyExpenses) {
         return { level, index: i };
       }
     }
@@ -106,9 +108,9 @@ export default function FinancialFreedomTracker({
   const nextLevel = LEVELS[nextLevelIndex];
   const nextLevelMonthlyExpenses = getMonthlyExpenses(nextLevel);
   
-  // Calculate overall progress to next level based on monthly cash flow
+  // Calculate overall progress to next level based on passive income vs expenses
   const progressToNextLevel = nextLevelMonthlyExpenses > 0
-    ? Math.min((netMonthlyCashFlow / nextLevelMonthlyExpenses) * 100, 100)
+    ? Math.min((passiveIncome / nextLevelMonthlyExpenses) * 100, 100)
     : 0;
 
   const formatCurrency = (value: number) => {
@@ -256,7 +258,7 @@ export default function FinancialFreedomTracker({
             <Progress value={progressToNextLevel} className="h-3" />
             {nextLevelMonthlyExpenses > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{formatCurrency(netMonthlyCashFlow)}</span>
+                <span>{formatCurrency(totalExpenses)}</span>
                 <span>{formatCurrency(nextLevelMonthlyExpenses)}</span>
               </div>
             )}
@@ -272,7 +274,7 @@ export default function FinancialFreedomTracker({
                 <div className="space-y-3 pt-1">
                   {LEVELS.map((level, index) => {
                     const monthlyExpenses = getMonthlyExpenses(level);
-                    const isAchieved = monthlyExpenses > 0 && netMonthlyCashFlow >= monthlyExpenses;
+                    const isAchieved = monthlyExpenses > 0 && passiveIncome >= monthlyExpenses;
                     const isCurrent = currentLevel?.level === level;
                     const target = levelTargets[level];
                     
