@@ -21,6 +21,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface LevelExpenses {
   housing: number;
@@ -57,6 +64,11 @@ export default function FinancialFreedomTracker({
   const [editingLevel, setEditingLevel] = useState<LevelKey | null>(null);
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [use4PercentRule, setUse4PercentRule] = useState(true);
+  
+  // Progress bar state
+  const [current, setCurrent] = useState(0);
+  const [goal, setGoal] = useState(600);
+  const [selectedLevel, setSelectedLevel] = useState<LevelKey | 'custom'>('security');
   
   // Store expense breakdowns and 4% rule settings for each level
   const [savedExpenses, setSavedExpenses] = useState<Record<LevelKey, LevelExpenses>>({
@@ -189,6 +201,41 @@ export default function FinancialFreedomTracker({
     setEditingLevel(null);
   };
 
+  // Progress bar calculations
+  const progressRaw = goal > 0 ? current / goal : 0;
+  const progressPct = Math.round(progressRaw * 1000) / 10; // Round to 1 decimal
+  const barFill = Math.min(progressPct, 100);
+
+  // Color based on progress
+  const getProgressColor = () => {
+    if (progressPct < 20) return 'hsl(0 84% 60%)'; // red
+    if (progressPct < 60) return 'hsl(45 93% 47%)'; // yellow
+    if (progressPct < 100) return 'hsl(142 76% 36%)'; // green
+    return 'hsl(217 91% 60%)'; // blue
+  };
+
+  // Handle level selection
+  const handleLevelChange = (value: string) => {
+    setSelectedLevel(value as LevelKey | 'custom');
+    if (value !== 'custom') {
+      const target = levelTargets[value as LevelKey];
+      if (target > 0) {
+        setGoal(target);
+      }
+    }
+  };
+
+  // Status text
+  const getStatusText = () => {
+    if (goal === 0) return 'Set a goal to start';
+    const levelName = selectedLevel === 'custom' 
+      ? 'Custom Goal' 
+      : LEVEL_INFO[selectedLevel as LevelKey].title;
+    return progressPct >= 100 
+      ? `Goal reached for ${levelName}` 
+      : `Building toward ${levelName}`;
+  };
+
   return (
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5">
       <CardContent className="pt-6">
@@ -242,26 +289,89 @@ export default function FinancialFreedomTracker({
             </div>
           )}
 
-          {/* Progress to Next Level */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                {currentLevel && currentLevel.index < LEVELS.length - 1
-                  ? `Progress to ${LEVEL_INFO[nextLevel].title}`
-                  : currentLevel
-                  ? 'Maximum Level Achieved!'
-                  : `Progress to ${LEVEL_INFO[nextLevel].title}`
-                }
-              </span>
-              <span className="font-medium">{progressToNextLevel.toFixed(1)}%</span>
+          {/* Progress Bar Section */}
+          <div className="space-y-3">
+            {/* Level Selector */}
+            <div className="flex items-center gap-2">
+              <Label className="text-sm text-muted-foreground">Goal Level:</Label>
+              <Select value={selectedLevel} onValueChange={handleLevelChange}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="security">Security</SelectItem>
+                  <SelectItem value="vitality">Vitality</SelectItem>
+                  <SelectItem value="independence">Independence</SelectItem>
+                  <SelectItem value="freedom">Freedom</SelectItem>
+                  <SelectItem value="absoluteFreedom">Absolute Freedom</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Progress value={progressToNextLevel} className="h-3" />
-            {nextLevelMonthlyExpenses > 0 && (
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{formatCurrency(totalExpenses)}</span>
-                <span>{formatCurrency(nextLevelMonthlyExpenses)}</span>
+
+            {/* Current and Goal Inputs */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">CURRENT</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={current}
+                  onChange={(e) => setCurrent(parseFloat(e.target.value) || 0)}
+                  className="text-lg font-semibold"
+                  placeholder="$0"
+                />
               </div>
-            )}
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">GOAL</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={goal}
+                  onChange={(e) => setGoal(parseFloat(e.target.value) || 0)}
+                  className="text-lg font-semibold"
+                  placeholder="$0"
+                  disabled={selectedLevel !== 'custom'}
+                />
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  {goal > 0 ? (
+                    <div className="relative h-4 w-full overflow-hidden rounded-full bg-secondary">
+                      <div
+                        className="h-full transition-all"
+                        style={{
+                          width: `${barFill}%`,
+                          backgroundColor: getProgressColor(),
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-4 w-full rounded-full bg-muted" />
+                  )}
+                </div>
+                <span className="text-sm font-semibold min-w-[50px] text-right">
+                  {goal > 0 ? `${progressPct.toFixed(1)}%` : '0.0%'}
+                </span>
+              </div>
+
+              {/* Status Text */}
+              <p className="text-sm text-muted-foreground text-center">
+                {getStatusText()}
+              </p>
+
+              {/* Current / Goal Display */}
+              {goal > 0 && (
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Current: {formatCurrency(current)}</span>
+                  <span>Goal: {formatCurrency(goal)}</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* All 5 Levels - Collapsible */}
