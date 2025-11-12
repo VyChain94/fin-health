@@ -183,6 +183,9 @@ export default function FinancialFreedomTracker({
                 {isNumberHidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </Button>
             </div>
+            <p className="text-xs text-muted-foreground mt-2 italic">
+              Freedom Number = Annual Expenses ÷ Withdrawal Rate
+            </p>
           </div>
 
           {/* Current Level Badge */}
