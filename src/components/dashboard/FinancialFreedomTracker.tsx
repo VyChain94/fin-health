@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Pencil, Check, X } from "lucide-react";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
 import {
   Accordion,
@@ -10,16 +10,26 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
   levelTargets: Record<LevelKey, number>;
+  onUpdateLevelTarget?: (level: LevelKey, newTarget: number) => void;
 }
 
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
-export default function FinancialFreedomTracker({ currentAssets, levelTargets }: FinancialFreedomTrackerProps) {
+export default function FinancialFreedomTracker({ currentAssets, levelTargets, onUpdateLevelTarget }: FinancialFreedomTrackerProps) {
   const [isNumberHidden, setIsNumberHidden] = useState(false);
+  const [editingLevel, setEditingLevel] = useState<LevelKey | null>(null);
+  const [editValue, setEditValue] = useState("");
   
   // Determine current level based on assets
   const getCurrentLevel = (): { level: LevelKey; index: number } | null => {
@@ -52,6 +62,25 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets }:
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
+  };
+
+  const handleEditClick = (level: LevelKey, currentTarget: number) => {
+    setEditingLevel(level);
+    setEditValue(currentTarget.toString());
+  };
+
+  const handleSaveEdit = (level: LevelKey) => {
+    const newTarget = parseFloat(editValue);
+    if (!isNaN(newTarget) && newTarget >= 0 && onUpdateLevelTarget) {
+      onUpdateLevelTarget(level, newTarget);
+    }
+    setEditingLevel(null);
+    setEditValue("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingLevel(null);
+    setEditValue("");
   };
 
   return (
@@ -159,10 +188,56 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets }:
                               </p>
                             </div>
                             {target > 0 && (
-                              <div className="text-right flex-shrink-0">
+                              <div className="text-right flex-shrink-0 flex items-center gap-1">
                                 <p className={`text-xs font-medium ${isAchieved ? 'text-primary' : 'text-muted-foreground'}`}>
                                   {formatCurrency(target)}
                                 </p>
+                                <Popover open={editingLevel === level} onOpenChange={(open) => !open && handleCancelEdit()}>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-6 w-6 p-0"
+                                      onClick={() => handleEditClick(level, target)}
+                                    >
+                                      <Pencil className="h-3 w-3" />
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-72" align="end">
+                                    <div className="space-y-4">
+                                      <div className="space-y-2">
+                                        <Label htmlFor={`target-${level}`}>
+                                          Edit Target for {LEVEL_INFO[level].title}
+                                        </Label>
+                                        <Input
+                                          id={`target-${level}`}
+                                          type="number"
+                                          value={editValue}
+                                          onChange={(e) => setEditValue(e.target.value)}
+                                          placeholder="Enter target amount"
+                                          className="w-full"
+                                        />
+                                      </div>
+                                      <div className="flex gap-2 justify-end">
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={handleCancelEdit}
+                                        >
+                                          <X className="h-4 w-4 mr-1" />
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          onClick={() => handleSaveEdit(level)}
+                                        >
+                                          <Check className="h-4 w-4 mr-1" />
+                                          Save
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
                               </div>
                             )}
                           </div>

@@ -97,6 +97,7 @@ const Index = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [datesWithReports, setDatesWithReports] = useState<Date[]>([]);
+  const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
     return saved
@@ -254,11 +255,18 @@ const Index = () => {
   const withdrawalRate = 0.04; // 4% rule
   
   const levelTargets: Record<LevelKey, number> = {
-    security: annualExpenses > 0 ? annualExpenses * 0.5 / withdrawalRate : 0, // 50% of expenses
-    vitality: annualExpenses > 0 ? annualExpenses * 0.7 / withdrawalRate : 0, // 70% of expenses
-    independence: annualExpenses > 0 ? annualExpenses / withdrawalRate : 0, // 100% of expenses
-    freedom: annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0, // 150% of expenses
-    absoluteFreedom: annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0, // 250% of expenses
+    security: customLevelTargets?.security ?? (annualExpenses > 0 ? annualExpenses * 0.5 / withdrawalRate : 0),
+    vitality: customLevelTargets?.vitality ?? (annualExpenses > 0 ? annualExpenses * 0.7 / withdrawalRate : 0),
+    independence: customLevelTargets?.independence ?? (annualExpenses > 0 ? annualExpenses / withdrawalRate : 0),
+    freedom: customLevelTargets?.freedom ?? (annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0),
+    absoluteFreedom: customLevelTargets?.absoluteFreedom ?? (annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0),
+  };
+
+  const handleUpdateLevelTarget = (level: LevelKey, newTarget: number) => {
+    setCustomLevelTargets((prev) => ({
+      ...prev,
+      [level]: newTarget,
+    }));
   };
 
   const handleSaveReport = async () => {
@@ -406,6 +414,7 @@ const Index = () => {
           <FinancialFreedomTracker 
             currentAssets={totalAssets}
             levelTargets={levelTargets}
+            onUpdateLevelTarget={handleUpdateLevelTarget}
           />
         </div>
 
