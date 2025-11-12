@@ -314,16 +314,16 @@ export default function FinancialFreedomTracker({
               Set Target for {editingLevel && LEVEL_INFO[editingLevel].title}
             </DialogTitle>
             <DialogDescription>
-              Choose whether to calculate based on expenses or enter a direct target amount.
+              Calculate your target savings using the 4% rule (based on expenses) or enter a direct amount.
             </DialogDescription>
           </DialogHeader>
 
           {/* 4% Rule Toggle */}
           <div className="flex items-center justify-between py-4 border-b">
             <div className="space-y-0.5">
-              <Label htmlFor="use-4-percent" className="text-base">Use 4% Withdrawal Rule</Label>
+              <Label htmlFor="use-4-percent" className="text-base">Use 4% Rule</Label>
               <p className="text-sm text-muted-foreground">
-                Calculate target based on monthly expenses (retirement-oriented)
+                Calculate savings needed assuming 4% safe annual withdrawal rate
               </p>
             </div>
             <Switch
@@ -460,11 +460,11 @@ export default function FinancialFreedomTracker({
               <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0) * 12)}</span>
             </div>
                 <div className="flex justify-between text-lg border-t pt-2">
-                  <span className="font-semibold text-primary">Target Assets Needed:</span>
+                  <span className="font-semibold text-primary">Target Savings Needed:</span>
                   <span className="font-bold text-primary">{formatCurrency(calculateTargetFromExpenses())}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Based on {(withdrawalRate * 100).toFixed(1)}% withdrawal rate (4% rule)
+                  Savings needed to withdraw {(withdrawalRate * 100).toFixed(1)}% annually to cover expenses
                 </p>
               </div>
             </>
