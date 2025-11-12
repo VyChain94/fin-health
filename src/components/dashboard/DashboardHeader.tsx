@@ -11,9 +11,10 @@ import logo from "@/assets/logo.png";
 
 interface DashboardHeaderProps {
   onMonthYearChange?: (month: string, year: string) => void;
+  onArchiveClick?: () => void;
 }
 
-const DashboardHeader = ({ onMonthYearChange }: DashboardHeaderProps) => {
+const DashboardHeader = ({ onMonthYearChange, onArchiveClick }: DashboardHeaderProps) => {
   const currentDate = new Date();
   const currentMonth = (currentDate.getMonth() + 1).toString();
   const currentYear = currentDate.getFullYear().toString();
@@ -55,7 +56,14 @@ const DashboardHeader = ({ onMonthYearChange }: DashboardHeaderProps) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Archive className="h-5 w-5 text-muted-foreground" />
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={onArchiveClick}
+              title="View Archives"
+            >
+              <Archive className="h-5 w-5" />
+            </Button>
             <Select
               defaultValue={currentMonth}
               onValueChange={(value) =>

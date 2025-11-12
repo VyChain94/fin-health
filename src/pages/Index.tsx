@@ -281,24 +281,20 @@ const Index = () => {
     }
   };
 
-  const handleMonthYearChange = async (month: string, year: string) => {
+  const handleMonthYearChange = (month: string, year: string) => {
     setSelectedMonth(month);
     setSelectedYear(year);
+  };
+
+  const handleArchiveClick = async () => {
     setShowArchives(true);
     setLoadingArchives(true);
 
     try {
-      const monthNum = new Date(`${month} 1, 2000`).getMonth() + 1;
-      const startDate = new Date(`${year}-${monthNum.toString().padStart(2, '0')}-01`);
-      const endDate = new Date(startDate);
-      endDate.setMonth(endDate.getMonth() + 1);
-
       const { data, error } = await supabase
         .from("reports")
         .select("*")
         .eq("user_id", user?.id)
-        .gte("report_date", startDate.toISOString())
-        .lt("report_date", endDate.toISOString())
         .order("report_date", { ascending: false });
 
       if (error) throw error;
@@ -344,7 +340,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
-      <DashboardHeader onMonthYearChange={handleMonthYearChange} />
+      <DashboardHeader onMonthYearChange={handleMonthYearChange} onArchiveClick={handleArchiveClick} />
       <div className="container mx-auto px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -462,9 +458,16 @@ const Index = () => {
             {loadingArchives ? (
               <p className="text-muted-foreground text-center py-8">Loading archives...</p>
             ) : archivedReports.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No reports found for this period.</p>
+              <p className="text-muted-foreground text-center py-8">No reports found.</p>
             ) : (
-              archivedReports.map((report) => (
+              archivedReports
+                .filter((report) => {
+                  if (!selectedMonth || !selectedYear) return true;
+                  const reportDate = new Date(report.report_date);
+                  return reportDate.getMonth() + 1 === parseInt(selectedMonth) && 
+                         reportDate.getFullYear() === parseInt(selectedYear);
+                })
+                .map((report) => (
                 <Card key={report.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => loadReport(report)}>
                   <CardHeader>
                     <CardTitle className="text-base">{report.report_name}</CardTitle>
