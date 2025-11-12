@@ -33,7 +33,8 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LevelKey } from "@/types/moneyLevels";
+import { LevelKey, LEVEL_INFO } from "@/types/moneyLevels";
+import { useMoneyLevels } from "@/hooks/useMoneyLevels";
 
 export interface FinancialData {
   income: {
@@ -89,6 +90,7 @@ export interface FinancialData {
 const Index = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
+  const { calculateLevelMetrics, state: moneyLevelsState } = useMoneyLevels();
   const [reportName, setReportName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showArchives, setShowArchives] = useState(false);
@@ -265,17 +267,35 @@ const Index = () => {
   const netWorthBanker = totalAssets - totalLiabilities;
   const netWorthRichDad = totalAssets - totalDoodads - totalLiabilities;
 
-  // Calculate Money Levels targets using annual expenses and 4% rule
-  const annualExpenses = totalExpenses * 12;
-  const withdrawalRate = 0.04; // 4% rule
+  // Calculate Money Levels targets using the calculator data if available
+  const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
+  const levelTargets: Record<LevelKey, number> = {} as Record<LevelKey, number>;
   
-  const levelTargets: Record<LevelKey, number> = {
-    security: annualExpenses > 0 ? annualExpenses * 0.5 / withdrawalRate : 0, // 50% of expenses
-    vitality: annualExpenses > 0 ? annualExpenses * 0.7 / withdrawalRate : 0, // 70% of expenses
-    independence: annualExpenses > 0 ? annualExpenses / withdrawalRate : 0, // 100% of expenses
-    freedom: annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0, // 150% of expenses
-    absoluteFreedom: annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0, // 250% of expenses
-  };
+  // Try to use Money Levels calculator data first
+  let hasCalculatorData = false;
+  LEVELS.forEach(level => {
+    const metrics = calculateLevelMetrics(level);
+    if (metrics.targetAssets > 0) {
+      levelTargets[level] = metrics.targetAssets;
+      hasCalculatorData = true;
+    }
+  });
+  
+  // Fallback to simple calculation if no calculator data exists
+  if (!hasCalculatorData) {
+    const annualExpenses = totalExpenses * 12;
+    const withdrawalRate = 0.04; // 4% rule
+    
+    levelTargets.security = annualExpenses > 0 ? annualExpenses * 0.5 / withdrawalRate : 0;
+    levelTargets.vitality = annualExpenses > 0 ? annualExpenses * 0.7 / withdrawalRate : 0;
+    levelTargets.independence = annualExpenses > 0 ? annualExpenses / withdrawalRate : 0;
+    levelTargets.freedom = annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0;
+    levelTargets.absoluteFreedom = annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0;
+  }
+  
+  // Calculate current total assets from Money Levels calculator
+  const calculatorTotalAssets = moneyLevelsState.assets.reduce((sum, asset) => sum + asset.balance, 0);
+  const currentAssetsForTracker = calculatorTotalAssets > 0 ? calculatorTotalAssets : totalAssets;
 
   const handleSaveReport = async () => {
     if (!user) return;
@@ -422,7 +442,7 @@ const Index = () => {
         {/* Financial Freedom Progress Tracker */}
         <div className="mb-6">
           <FinancialFreedomTracker 
-            currentAssets={totalAssets}
+            currentAssets={currentAssetsForTracker}
             levelTargets={levelTargets}
             showAmounts={visibilitySettings.freedomNumber}
           />
