@@ -85,7 +85,7 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
-                  <p className="text-sm">How much you expect your investments to grow each year.</p>
+                  <p className="text-sm">How much you expect your investments to grow each year. The historical average for a diversified portfolio is around 7-10%.</p>
                 </PopoverContent>
               </Popover>
             </div>
