@@ -294,7 +294,8 @@ export default function FinancialFreedomTracker({
               Set Monthly Expenses for {editingLevel && LEVEL_INFO[editingLevel].title}
             </DialogTitle>
             <DialogDescription>
-              Enter your expected monthly expenses for this financial freedom level to calculate your target assets needed.
+              Enter your expected monthly expenses for this financial freedom level. 
+              The target will be calculated using the {(withdrawalRate * 100).toFixed(1)}% withdrawal rule.
             </DialogDescription>
           </DialogHeader>
           
@@ -426,6 +427,9 @@ export default function FinancialFreedomTracker({
               <span className="font-semibold text-primary">Target Assets Needed:</span>
               <span className="font-bold text-primary">{formatCurrency(calculateTargetFromExpenses())}</span>
             </div>
+            <p className="text-xs text-muted-foreground">
+              Based on {(withdrawalRate * 100).toFixed(1)}% withdrawal rate (4% rule)
+            </p>
           </div>
 
           <div className="flex gap-3 justify-end pt-4">
