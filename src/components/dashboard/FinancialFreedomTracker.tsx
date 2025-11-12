@@ -1,6 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
+import { X, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
@@ -10,6 +13,8 @@ interface FinancialFreedomTrackerProps {
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
 export default function FinancialFreedomTracker({ currentAssets, levelTargets }: FinancialFreedomTrackerProps) {
+  const [isHidden, setIsHidden] = useState(false);
+  
   // Determine current level based on assets
   const getCurrentLevel = (): { level: LevelKey; index: number } | null => {
     for (let i = LEVELS.length - 1; i >= 0; i--) {
@@ -43,9 +48,30 @@ export default function FinancialFreedomTracker({ currentAssets, levelTargets }:
     }).format(value);
   };
 
+  if (isHidden) {
+    return (
+      <Button
+        variant="outline"
+        onClick={() => setIsHidden(false)}
+        className="w-full gap-2"
+      >
+        <ChevronDown className="h-4 w-4" />
+        Show Financial Freedom Tracker
+      </Button>
+    );
+  }
+
   return (
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5">
-      <CardContent className="pt-6">
+      <CardContent className="pt-6 relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsHidden(true)}
+          className="absolute top-2 right-2 h-8 w-8"
+        >
+          <X className="h-4 w-4" />
+        </Button>
         <div className="space-y-6">
           {/* Current Number */}
           <div className="text-center">
