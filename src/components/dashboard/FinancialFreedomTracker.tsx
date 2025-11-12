@@ -231,9 +231,18 @@ export default function FinancialFreedomTracker({
     const levelName = selectedLevel === 'custom' 
       ? 'Custom Goal' 
       : LEVEL_INFO[selectedLevel as LevelKey].title;
-    return progressPct >= 100 
-      ? `Goal reached for ${levelName}` 
-      : `Building toward ${levelName}`;
+    
+    if (progressPct >= 100) {
+      // Calculate months and years can maintain
+      const monthlyExpenses = goal / 12;
+      const monthsCanMaintain = monthlyExpenses > 0 ? currentAssets / monthlyExpenses : 0;
+      const years = Math.floor(monthsCanMaintain / 12);
+      const months = Math.round(monthsCanMaintain % 12);
+      
+      return `Goal reached for ${levelName} - Can maintain: ${years} year(s), ${months} month(s)`;
+    }
+    
+    return `Building toward ${levelName}`;
   };
 
   return (
