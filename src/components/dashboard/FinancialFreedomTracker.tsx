@@ -430,21 +430,21 @@ export default function FinancialFreedomTracker({
                                 {LEVEL_INFO[level].description}
                               </p>
                             </div>
-                            {target > 0 && (
-                              <div className="text-right flex-shrink-0 flex items-center gap-1">
+                            <div className="text-right flex-shrink-0 flex items-center gap-1">
+                              {target > 0 && (
                                 <p className={`text-xs font-medium ${isAchieved ? 'text-primary' : 'text-muted-foreground'}`}>
                                   {formatCurrency(target)}
                                 </p>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-6 w-6 p-0"
-                                  onClick={() => handleEditClick(level)}
-                                >
-                                  <Pencil className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            )}
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleEditClick(level)}
+                              >
+                                <Pencil className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
