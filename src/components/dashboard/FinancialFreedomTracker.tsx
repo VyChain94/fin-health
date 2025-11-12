@@ -35,6 +35,7 @@ interface LevelExpenses {
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
+  netMonthlyCashFlow: number;
   levelTargets: Record<LevelKey, number>;
   onUpdateLevelTarget?: (level: LevelKey, newTarget: number) => void;
   withdrawalRate?: number;
@@ -43,7 +44,8 @@ interface FinancialFreedomTrackerProps {
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
 export default function FinancialFreedomTracker({ 
-  currentAssets, 
+  currentAssets,
+  netMonthlyCashFlow, 
   levelTargets, 
   onUpdateLevelTarget,
   withdrawalRate = 0.04 
@@ -251,7 +253,7 @@ export default function FinancialFreedomTracker({
             <Progress value={progressToNextLevel} className="h-3" />
             {nextLevelTarget > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{formatCurrency(currentAssets)}</span>
+                <span>{formatCurrency(netMonthlyCashFlow)}</span>
                 <span>{formatCurrency(nextLevelTarget)}</span>
               </div>
             )}
