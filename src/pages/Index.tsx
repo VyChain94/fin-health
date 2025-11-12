@@ -27,11 +27,13 @@ import AssetsSection from "@/components/dashboard/AssetsSection";
 import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import FinancialFreedomTracker from "@/components/dashboard/FinancialFreedomTracker";
 import { DataSource } from "@/components/dashboard/DataSourceDropdown";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { LevelKey } from "@/types/moneyLevels";
 
 export interface FinancialData {
   income: {
@@ -247,6 +249,18 @@ const Index = () => {
   const netWorthBanker = totalAssets - totalLiabilities;
   const netWorthRichDad = totalAssets - totalDoodads - totalLiabilities;
 
+  // Calculate Money Levels targets using annual expenses and 4% rule
+  const annualExpenses = totalExpenses * 12;
+  const withdrawalRate = 0.04; // 4% rule
+  
+  const levelTargets: Record<LevelKey, number> = {
+    security: annualExpenses > 0 ? annualExpenses * 0.5 / withdrawalRate : 0, // 50% of expenses
+    vitality: annualExpenses > 0 ? annualExpenses * 0.7 / withdrawalRate : 0, // 70% of expenses
+    independence: annualExpenses > 0 ? annualExpenses / withdrawalRate : 0, // 100% of expenses
+    freedom: annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0, // 150% of expenses
+    absoluteFreedom: annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0, // 250% of expenses
+  };
+
   const handleSaveReport = async () => {
     if (!user) return;
     
@@ -387,6 +401,13 @@ const Index = () => {
         datesWithReports={datesWithReports}
       />
       <div className="container mx-auto px-4 py-8">
+        {/* Financial Freedom Progress Tracker */}
+        <div className="mb-6">
+          <FinancialFreedomTracker 
+            currentAssets={totalAssets}
+            levelTargets={levelTargets}
+          />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <IncomeSection
