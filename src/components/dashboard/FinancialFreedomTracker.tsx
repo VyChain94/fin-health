@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Pencil } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LEVEL_INFO, LevelKey } from "@/types/moneyLevels";
 import {
   Accordion,
@@ -51,8 +50,6 @@ export default function FinancialFreedomTracker({
   const { toast } = useToast();
   const [isNumberHidden, setIsNumberHidden] = useState(false);
   const [editingLevel, setEditingLevel] = useState<LevelKey | null>(null);
-  const [useExpenseCalculation, setUseExpenseCalculation] = useState(true);
-  const [directTargetAmount, setDirectTargetAmount] = useState(0);
   const [levelExpenses, setLevelExpenses] = useState<LevelExpenses>({
     housing: 0,
     utilities: 0,
@@ -99,8 +96,6 @@ export default function FinancialFreedomTracker({
 
   const handleEditClick = (level: LevelKey) => {
     setEditingLevel(level);
-    setUseExpenseCalculation(true);
-    setDirectTargetAmount(0);
     // Reset form
     setLevelExpenses({
       housing: 0,
@@ -134,33 +129,18 @@ export default function FinancialFreedomTracker({
   const handleSaveExpenses = () => {
     if (!editingLevel || !onUpdateLevelTarget) return;
 
-    let newTarget = 0;
-
-    if (useExpenseCalculation) {
-      const totalMonthly = Object.values(levelExpenses).reduce((sum, val) => sum + val, 0);
-      
-      if (totalMonthly === 0) {
-        toast({
-          title: "No expenses entered",
-          description: "Please enter at least one expense category.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      newTarget = calculateTargetFromExpenses();
-    } else {
-      if (directTargetAmount <= 0) {
-        toast({
-          title: "Invalid target amount",
-          description: "Please enter a target amount greater than $0.",
-          variant: "destructive",
-        });
-        return;
-      }
-      newTarget = directTargetAmount;
+    const totalMonthly = Object.values(levelExpenses).reduce((sum, val) => sum + val, 0);
+    
+    if (totalMonthly === 0) {
+      toast({
+        title: "No expenses entered",
+        description: "Please enter at least one expense category.",
+        variant: "destructive",
+      });
+      return;
     }
 
+    const newTarget = calculateTargetFromExpenses();
     onUpdateLevelTarget(editingLevel, newTarget);
     
     toast({
@@ -311,25 +291,15 @@ export default function FinancialFreedomTracker({
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              Set Target for {editingLevel && LEVEL_INFO[editingLevel].title}
+              Set Monthly Expenses for {editingLevel && LEVEL_INFO[editingLevel].title}
             </DialogTitle>
             <DialogDescription>
-              Choose how you'd like to set your financial target for this level.
+              Enter your expected monthly expenses for this financial freedom level. 
+              The target will be calculated using the {(withdrawalRate * 100).toFixed(1)}% withdrawal rule.
             </DialogDescription>
           </DialogHeader>
           
-          <Tabs value={useExpenseCalculation ? "expenses" : "direct"} onValueChange={(v) => setUseExpenseCalculation(v === "expenses")}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="expenses">Calculate from Expenses</TabsTrigger>
-              <TabsTrigger value="direct">Enter Target Directly</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="expenses" className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Enter your expected monthly expenses and we'll calculate your target using the {(withdrawalRate * 100).toFixed(1)}% withdrawal rule.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="housing">Housing (Rent/Mortgage)</Label>
               <Input
@@ -444,54 +414,25 @@ export default function FinancialFreedomTracker({
           </div>
 
           {/* Summary */}
-              <div className="border-t pt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">Total Monthly Expenses:</span>
-                  <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0))}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">Annual Expenses:</span>
-                  <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0) * 12)}</span>
-                </div>
-                <div className="flex justify-between text-lg border-t pt-2">
-                  <span className="font-semibold text-primary">Target Assets Needed:</span>
-                  <span className="font-bold text-primary">{formatCurrency(calculateTargetFromExpenses())}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Based on {(withdrawalRate * 100).toFixed(1)}% withdrawal rule
-                </p>
-              </div>
-            </TabsContent>
+          <div className="border-t pt-4 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="font-medium">Total Monthly Expenses:</span>
+              <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0))}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="font-medium">Annual Expenses:</span>
+              <span className="font-bold">{formatCurrency(Object.values(levelExpenses).reduce((sum, val) => sum + val, 0) * 12)}</span>
+            </div>
+            <div className="flex justify-between text-lg border-t pt-2">
+              <span className="font-semibold text-primary">Target Assets Needed:</span>
+              <span className="font-bold text-primary">{formatCurrency(calculateTargetFromExpenses())}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Based on {(withdrawalRate * 100).toFixed(1)}% withdrawal rate (4% rule)
+            </p>
+          </div>
 
-            <TabsContent value="direct" className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Enter your desired financial target directly without calculating from expenses.
-              </p>
-              
-              <div className="space-y-2">
-                <Label htmlFor="directTarget">Target Amount</Label>
-                <Input
-                  id="directTarget"
-                  type="number"
-                  min="0"
-                  step="1000"
-                  placeholder="$0"
-                  value={directTargetAmount || ''}
-                  onChange={(e) => setDirectTargetAmount(parseFloat(e.target.value) || 0)}
-                  className="text-lg font-semibold"
-                />
-              </div>
-
-              <div className="border-t pt-4">
-                <div className="flex justify-between text-lg">
-                  <span className="font-semibold text-primary">Your Target:</span>
-                  <span className="font-bold text-primary">{formatCurrency(directTargetAmount)}</span>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          <div className="flex gap-3 justify-end pt-4 border-t">
+          <div className="flex gap-3 justify-end pt-4">
             <Button variant="outline" onClick={handleCancelEdit}>
               Cancel
             </Button>
