@@ -167,12 +167,12 @@ export default function FinancialFreedomTracker({
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5">
       <CardContent className="pt-6">
         <div className="space-y-6">
-          {/* Current Number */}
+          {/* Financial Freedom Target Number */}
           <div className="text-center">
             <p className="text-sm text-muted-foreground mb-1">Your Financial Freedom Number</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-4xl font-bold text-primary">
-                {isNumberHidden ? "$•••••" : formatCurrency(currentAssets)}
+                {isNumberHidden ? "$•••••" : formatCurrency(levelTargets.freedom || 0)}
               </p>
               <Button
                 variant="ghost"
