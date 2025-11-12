@@ -52,7 +52,24 @@ export default function FinancialFreedomTracker({
   const [isNumberHidden, setIsNumberHidden] = useState(false);
   const [editingLevel, setEditingLevel] = useState<LevelKey | null>(null);
   const [use4PercentRule, setUse4PercentRule] = useState(true);
-  const [directTarget, setDirectTarget] = useState(0);
+  
+  // Store expense breakdowns and 4% rule settings for each level
+  const [savedExpenses, setSavedExpenses] = useState<Record<LevelKey, LevelExpenses>>({
+    security: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    vitality: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    independence: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    freedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+    absoluteFreedom: { housing: 0, utilities: 0, food: 0, transportation: 0, healthcare: 0, insurance: 0, entertainment: 0, other: 0 },
+  });
+  
+  const [saved4PercentRule, setSaved4PercentRule] = useState<Record<LevelKey, boolean>>({
+    security: true,
+    vitality: true,
+    independence: true,
+    freedom: true,
+    absoluteFreedom: true,
+  });
+  
   const [levelExpenses, setLevelExpenses] = useState<LevelExpenses>({
     housing: 0,
     utilities: 0,
@@ -99,19 +116,9 @@ export default function FinancialFreedomTracker({
 
   const handleEditClick = (level: LevelKey) => {
     setEditingLevel(level);
-    setUse4PercentRule(true);
-    setDirectTarget(0);
-    // Reset form
-    setLevelExpenses({
-      housing: 0,
-      utilities: 0,
-      food: 0,
-      transportation: 0,
-      healthcare: 0,
-      insurance: 0,
-      entertainment: 0,
-      other: 0,
-    });
+    // Load previously saved expenses and 4% rule setting for this level
+    setLevelExpenses(savedExpenses[level]);
+    setUse4PercentRule(saved4PercentRule[level]);
   };
 
   const handleExpenseChange = (field: keyof LevelExpenses, value: string) => {
@@ -148,6 +155,17 @@ export default function FinancialFreedomTracker({
     const newTarget = use4PercentRule 
       ? calculateTargetFromExpenses() 
       : totalMonthly * 12;
+
+    // Save the expense breakdown and 4% rule setting for this level
+    setSavedExpenses(prev => ({
+      ...prev,
+      [editingLevel]: levelExpenses,
+    }));
+    
+    setSaved4PercentRule(prev => ({
+      ...prev,
+      [editingLevel]: use4PercentRule,
+    }));
 
     onUpdateLevelTarget(editingLevel, newTarget);
     
