@@ -65,8 +65,8 @@ export default function FinancialFreedomTracker({
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [use4PercentRule, setUse4PercentRule] = useState(true);
   
-  // Progress bar state
-  const [current, setCurrent] = useState(0);
+  // Progress bar state - current is auto-calculated from NET MONTHLY CASH FLOW × 12
+  const current = netMonthlyCashFlow * 12;
   const [goal, setGoal] = useState(600);
   const [selectedLevel, setSelectedLevel] = useState<LevelKey | 'custom'>('security');
   
@@ -317,9 +317,9 @@ export default function FinancialFreedomTracker({
                   type="number"
                   min="0"
                   value={current}
-                  onChange={(e) => setCurrent(parseFloat(e.target.value) || 0)}
                   className="text-lg font-semibold"
                   placeholder="$0"
+                  disabled
                 />
               </div>
               <div className="space-y-1">
