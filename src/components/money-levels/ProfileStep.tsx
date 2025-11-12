@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Profile } from "@/types/moneyLevels";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Info } from "lucide-react";
 
 interface ProfileStepProps {
   profile: Profile;
@@ -51,17 +53,42 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
 
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="withdrawal">Withdrawal Rate (%)</Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="withdrawal">Withdrawal Rate (%) <span className="text-destructive">*</span></Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button type="button" className="text-muted-foreground hover:text-foreground">
+                    <Info className="h-4 w-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <p className="text-sm">How much of your savings you plan to live on each year. (4% just means you'd take out 4% of your total savings yearly.)</p>
+                </PopoverContent>
+              </Popover>
+            </div>
             <Input
               id="withdrawal"
               type="number"
               step="0.1"
               value={profile.withdrawalRatePct}
               onChange={(e) => onUpdate({ withdrawalRatePct: parseFloat(e.target.value) || 4 })}
+              required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="return">Expected Return (%)</Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="return">Expected Return (%) <span className="text-destructive">*</span></Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button type="button" className="text-muted-foreground hover:text-foreground">
+                    <Info className="h-4 w-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <p className="text-sm">How much you expect your investments to grow each year.</p>
+                </PopoverContent>
+              </Popover>
+            </div>
             <Input
               id="return"
               type="number"
@@ -69,13 +96,26 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
               value={profile.expectedReturnPct || ''}
               onChange={(e) => onUpdate({ expectedReturnPct: parseFloat(e.target.value) || undefined })}
               placeholder="7"
+              required
             />
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="tax">Tax Bracket (%)</Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="tax">Tax Bracket (%) <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button type="button" className="text-muted-foreground hover:text-foreground">
+                    <Info className="h-4 w-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <p className="text-sm">How much of your income goes to taxes. Adjusts for after-tax income, but you can skip it for a rough estimate.</p>
+                </PopoverContent>
+              </Popover>
+            </div>
             <Input
               id="tax"
               type="number"
@@ -86,7 +126,19 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="inflation">Inflation Assumption (%)</Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="inflation">Inflation (%) <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button type="button" className="text-muted-foreground hover:text-foreground">
+                    <Info className="h-4 w-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <p className="text-sm">How much prices go up over time. Adjusts for future cost increases, but not needed for a simple snapshot.</p>
+                </PopoverContent>
+              </Popover>
+            </div>
             <Input
               id="inflation"
               type="number"
@@ -99,7 +151,19 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="mode">Calculation Mode</Label>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="mode">Calculation Mode <span className="text-muted-foreground text-xs">(optional)</span></Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button type="button" className="text-muted-foreground hover:text-foreground">
+                  <Info className="h-4 w-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <p className="text-sm">The method it uses to do the math. The "4% rule" is a simple way to estimate how much you can withdraw yearly.</p>
+              </PopoverContent>
+            </Popover>
+          </div>
           <Select value={profile.mode} onValueChange={(value: 'simple' | 'advanced') => onUpdate({ mode: value })}>
             <SelectTrigger id="mode">
               <SelectValue />
