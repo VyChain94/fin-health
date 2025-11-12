@@ -11,7 +11,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { TrendingUp } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +35,7 @@ interface LevelExpenses {
 
 interface FinancialFreedomTrackerProps {
   currentAssets: number;
+  netMonthlyCashFlow: number;
   levelTargets: Record<LevelKey, number>;
   onUpdateLevelTarget?: (level: LevelKey, newTarget: number) => void;
   withdrawalRate?: number;
@@ -44,7 +44,8 @@ interface FinancialFreedomTrackerProps {
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
 export default function FinancialFreedomTracker({ 
-  currentAssets, 
+  currentAssets,
+  netMonthlyCashFlow, 
   levelTargets, 
   onUpdateLevelTarget,
   withdrawalRate = 0.04 
@@ -83,12 +84,17 @@ export default function FinancialFreedomTracker({
     other: 0,
   });
   
-  // Determine current level based on assets
+  // Calculate monthly expenses for each level
+  const getMonthlyExpenses = (level: LevelKey): number => {
+    return Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0);
+  };
+
+  // Determine current level based on monthly cash flow vs expenses
   const getCurrentLevel = (): { level: LevelKey; index: number } | null => {
     for (let i = LEVELS.length - 1; i >= 0; i--) {
       const level = LEVELS[i];
-      const target = levelTargets[level];
-      if (currentAssets >= target && target > 0) {
+      const monthlyExpenses = getMonthlyExpenses(level);
+      if (monthlyExpenses > 0 && netMonthlyCashFlow >= monthlyExpenses) {
         return { level, index: i };
       }
     }
@@ -98,13 +104,11 @@ export default function FinancialFreedomTracker({
   const currentLevel = getCurrentLevel();
   const nextLevelIndex = currentLevel ? Math.min(currentLevel.index + 1, LEVELS.length - 1) : 0;
   const nextLevel = LEVELS[nextLevelIndex];
-  const nextLevelTarget = levelTargets[nextLevel];
+  const nextLevelMonthlyExpenses = getMonthlyExpenses(nextLevel);
   
-  // Calculate overall progress to next level
-  const progressToNextLevel = currentLevel && nextLevelTarget > 0
-    ? Math.min((currentAssets / nextLevelTarget) * 100, 100)
-    : nextLevelTarget > 0 
-    ? Math.min((currentAssets / nextLevelTarget) * 100, 100)
+  // Calculate overall progress to next level based on monthly cash flow
+  const progressToNextLevel = nextLevelMonthlyExpenses > 0
+    ? Math.min((netMonthlyCashFlow / nextLevelMonthlyExpenses) * 100, 100)
     : 0;
 
   const formatCurrency = (value: number) => {
@@ -114,24 +118,6 @@ export default function FinancialFreedomTracker({
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
-  };
-
-  const calculateMonthsOfWealth = (level: LevelKey): number | null => {
-    const monthlyExpenses = Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0);
-    if (monthlyExpenses === 0) return null;
-    return currentAssets / monthlyExpenses;
-  };
-
-  const getOverallMonthsOfWealth = (): number | null => {
-    // Calculate based on the highest level with expenses set
-    for (let i = LEVELS.length - 1; i >= 0; i--) {
-      const level = LEVELS[i];
-      const monthlyExpenses = Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0);
-      if (monthlyExpenses > 0) {
-        return currentAssets / monthlyExpenses;
-      }
-    }
-    return null;
   };
 
   const handleEditClick = (level: LevelKey) => {
@@ -268,77 +254,15 @@ export default function FinancialFreedomTracker({
               <span className="font-medium">{progressToNextLevel.toFixed(1)}%</span>
             </div>
             <Progress value={progressToNextLevel} className="h-3" />
-            {nextLevelTarget > 0 && (
+            {nextLevelMonthlyExpenses > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{formatCurrency(currentAssets)}</span>
-                <span>{formatCurrency(nextLevelTarget)}</span>
+                <span>{formatCurrency(netMonthlyCashFlow)}</span>
+                <span>{formatCurrency(nextLevelMonthlyExpenses)}</span>
               </div>
             )}
           </div>
 
-          {/* How Wealthy Are You? */}
-          <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-accent" />
-                  <h4 className="font-semibold text-accent">How Wealthy Are You?</h4>
-                </div>
-                
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-accent">
-                    {getOverallMonthsOfWealth() 
-                      ? getOverallMonthsOfWealth()!.toFixed(1) 
-                      : '—'}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Measured in months</p>
-                </div>
-
-                {/* Per-Level Breakdown */}
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="breakdown" className="border-none">
-                    <AccordionTrigger className="text-sm py-2 hover:no-underline">
-                      View breakdown by level
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 pt-2">
-                        {LEVELS.map((level, index) => {
-                          const months = calculateMonthsOfWealth(level);
-                          const hasExpenses = Object.values(savedExpenses[level]).reduce((sum, val) => sum + val, 0) > 0;
-                          
-                          return (
-                            <div
-                              key={level}
-                              className="flex items-center justify-between p-2 rounded bg-background/50"
-                            >
-                              <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-bold">
-                                  {index + 1}
-                                </div>
-                                <span className="text-sm font-medium">{LEVEL_INFO[level].title}</span>
-                              </div>
-                              <div className="text-right">
-                                {hasExpenses ? (
-                                  <>
-                                    <p className="text-sm font-bold text-accent">
-                                      {months?.toFixed(1) || '0'} months
-                                    </p>
-                                  </>
-                                ) : (
-                                  <p className="text-xs text-muted-foreground">No expenses set</p>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-            </CardContent>
-          </Card>
-
+          {/* All 5 Levels - Collapsible */}
           <Accordion type="single" collapsible className="border-t pt-2">
             <AccordionItem value="levels" className="border-none">
               <AccordionTrigger className="text-sm font-semibold hover:no-underline py-3">
@@ -347,7 +271,8 @@ export default function FinancialFreedomTracker({
               <AccordionContent>
                 <div className="space-y-3 pt-1">
                   {LEVELS.map((level, index) => {
-                    const isAchieved = levelTargets[level] > 0 && currentAssets >= levelTargets[level];
+                    const monthlyExpenses = getMonthlyExpenses(level);
+                    const isAchieved = monthlyExpenses > 0 && netMonthlyCashFlow >= monthlyExpenses;
                     const isCurrent = currentLevel?.level === level;
                     const target = levelTargets[level];
                     
