@@ -411,9 +411,12 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Financial Freedom Progress Tracker */}
         <div className="mb-6">
-          <FinancialFreedomTracker
+          <FinancialFreedomTracker 
             currentAssets={totalAssets}
+            netMonthlyCashFlow={netMonthlyCashFlow}
+            totalExpenses={totalExpenses}
             levelTargets={levelTargets}
+            onUpdateLevelTarget={handleUpdateLevelTarget}
           />
         </div>
 
