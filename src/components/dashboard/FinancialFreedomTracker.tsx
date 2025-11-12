@@ -314,7 +314,7 @@ export default function FinancialFreedomTracker({
               Set Target for {editingLevel && LEVEL_INFO[editingLevel].title}
             </DialogTitle>
             <DialogDescription>
-              Calculate your target savings using the 4% rule (based on expenses) or enter a direct amount.
+              Enter your monthly expenses to calculate required savings (4% rule), or set a direct target amount.
             </DialogDescription>
           </DialogHeader>
 
