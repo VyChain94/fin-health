@@ -233,8 +233,17 @@ export default function FinancialFreedomTracker({
       : LEVEL_INFO[selectedLevel as LevelKey].title;
     
     if (progressPct >= 100) {
-      // Calculate months and years can maintain
-      const monthlyExpenses = goal / 12;
+      // Get actual monthly expenses from saved data, or estimate from goal
+      let monthlyExpenses = 0;
+      if (selectedLevel !== 'custom') {
+        monthlyExpenses = getMonthlyExpenses(selectedLevel as LevelKey);
+      }
+      
+      // Fallback to estimating from goal if no expenses saved
+      if (monthlyExpenses === 0) {
+        monthlyExpenses = goal / 12;
+      }
+      
       const monthsCanMaintain = monthlyExpenses > 0 ? currentAssets / monthlyExpenses : 0;
       const years = Math.floor(monthsCanMaintain / 12);
       const months = Math.round(monthsCanMaintain % 12);
