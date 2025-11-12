@@ -112,7 +112,7 @@ export function ProfileStep({ profile, onUpdate }: ProfileStepProps) {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
-                  <p className="text-sm">How much of your income goes to taxes. Adjusts for after-tax income, but you can skip it for a rough estimate.</p>
+                  <p className="text-sm">How much of your income goes to taxes. Adjusts for after-tax income, but you can skip it for a rough estimate. Hint: Check your last tax return or divide total taxes paid by your total income.</p>
                 </PopoverContent>
               </Popover>
             </div>
