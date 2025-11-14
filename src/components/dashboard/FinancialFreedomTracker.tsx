@@ -507,7 +507,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.housing || ''}
+                value={levelExpenses.housing === 0 ? '' : levelExpenses.housing}
                 onChange={(e) => handleExpenseChange('housing', e.target.value)}
               />
             </div>
@@ -521,7 +521,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.utilities || ''}
+                value={levelExpenses.utilities === 0 ? '' : levelExpenses.utilities}
                 onChange={(e) => handleExpenseChange('utilities', e.target.value)}
               />
             </div>
@@ -535,7 +535,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.food || ''}
+                value={levelExpenses.food === 0 ? '' : levelExpenses.food}
                 onChange={(e) => handleExpenseChange('food', e.target.value)}
               />
             </div>
@@ -549,7 +549,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.transportation || ''}
+                value={levelExpenses.transportation === 0 ? '' : levelExpenses.transportation}
                 onChange={(e) => handleExpenseChange('transportation', e.target.value)}
               />
             </div>
@@ -563,7 +563,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.healthcare || ''}
+                value={levelExpenses.healthcare === 0 ? '' : levelExpenses.healthcare}
                 onChange={(e) => handleExpenseChange('healthcare', e.target.value)}
               />
             </div>
@@ -577,7 +577,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.insurance || ''}
+                value={levelExpenses.insurance === 0 ? '' : levelExpenses.insurance}
                 onChange={(e) => handleExpenseChange('insurance', e.target.value)}
               />
             </div>
@@ -591,7 +591,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.entertainment || ''}
+                value={levelExpenses.entertainment === 0 ? '' : levelExpenses.entertainment}
                 onChange={(e) => handleExpenseChange('entertainment', e.target.value)}
               />
             </div>
@@ -605,7 +605,7 @@ export default function FinancialFreedomTracker({
                 max="1000000"
                 step="10"
                 placeholder="$0"
-                value={levelExpenses.other || ''}
+                value={levelExpenses.other === 0 ? '' : levelExpenses.other}
                 onChange={(e) => handleExpenseChange('other', e.target.value)}
               />
             </div>
