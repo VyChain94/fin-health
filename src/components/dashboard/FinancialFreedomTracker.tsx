@@ -146,7 +146,20 @@ export default function FinancialFreedomTracker({
   };
 
   const handleExpenseChange = (field: keyof LevelExpenses, value: string) => {
+    // Allow empty string to show placeholder
+    if (value === '') {
+      setLevelExpenses(prev => ({
+        ...prev,
+        [field]: 0,
+      }));
+      return;
+    }
+    
+    // Only allow valid numeric input with decimals
+    if (!/^\d*\.?\d*$/.test(value)) return;
+    
     const numValue = parseFloat(value) || 0;
+    
     // Validate input is positive and reasonable (max $1M per category)
     if (numValue < 0 || numValue > 1000000) return;
     
@@ -502,10 +515,8 @@ export default function FinancialFreedomTracker({
               <Label htmlFor="housing">Housing (Rent/Mortgage)</Label>
               <Input
                 id="housing"
-                type="number"
-                min="0"
-                max="1000000"
-                step="10"
+                type="text"
+                inputMode="decimal"
                 placeholder="$0"
                 value={levelExpenses.housing === 0 ? '' : levelExpenses.housing}
                 onChange={(e) => handleExpenseChange('housing', e.target.value)}
@@ -516,10 +527,8 @@ export default function FinancialFreedomTracker({
               <Label htmlFor="utilities">Utilities (Electric, Water, Gas)</Label>
               <Input
                 id="utilities"
-                type="number"
-                min="0"
-                max="1000000"
-                step="10"
+                type="text"
+                inputMode="decimal"
                 placeholder="$0"
                 value={levelExpenses.utilities === 0 ? '' : levelExpenses.utilities}
                 onChange={(e) => handleExpenseChange('utilities', e.target.value)}
@@ -530,10 +539,8 @@ export default function FinancialFreedomTracker({
               <Label htmlFor="food">Food & Groceries</Label>
               <Input
                 id="food"
-                type="number"
-                min="0"
-                max="1000000"
-                step="10"
+                type="text"
+                inputMode="decimal"
                 placeholder="$0"
                 value={levelExpenses.food === 0 ? '' : levelExpenses.food}
                 onChange={(e) => handleExpenseChange('food', e.target.value)}
@@ -544,10 +551,8 @@ export default function FinancialFreedomTracker({
               <Label htmlFor="transportation">Transportation (Car, Gas, Transit)</Label>
               <Input
                 id="transportation"
-                type="number"
-                min="0"
-                max="1000000"
-                step="10"
+                type="text"
+                inputMode="decimal"
                 placeholder="$0"
                 value={levelExpenses.transportation === 0 ? '' : levelExpenses.transportation}
                 onChange={(e) => handleExpenseChange('transportation', e.target.value)}
@@ -558,10 +563,8 @@ export default function FinancialFreedomTracker({
               <Label htmlFor="healthcare">Healthcare & Medical</Label>
               <Input
                 id="healthcare"
-                type="number"
-                min="0"
-                max="1000000"
-                step="10"
+                type="text"
+                inputMode="decimal"
                 placeholder="$0"
                 value={levelExpenses.healthcare === 0 ? '' : levelExpenses.healthcare}
                 onChange={(e) => handleExpenseChange('healthcare', e.target.value)}
@@ -572,10 +575,8 @@ export default function FinancialFreedomTracker({
               <Label htmlFor="insurance">Insurance (Health, Life, Auto)</Label>
               <Input
                 id="insurance"
-                type="number"
-                min="0"
-                max="1000000"
-                step="10"
+                type="text"
+                inputMode="decimal"
                 placeholder="$0"
                 value={levelExpenses.insurance === 0 ? '' : levelExpenses.insurance}
                 onChange={(e) => handleExpenseChange('insurance', e.target.value)}
@@ -586,10 +587,8 @@ export default function FinancialFreedomTracker({
               <Label htmlFor="entertainment">Entertainment & Lifestyle</Label>
               <Input
                 id="entertainment"
-                type="number"
-                min="0"
-                max="1000000"
-                step="10"
+                type="text"
+                inputMode="decimal"
                 placeholder="$0"
                 value={levelExpenses.entertainment === 0 ? '' : levelExpenses.entertainment}
                 onChange={(e) => handleExpenseChange('entertainment', e.target.value)}
