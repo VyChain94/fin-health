@@ -136,6 +136,32 @@ const DashboardHeader = ({
               </DropdownMenuContent>
             </DropdownMenu>
 
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  About
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-card">
+                <DropdownMenuItem asChild>
+                  <Link to="/about-us" className="cursor-pointer">
+                    About Us
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/financial-literacy" className="cursor-pointer">
+                    Financial Literacy
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/now-what" className="cursor-pointer">
+                    Now What?
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button variant="outline" size="icon" onClick={() => setArchiveOpen(true)} title="View Archives">
               <Archive className="h-5 w-5" />
             </Button>
