@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
 
@@ -54,41 +52,31 @@ const IncomeSection = ({
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         <div className="space-y-4">
-          <div className="flex items-center gap-2 border-b pb-2">
-            <h3 className="font-semibold text-lg">A. Earned Income</h3>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Put the Gross (not Net) amount from your monthly pay here. If there are deductions from your paycheck such as taxes or insurance, include those in your expenses below.</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+          <h3 className="font-semibold text-lg border-b pb-2">A. Earned Income</h3>
           <div className="grid gap-3">
-              <div className="grid grid-cols-2 gap-3">
-                <Label className="self-center text-sm">Earned #1</Label>
-                <Input
-                  type="text"
-                  inputMode="decimal"
-                  value={formatCurrency(income.earned1)}
-                  onChange={(e) => handleChange("earned1", e.target.value)}
-                  className="transition-all focus:ring-2 focus:ring-primary"
-                  placeholder="$0"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <Label className="self-center text-sm">Earned #2</Label>
-                <Input
-                  type="text"
-                  inputMode="decimal"
-                  value={formatCurrency(income.earned2)}
-                  onChange={(e) => handleChange("earned2", e.target.value)}
-                  className="transition-all focus:ring-2 focus:ring-primary"
-                  placeholder="$0"
-                />
-              </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Label className="self-center text-sm">Earned #1</Label>
+              <Input
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.earned1)}
+                onChange={(e) => handleChange("earned1", e.target.value)}
+                className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
+              />
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Label className="self-center text-sm">Earned #2</Label>
+              <Input
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.earned2)}
+                onChange={(e) => handleChange("earned2", e.target.value)}
+                className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
+              />
+            </div>
+          </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
             <Label className="self-center font-semibold">Earned Total</Label>
             <div className="px-3 py-2 bg-secondary rounded-md text-right font-semibold">
@@ -101,17 +89,7 @@ const IncomeSection = ({
           <h3 className="font-semibold text-lg border-b pb-2">B. Passive Income</h3>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-1">
-                <Label className="self-center text-sm">Real Estate (NET)</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Write the net income (i.e. cashflow after expenses) from your real estate investment(s) here</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+              <Label className="self-center text-sm">Real Estate (NET)</Label>
               <Input
                 type="text"
                 inputMode="decimal"
@@ -122,17 +100,7 @@ const IncomeSection = ({
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-1">
-                <Label className="self-center text-sm">Business (NET)</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Write the net income (i.e. cash flow after expenses) from your business(es) here.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+              <Label className="self-center text-sm">Business (NET)</Label>
               <Input
                 type="text"
                 inputMode="decimal"
