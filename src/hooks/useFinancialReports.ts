@@ -20,6 +20,8 @@ export const useFinancialReports = () => {
   useEffect(() => {
     if (user) {
       fetchReports();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
