@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Download, RotateCcw, Home } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, RotateCcw } from "lucide-react";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { useMoneyLevels } from "@/hooks/useMoneyLevels";
 import { ProfileStep } from "@/components/money-levels/ProfileStep";
 import { IncomeAssetsStep } from "@/components/money-levels/IncomeAssetsStep";
 import { ExpensesStep } from "@/components/money-levels/ExpensesStep";
 import { ResultsStep } from "@/components/money-levels/ResultsStep";
 import { LevelKey } from "@/types/moneyLevels";
-import { Link } from "react-router-dom";
 
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
@@ -106,18 +106,13 @@ export default function MoneyLevels() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
+      <DashboardHeader />
+      <div className="container mx-auto px-4 py-8">
         <Card className="bg-primary text-primary-foreground">
           <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4">
               <h1 className="text-3xl font-bold">Money Levels Calculator</h1>
-              <Link to="/">
-                <Button variant="outline" size="sm">
-                  <Home className="h-4 w-4 mr-2" />
-                  Dashboard
-                </Button>
-              </Link>
             </div>
             <p className="text-primary-foreground/80">
               Tony Robbins' 5 Levels of Financial Freedom
@@ -136,7 +131,7 @@ export default function MoneyLevels() {
           </div>
         </Card>
 
-        <div className="space-y-4">
+        <div className="space-y-4 mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">{getStepTitle()}</h2>
             <div className="flex gap-2">

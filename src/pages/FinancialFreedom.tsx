@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Home } from "lucide-react";
 import FinancialFreedomTracker from "@/components/dashboard/FinancialFreedomTracker";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
 
@@ -146,25 +147,9 @@ export default function FinancialFreedom() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <Card className="bg-primary text-primary-foreground">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-3xl font-bold">Financial Freedom Progress</h1>
-              <Link to="/">
-                <Button variant="outline" size="sm">
-                  <Home className="h-4 w-4 mr-2" />
-                  Dashboard
-                </Button>
-              </Link>
-            </div>
-            <p className="text-primary-foreground/80">
-              Track your progress towards the 5 levels of financial freedom
-            </p>
-          </div>
-        </Card>
-
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
+      <DashboardHeader />
+      <div className="container mx-auto px-4 py-8">
         <FinancialFreedomTracker 
           currentAssets={totalAssets}
           netMonthlyCashFlow={netMonthlyCashFlow}
