@@ -95,7 +95,7 @@ const AnalysisSection = ({
         
         <MetricCard
           title="Asset Column Doodads?"
-          value={doodadPercentage > 0 ? "#DIV/0!" : "0%"}
+          value={totalAssets > 0 ? `${doodadPercentage.toFixed(2)}%` : "#DIV/0!"}
           target="Should be decreasing"
           isGood={doodadPercentage < 10}
         />
