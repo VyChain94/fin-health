@@ -227,13 +227,13 @@ const AssetsSection = ({
           <div className="grid grid-cols-2 gap-3">
             <Label className="self-center font-bold">H. TOTAL ASSETS per Banker</Label>
             <div className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-right font-bold">
-              ${totalAssets.toFixed(2)}
+              ${(totalAssets + totalDoodads).toFixed(2)}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Label className="self-center font-bold">I. TOTAL ASSETS per Rich Dad</Label>
             <div className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-right font-bold">
-              ${(totalAssets - totalDoodads).toFixed(2)}
+              ${totalAssets.toFixed(2)}
             </div>
           </div>
         </div>
