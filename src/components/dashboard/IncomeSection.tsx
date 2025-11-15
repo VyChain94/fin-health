@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Info } from "lucide-react";
 
 interface IncomeSectionProps {
   income: FinancialData["income"];
@@ -52,7 +54,19 @@ const IncomeSection = ({
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg border-b pb-2">A. Earned Income</h3>
+          <div className="flex items-center gap-2 border-b pb-2">
+            <h3 className="font-semibold text-lg">A. Earned Income</h3>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="h-4 w-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <p className="text-sm">Put the Gross (not Net) amount from your monthly pay here. If there are deductions from your paycheck such as taxes or insurance, include those in your expenses below.</p>
+              </PopoverContent>
+            </Popover>
+          </div>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Earned #1</Label>
@@ -89,7 +103,19 @@ const IncomeSection = ({
           <h3 className="font-semibold text-lg border-b pb-2">B. Passive Income</h3>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Real Estate (NET)</Label>
+              <div className="flex items-center gap-1">
+                <Label className="self-center text-sm">Real Estate (NET)</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="h-3 w-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <p className="text-sm">Write the net income (i.e. cashflow after expenses) from your real estate investment(s) here.</p>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Input
                 type="text"
                 inputMode="decimal"
@@ -100,7 +126,19 @@ const IncomeSection = ({
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Business (NET)</Label>
+              <div className="flex items-center gap-1">
+                <Label className="self-center text-sm">Business (NET)</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="h-3 w-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <p className="text-sm">Write the net income (i.e. cash flow after expenses) from your business(es) here.</p>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Input
                 type="text"
                 inputMode="decimal"

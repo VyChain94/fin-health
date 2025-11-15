@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Info } from "lucide-react";
 
 interface LiabilitiesSectionProps {
   liabilities: FinancialData["liabilities"];
@@ -50,7 +52,19 @@ const LiabilitiesSection = ({
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg border-b pb-2">J. Liabilities</h3>
+          <div className="flex items-center gap-2 border-b pb-2">
+            <h3 className="font-semibold text-lg">J. Liabilities</h3>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="h-4 w-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <p className="text-sm">Write the current balances of your outstanding debts in the appropriate fields.</p>
+              </PopoverContent>
+            </Popover>
+          </div>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Credit Cards</Label>

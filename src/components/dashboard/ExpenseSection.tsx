@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Info } from "lucide-react";
 
 interface ExpenseSectionProps {
   expenses: FinancialData["expenses"];
@@ -49,7 +51,19 @@ const ExpenseSection = ({
       <CardContent className="pt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           <div className="grid grid-cols-2 gap-2 items-center">
-            <Label className="text-sm">Home Loan/Rent</Label>
+            <div className="flex items-center gap-1">
+              <Label className="text-sm">Home Loan/Rent</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Info className="h-3 w-3" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <p className="text-sm">Home Loan includes PITI (Principal, Interest, Taxes, and Insurance). As such, include your full mortgage payment, including property taxes and home insurance.</p>
+                </PopoverContent>
+              </Popover>
+            </div>
             <Input
               type="text"
               inputMode="decimal"

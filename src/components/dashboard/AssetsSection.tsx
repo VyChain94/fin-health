@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Info } from "lucide-react";
 
 interface AssetsSectionProps {
   assets: FinancialData["assets"];
@@ -52,7 +54,19 @@ const AssetsSection = ({
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg border-b pb-2">F. Assets</h3>
+          <div className="flex items-center gap-2 border-b pb-2">
+            <h3 className="font-semibold text-lg">F. Assets</h3>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="h-4 w-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <p className="text-sm">Write the approximate current value of all your assets in the appropriate fields.</p>
+              </PopoverContent>
+            </Popover>
+          </div>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Bank Accounts</Label>
@@ -141,10 +155,34 @@ const AssetsSection = ({
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg border-b pb-2">G. Doodads (cost you money)</h3>
+          <div className="flex items-center gap-2 border-b pb-2">
+            <h3 className="font-semibold text-lg">G. Doodads (cost you money)</h3>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="h-4 w-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <p className="text-sm">Doodads are valuable things that you own, but unlike real assets, they don't put money in your pocket but instead take money out of your pocket.</p>
+              </PopoverContent>
+            </Popover>
+          </div>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Home</Label>
+              <div className="flex items-center gap-1">
+                <Label className="self-center text-sm">Home</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="h-3 w-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <p className="text-sm">Write the approximate current value of your home here. Your mortgage will be accounted for in the liabilities section.</p>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Input
                 type="text"
                 inputMode="decimal"
