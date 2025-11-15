@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Home } from "lucide-react";
 import FinancialFreedomTracker from "@/components/dashboard/FinancialFreedomTracker";
 import { LevelKey } from "@/types/moneyLevels";
-import { FinancialData } from "./Index";
+import { FinancialData } from "@/types/financial";
 
 export default function FinancialFreedom() {
   const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
