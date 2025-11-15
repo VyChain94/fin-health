@@ -11,6 +11,7 @@ import GuidedTour from "./pages/GuidedTour";
 import Glossary from "./pages/Glossary";
 import Professionals from "./pages/Professionals";
 import PassiveIncome from "./pages/PassiveIncome";
+import HowWhyTools from "./pages/HowWhyTools";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/glossary" element={<Glossary />} />
           <Route path="/professionals" element={<Professionals />} />
           <Route path="/passive-income" element={<PassiveIncome />} />
+          <Route path="/how-why-tools" element={<HowWhyTools />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
