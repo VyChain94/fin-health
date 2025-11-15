@@ -162,6 +162,27 @@ const DashboardHeader = ({
               </DropdownMenuContent>
             </DropdownMenu>
 
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Resources
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-card">
+                <DropdownMenuItem asChild>
+                  <Link to="/professionals" className="cursor-pointer">
+                    Professionals
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/passive-income" className="cursor-pointer">
+                    Passive Income
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button variant="outline" size="icon" onClick={() => setArchiveOpen(true)} title="View Archives">
               <Archive className="h-5 w-5" />
             </Button>
