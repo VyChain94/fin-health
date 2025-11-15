@@ -445,6 +445,7 @@ const Index = () => {
             totalDoodads={totalDoodads}
             netWorthRichDad={netWorthRichDad}
             taxes={financialData.expenses.taxes}
+            housingExpenses={financialData.expenses.homeLoan + financialData.expenses.homeMaintenance + financialData.expenses.homeUtilities}
           />
         </div>
 
