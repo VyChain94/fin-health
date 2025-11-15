@@ -252,8 +252,8 @@ const Index = () => {
     0
   );
 
-  const netWorthBanker = totalAssets - totalLiabilities;
-  const netWorthRichDad = totalAssets - totalDoodads - totalLiabilities;
+  const netWorthBanker = totalAssets + totalDoodads - totalLiabilities;
+  const netWorthRichDad = totalAssets - totalLiabilities;
 
   // Calculate Money Levels targets using annual expenses and 4% rule
   const annualExpenses = totalExpenses * 12;
