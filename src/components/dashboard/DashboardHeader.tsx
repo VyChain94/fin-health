@@ -1,22 +1,26 @@
+import { useState } from "react";
 import { Calendar as CalendarIcon, Archive, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { ArchivedReportsSheet } from "./ArchivedReportsSheet";
 import logo from "@/assets/logo.png";
+
 interface DashboardHeaderProps {
   onMonthYearChange?: (month: string, year: string) => void;
-  onArchiveClick?: () => void;
   onDateSelect?: (date: Date) => void;
   datesWithReports?: Date[];
+  onLoadReport?: (report: any) => void;
 }
 const DashboardHeader = ({
   onMonthYearChange,
-  onArchiveClick,
   onDateSelect,
-  datesWithReports = []
+  datesWithReports = [],
+  onLoadReport
 }: DashboardHeaderProps) => {
+  const [archiveOpen, setArchiveOpen] = useState(false);
   const currentDate = new Date();
   const currentMonth = (currentDate.getMonth() + 1).toString();
   const currentYear = currentDate.getFullYear().toString();
@@ -94,7 +98,7 @@ const DashboardHeader = ({
                 Financial Freedom
               </Button>
             </Link>
-            <Button variant="outline" size="icon" onClick={onArchiveClick} title="View Archives">
+            <Button variant="outline" size="icon" onClick={() => setArchiveOpen(true)} title="View Archives">
               <Archive className="h-5 w-5" />
             </Button>
             <Select defaultValue={currentMonth} onValueChange={value => onMonthYearChange?.(value, currentYear)}>
@@ -136,6 +140,12 @@ const DashboardHeader = ({
           </div>
         </div>
       </div>
+      
+      <ArchivedReportsSheet 
+        open={archiveOpen} 
+        onOpenChange={setArchiveOpen}
+        onLoadReport={onLoadReport}
+      />
     </header>;
 };
 export default DashboardHeader;
