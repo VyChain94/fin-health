@@ -159,6 +159,25 @@ export default function FinancialFreedom() {
     );
   }
 
+  if (!latestReport) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
+        <DashboardHeader />
+        <div className="container mx-auto px-4 py-8">
+          <Card className="p-8 text-center space-y-4">
+            <h2 className="text-2xl font-bold">No Financial Data Yet</h2>
+            <p className="text-muted-foreground">
+              To track your Financial Freedom progress with real numbers, you need to create and save a Financial Statement first.
+            </p>
+            <Link to="/financial-statement">
+              <Button>Create Your First Financial Statement</Button>
+            </Link>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader />
