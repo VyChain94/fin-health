@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Calendar as CalendarIcon, Archive, TrendingUp } from "lucide-react";
+import { Calendar as CalendarIcon, Archive, TrendingUp, ChevronDown, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArchivedReportsSheet } from "./ArchivedReportsSheet";
 import logo from "@/assets/logo.png";
 
@@ -86,18 +87,55 @@ const DashboardHeader = ({
           </div>
 
           <div className="flex items-center gap-3">
-            <Link to="/financial-statement">
-              <Button variant="outline" size="sm">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Financial Statement
-              </Button>
-            </Link>
-            <Link to="/financial-freedom">
-              <Button variant="outline" size="sm">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Financial Freedom
-              </Button>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Health Tools
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-card">
+                <DropdownMenuItem asChild>
+                  <Link to="/financial-statement" className="cursor-pointer">
+                    Financial Statement
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/financial-freedom" className="cursor-pointer">
+                    Financial Freedom
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <HelpCircle className="h-4 w-4 mr-2" />
+                  Help
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-card">
+                <DropdownMenuItem asChild>
+                  <Link to="/glossary" className="cursor-pointer">
+                    Glossary / Key Terms
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/guided-tour" className="cursor-pointer">
+                    Guided Tour
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/how-why-tools" className="cursor-pointer">
+                    How and Why our Tools Help
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button variant="outline" size="icon" onClick={() => setArchiveOpen(true)} title="View Archives">
               <Archive className="h-5 w-5" />
             </Button>
