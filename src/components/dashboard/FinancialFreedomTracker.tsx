@@ -349,8 +349,8 @@ export default function FinancialFreedomTracker({
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">CURRENT</Label>
                 <Input
-                  type="number"
-                  min="0"
+                  type="text"
+                  inputMode="decimal"
                   value={current}
                   className="text-lg font-semibold"
                   placeholder="$0"
@@ -363,10 +363,15 @@ export default function FinancialFreedomTracker({
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">GOAL</Label>
                 <Input
-                  type="number"
-                  min="0"
-                  value={goal}
-                  onChange={(e) => setGoal(parseFloat(e.target.value) || 0)}
+                  type="text"
+                  inputMode="decimal"
+                  value={goal === 0 ? '' : goal}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                      setGoal(parseFloat(value) || 0);
+                    }
+                  }}
                   className="text-lg font-semibold"
                   placeholder="$0"
                   disabled={selectedLevel !== 'custom'}
