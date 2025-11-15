@@ -31,7 +31,7 @@ const AnalysisSection = ({
   const taxPercentage = totalIncome > 0 ? (taxes / totalIncome) * 100 : 0;
   const housingPercentage = totalIncome > 0 ? (housingExpenses / totalIncome) * 100 : 0;
   const doodadPercentage = totalAssets > 0 ? (totalDoodads / totalAssets) * 100 : 0;
-  const returnOnAssets = (totalPassive + totalPortfolio) > 0 && netWorthRichDad > 0 ? ((totalPassive + totalPortfolio) / netWorthRichDad) * 100 : 0;
+  const returnOnAssets = netWorthRichDad > 0 ? (((totalPassive + totalPortfolio) * 12) / netWorthRichDad) * 100 : 0;
   const richDadRatio = totalExpenses > 0 ? netWorthRichDad / totalExpenses : 0;
 
   const MetricCard = ({ 
