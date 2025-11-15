@@ -233,14 +233,19 @@ const Index = () => {
   );
   const netMonthlyCashFlow = totalIncome - totalExpenses;
 
-  const totalAssets = Object.values(financialData.assets).reduce(
-    (sum, val) => sum + val,
-    0
-  );
   const totalDoodads =
     financialData.assets.doodadsHome +
     financialData.assets.doodadsCar +
     financialData.assets.doodadsOther;
+  
+  const totalAssets =
+    financialData.assets.bankAccounts +
+    financialData.assets.preciousMetals +
+    financialData.assets.retirement +
+    financialData.assets.stocks +
+    financialData.assets.otherAssets +
+    financialData.assets.business +
+    financialData.assets.realEstate;
 
   const totalLiabilities = Object.values(financialData.liabilities).reduce(
     (sum, val) => sum + val,
