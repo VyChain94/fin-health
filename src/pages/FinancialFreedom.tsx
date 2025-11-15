@@ -150,7 +150,24 @@ export default function FinancialFreedom() {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader />
       <div className="container mx-auto px-4 py-8">
-        <FinancialFreedomTracker 
+        <Card className="max-w-2xl mx-auto p-12 text-center">
+          <div className="space-y-6">
+            <div className="w-24 h-24 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+              <Home className="w-12 h-12 text-primary" />
+            </div>
+            <h1 className="text-4xl font-bold text-foreground">
+              Financial Freedom Progress
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              This feature is coming soon! We're working hard to bring you an amazing experience.
+            </p>
+            <Button asChild size="lg" className="mt-4">
+              <Link to="/">Return to Dashboard</Link>
+            </Button>
+          </div>
+        </Card>
+        {/* Temporarily disabled - existing functionality preserved below */}
+        {/* <FinancialFreedomTracker 
           currentAssets={totalAssets}
           netMonthlyCashFlow={netMonthlyCashFlow}
           totalExpenses={totalExpenses}
@@ -158,7 +175,7 @@ export default function FinancialFreedom() {
           totalPortfolio={totalPortfolio}
           levelTargets={levelTargets}
           onUpdateLevelTarget={handleUpdateLevelTarget}
-        />
+        /> */}
       </div>
     </div>
   );
