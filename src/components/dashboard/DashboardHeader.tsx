@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Calendar as CalendarIcon, Archive, TrendingUp, HelpCircle } from "lucide-react";
+import { Calendar as CalendarIcon, Archive, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArchivedReportsSheet } from "./ArchivedReportsSheet";
 import logo from "@/assets/logo.png";
 
@@ -99,26 +98,6 @@ const DashboardHeader = ({
                 Financial Freedom
               </Button>
             </Link>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" title="Help">
-                  <HelpCircle className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem>
-                  Glossary / Key Terms
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Guided Tour
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  How and Why our Tools Help
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <Button variant="outline" size="icon" onClick={() => setArchiveOpen(true)} title="View Archives">
               <Archive className="h-5 w-5" />
             </Button>
