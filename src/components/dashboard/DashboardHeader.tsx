@@ -81,7 +81,7 @@ const DashboardHeader = ({
               <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Financial Health Tools                 
               </h1>
-              <p className="text-sm text-muted-foreground">Be aware of your financial health  </p>
+              <p className="text-sm text-muted-foreground">Know Your Financial Health, Position Yourself to Prosper  </p>
               </div>
             </Link>
           </div>
