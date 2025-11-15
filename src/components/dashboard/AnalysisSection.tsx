@@ -11,6 +11,7 @@ interface AnalysisSectionProps {
   totalDoodads: number;
   netWorthRichDad: number;
   taxes: number;
+  housingExpenses: number;
 }
 
 const AnalysisSection = ({
@@ -23,11 +24,12 @@ const AnalysisSection = ({
   totalDoodads,
   netWorthRichDad,
   taxes,
+  housingExpenses,
 }: AnalysisSectionProps) => {
   const cashFlowPercentage = totalIncome > 0 ? (netMonthlyCashFlow / totalIncome) * 100 : 0;
   const passiveIncomePercentage = totalIncome > 0 ? ((totalPassive + totalPortfolio) / totalIncome) * 100 : 0;
   const taxPercentage = totalIncome > 0 ? (taxes / totalIncome) * 100 : 0;
-  const housingPercentage = totalIncome > 0 ? (0 / totalIncome) * 100 : 0;
+  const housingPercentage = totalIncome > 0 ? (housingExpenses / totalIncome) * 100 : 0;
   const doodadPercentage = totalAssets > 0 ? (totalDoodads / totalAssets) * 100 : 0;
   const returnOnAssets = (totalPassive + totalPortfolio) > 0 && netWorthRichDad > 0 ? ((totalPassive + totalPortfolio) / netWorthRichDad) * 100 : 0;
   const richDadRatio = totalExpenses > 0 ? netWorthRichDad / totalExpenses : 0;
