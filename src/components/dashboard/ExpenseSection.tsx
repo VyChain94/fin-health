@@ -24,7 +24,13 @@ const ExpenseSection = ({
   onRemoveSource,
 }: ExpenseSectionProps) => {
   const handleChange = (field: keyof FinancialData["expenses"], value: string) => {
-    updateExpenses(field, parseFloat(value) || 0);
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      updateExpenses(field, parseFloat(value) || 0);
+    }
+  };
+
+  const formatCurrency = (value: number) => {
+    return value === 0 ? '' : value.toString();
   };
 
   return (
@@ -45,171 +51,188 @@ const ExpenseSection = ({
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Home Loan/Rent</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.homeLoan}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.homeLoan)}
               onChange={(e) => handleChange("homeLoan", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Home Maintenance</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.homeMaintenance}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.homeMaintenance)}
               onChange={(e) => handleChange("homeMaintenance", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Home Utilities</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.homeUtilities}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.homeUtilities)}
               onChange={(e) => handleChange("homeUtilities", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Car/Travel</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.carTravel}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.carTravel)}
               onChange={(e) => handleChange("carTravel", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Cell Phones</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.cellPhones}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.cellPhones)}
               onChange={(e) => handleChange("cellPhones", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Investments</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.investments}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.investments)}
               onChange={(e) => handleChange("investments", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Other</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.otherExpenses}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.otherExpenses)}
               onChange={(e) => handleChange("otherExpenses", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Car Loans</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.carLoans}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.carLoans)}
               onChange={(e) => handleChange("carLoans", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Credit Cards</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.creditCards}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.creditCards)}
               onChange={(e) => handleChange("creditCards", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">School Loans</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.schoolLoans}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.schoolLoans)}
               onChange={(e) => handleChange("schoolLoans", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Personal Care</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.personalCare}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.personalCare)}
               onChange={(e) => handleChange("personalCare", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Subscriptions</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.subscriptions}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.subscriptions)}
               onChange={(e) => handleChange("subscriptions", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Shopping</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.shopping}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.shopping)}
               onChange={(e) => handleChange("shopping", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Travel/Vacation</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.travelVacation}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.travelVacation)}
               onChange={(e) => handleChange("travelVacation", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Medical Expenses</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.medicalExpenses}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.medicalExpenses)}
               onChange={(e) => handleChange("medicalExpenses", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Medical Insurance</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.medicalInsurance}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.medicalInsurance)}
               onChange={(e) => handleChange("medicalInsurance", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Taxes (Income)</Label>
             <Input
-              type="number"
-              step="0.01"
-              value={expenses.taxes}
+              type="text"
+              inputMode="decimal"
+              value={formatCurrency(expenses.taxes)}
               onChange={(e) => handleChange("taxes", e.target.value)}
               className="transition-all focus:ring-2 focus:ring-primary"
+              placeholder="$0"
             />
           </div>
         </div>

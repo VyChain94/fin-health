@@ -26,7 +26,13 @@ const LiabilitiesSection = ({
   onRemoveSource,
 }: LiabilitiesSectionProps) => {
   const handleChange = (field: keyof FinancialData["liabilities"], value: string) => {
-    updateLiabilities(field, parseFloat(value) || 0);
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      updateLiabilities(field, parseFloat(value) || 0);
+    }
+  };
+
+  const formatCurrency = (value: number) => {
+    return value === 0 ? '' : value.toString();
   };
 
   return (
@@ -49,61 +55,67 @@ const LiabilitiesSection = ({
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Credit Cards</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={liabilities.creditCards}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(liabilities.creditCards)}
                 onChange={(e) => handleChange("creditCards", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Car Loans</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={liabilities.carLoans}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(liabilities.carLoans)}
                 onChange={(e) => handleChange("carLoans", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Home Mortgage</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={liabilities.homeMortgage}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(liabilities.homeMortgage)}
                 onChange={(e) => handleChange("homeMortgage", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Personal Loans</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={liabilities.personalLoans}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(liabilities.personalLoans)}
                 onChange={(e) => handleChange("personalLoans", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">School Loans</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={liabilities.schoolLoans}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(liabilities.schoolLoans)}
                 onChange={(e) => handleChange("schoolLoans", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Other Debt</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={liabilities.otherDebt}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(liabilities.otherDebt)}
                 onChange={(e) => handleChange("otherDebt", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
           </div>

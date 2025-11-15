@@ -28,7 +28,13 @@ const AssetsSection = ({
   onRemoveSource,
 }: AssetsSectionProps) => {
   const handleChange = (field: keyof FinancialData["assets"], value: string) => {
-    updateAssets(field, parseFloat(value) || 0);
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      updateAssets(field, parseFloat(value) || 0);
+    }
+  };
+
+  const formatCurrency = (value: number) => {
+    return value === 0 ? '' : value.toString();
   };
 
   return (
@@ -51,76 +57,83 @@ const AssetsSection = ({
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Bank Accounts</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.bankAccounts}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.bankAccounts)}
                 onChange={(e) => handleChange("bankAccounts", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Precious Metals</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.preciousMetals}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.preciousMetals)}
                 onChange={(e) => handleChange("preciousMetals", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Retirement (401K, IRA)</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.retirement}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.retirement)}
                 onChange={(e) => handleChange("retirement", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Stocks & Bonds</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.stocks}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.stocks)}
                 onChange={(e) => handleChange("stocks", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Other</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.otherAssets}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.otherAssets)}
                 onChange={(e) => handleChange("otherAssets", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Business (fair value less loans)</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.business}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.business)}
                 onChange={(e) => handleChange("business", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Real Estate (fair value less mortgage)</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.realEstate}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.realEstate)}
                 onChange={(e) => handleChange("realEstate", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
-            <Label className="self-center font-semibold">F. ASSETS SUBTOTAL</Label>
+            <Label className="self-center font-semibold">Assets Total</Label>
             <div className="px-3 py-2 bg-secondary rounded-md text-right font-semibold">
               ${totalAssets.toFixed(2)}
             </div>
@@ -128,36 +141,39 @@ const AssetsSection = ({
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg border-b pb-2">G. Doodads</h3>
+          <h3 className="font-semibold text-lg border-b pb-2">G. Doodads (cost you money)</h3>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Home</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.doodadsHome}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.doodadsHome)}
                 onChange={(e) => handleChange("doodadsHome", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Car(s)</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.doodadsCar}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.doodadsCar)}
                 onChange={(e) => handleChange("doodadsCar", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Other</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={assets.doodadsOther}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(assets.doodadsOther)}
                 onChange={(e) => handleChange("doodadsOther", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
           </div>

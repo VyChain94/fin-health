@@ -28,7 +28,13 @@ const IncomeSection = ({
   onRemoveSource,
 }: IncomeSectionProps) => {
   const handleChange = (field: keyof FinancialData["income"], value: string) => {
-    updateIncome(field, parseFloat(value) || 0);
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      updateIncome(field, parseFloat(value) || 0);
+    }
+  };
+
+  const formatCurrency = (value: number) => {
+    return value === 0 ? '' : value.toString();
   };
 
   return (
@@ -51,21 +57,23 @@ const IncomeSection = ({
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Earned #1</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={income.earned1}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.earned1)}
                 onChange={(e) => handleChange("earned1", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Earned #2</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={income.earned2}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.earned2)}
                 onChange={(e) => handleChange("earned2", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
           </div>
@@ -83,21 +91,23 @@ const IncomeSection = ({
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Real Estate (NET)</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={income.realEstate}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.realEstate)}
                 onChange={(e) => handleChange("realEstate", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Business (NET)</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={income.business}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.business)}
                 onChange={(e) => handleChange("business", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
           </div>
@@ -115,31 +125,34 @@ const IncomeSection = ({
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Interest</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={income.interest}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.interest)}
                 onChange={(e) => handleChange("interest", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Dividends</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={income.dividends}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.dividends)}
                 onChange={(e) => handleChange("dividends", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Other</Label>
               <Input
-                type="number"
-                step="0.01"
-                value={income.other}
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(income.other)}
                 onChange={(e) => handleChange("other", e.target.value)}
                 className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
               />
             </div>
           </div>
