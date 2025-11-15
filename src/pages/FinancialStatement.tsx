@@ -4,13 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -42,12 +35,8 @@ const FinancialStatement = () => {
   const { toast } = useToast();
   const [reportName, setReportName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [showArchives, setShowArchives] = useState(false);
-  const [archivedReports, setArchivedReports] = useState<any[]>([]);
-  const [loadingArchives, setLoadingArchives] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
-  const [datesWithReports, setDatesWithReports] = useState<Date[]>([]);
   const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
   const [financialData, setFinancialData] = useState<FinancialData>(() => {
     const saved = localStorage.getItem("financialData");
@@ -265,70 +254,6 @@ const FinancialStatement = () => {
     setSelectedYear(year);
   };
 
-  const handleArchiveClick = async () => {
-    setShowArchives(true);
-    setLoadingArchives(true);
-
-    try {
-      const { data, error } = await supabase
-        .from("reports")
-        .select("*")
-        .eq("user_id", user?.id)
-        .order("report_date", { ascending: false });
-
-      if (error) throw error;
-
-      setArchivedReports(data || []);
-      
-      // Extract unique dates that have reports
-      const uniqueDates = data?.map(report => new Date(report.report_date)) || [];
-      setDatesWithReports(uniqueDates);
-    } catch (error: any) {
-      toast({
-        title: "Error loading archives",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoadingArchives(false);
-    }
-  };
-
-  const handleDateSelect = async (date: Date) => {
-    setShowArchives(true);
-    setLoadingArchives(true);
-
-    try {
-      const startOfDay = new Date(date);
-      startOfDay.setHours(0, 0, 0, 0);
-      
-      const endOfDay = new Date(date);
-      endOfDay.setHours(23, 59, 59, 999);
-
-      const { data, error } = await supabase
-        .from("reports")
-        .select("*")
-        .eq("user_id", user?.id)
-        .gte("report_date", startOfDay.toISOString())
-        .lte("report_date", endOfDay.toISOString())
-        .order("report_date", { ascending: false });
-
-      if (error) throw error;
-
-      setArchivedReports(data || []);
-      setSelectedMonth("");
-      setSelectedYear("");
-    } catch (error: any) {
-      toast({
-        title: "Error loading reports",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoadingArchives(false);
-    }
-  };
-
   const loadReport = (report: any) => {
     setFinancialData({
       income: report.income_data || {},
@@ -337,7 +262,6 @@ const FinancialStatement = () => {
       liabilities: report.liabilities_data || {},
     });
     setDataSources(report.data_sources || { income: [], expenses: [], assets: [], liabilities: [] });
-    setShowArchives(false);
     toast({
       title: "Report Loaded",
       description: `Loaded: ${report.report_name}`,
@@ -359,10 +283,8 @@ const FinancialStatement = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader 
-        onMonthYearChange={handleMonthYearChange} 
-        onArchiveClick={handleArchiveClick}
-        onDateSelect={handleDateSelect}
-        datesWithReports={datesWithReports}
+        onMonthYearChange={handleMonthYearChange}
+        onLoadReport={loadReport}
       />
       <div className="container mx-auto px-4 py-8">
 
@@ -470,42 +392,6 @@ const FinancialStatement = () => {
           </Card>
         </div>
       </div>
-
-      <Sheet open={showArchives} onOpenChange={setShowArchives}>
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Archived Reports</SheetTitle>
-            <SheetDescription>
-              {selectedMonth} {selectedYear}
-            </SheetDescription>
-          </SheetHeader>
-          <div className="mt-6 space-y-4">
-            {loadingArchives ? (
-              <p className="text-muted-foreground text-center py-8">Loading archives...</p>
-            ) : archivedReports.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No reports found.</p>
-            ) : (
-              archivedReports
-                .filter((report) => {
-                  if (!selectedMonth || !selectedYear) return true;
-                  const reportDate = new Date(report.report_date);
-                  return reportDate.getMonth() + 1 === parseInt(selectedMonth) && 
-                         reportDate.getFullYear() === parseInt(selectedYear);
-                })
-                .map((report) => (
-                <Card key={report.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => loadReport(report)}>
-                  <CardHeader>
-                    <CardTitle className="text-base">{report.report_name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(report.report_date).toLocaleDateString()}
-                    </p>
-                  </CardHeader>
-                </Card>
-              ))
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   );
 };
