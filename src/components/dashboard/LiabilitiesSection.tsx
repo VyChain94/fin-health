@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
 
@@ -49,9 +51,20 @@ const LiabilitiesSection = ({
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
-        <div className="space-y-4">
-          <h3 className="font-semibold text-lg border-b pb-2">J. Liabilities</h3>
-          <div className="grid gap-3">
+        <TooltipProvider>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <h3 className="font-semibold text-lg">J. Liabilities</h3>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>Write the current balances of your outstanding debts in the appropriate fields.</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Credit Cards</Label>
               <Input
@@ -146,6 +159,7 @@ const LiabilitiesSection = ({
             </div>
           </div>
         </div>
+        </TooltipProvider>
       </CardContent>
     </Card>
   );

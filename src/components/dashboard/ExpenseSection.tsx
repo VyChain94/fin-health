@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { FinancialData } from "@/pages/Index";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
 
@@ -47,18 +49,29 @@ const ExpenseSection = ({
         </div>
       </CardHeader>
       <CardContent className="pt-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          <div className="grid grid-cols-2 gap-2 items-center">
-            <Label className="text-sm">Home Loan/Rent</Label>
-            <Input
-              type="text"
-              inputMode="decimal"
-              value={formatCurrency(expenses.homeLoan)}
-              onChange={(e) => handleChange("homeLoan", e.target.value)}
-              className="transition-all focus:ring-2 focus:ring-primary"
-              placeholder="$0"
-            />
-          </div>
+        <TooltipProvider>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-2 items-center">
+              <div className="flex items-center gap-1">
+                <Label className="text-sm">Home Loan/Rent</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>Home Loan includes PITI (Principal, Interest, Taxes, and Insurance). As such, include your full mortgage payment, including property taxes and home insurance.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Input
+                type="text"
+                inputMode="decimal"
+                value={formatCurrency(expenses.homeLoan)}
+                onChange={(e) => handleChange("homeLoan", e.target.value)}
+                className="transition-all focus:ring-2 focus:ring-primary"
+                placeholder="$0"
+              />
+            </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <Label className="text-sm">Home Maintenance</Label>
             <Input
@@ -253,6 +266,7 @@ const ExpenseSection = ({
             </div>
           </div>
         </div>
+        </TooltipProvider>
       </CardContent>
     </Card>
   );
