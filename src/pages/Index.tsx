@@ -27,7 +27,7 @@ import AssetsSection from "@/components/dashboard/AssetsSection";
 import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import FinancialFreedomTracker from "@/components/dashboard/FinancialFreedomTracker";
+
 import { DataSource } from "@/components/dashboard/DataSourceDropdown";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useAuth } from "@/hooks/useAuth";
@@ -414,18 +414,6 @@ const Index = () => {
         datesWithReports={datesWithReports}
       />
       <div className="container mx-auto px-4 py-8">
-        {/* Financial Freedom Progress Tracker */}
-        <div className="mb-6">
-          <FinancialFreedomTracker 
-            currentAssets={totalAssets}
-            netMonthlyCashFlow={netMonthlyCashFlow}
-            totalExpenses={totalExpenses}
-            totalPassive={totalPassive}
-            totalPortfolio={totalPortfolio}
-            levelTargets={levelTargets}
-            onUpdateLevelTarget={handleUpdateLevelTarget}
-          />
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <IncomeSection

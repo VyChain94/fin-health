@@ -1,4 +1,5 @@
-import { Calendar as CalendarIcon, Archive } from "lucide-react";
+import { Calendar as CalendarIcon, Archive, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -64,6 +65,12 @@ const DashboardHeader = ({ onMonthYearChange, onArchiveClick, onDateSelect, date
           </div>
 
           <div className="flex items-center gap-3">
+            <Link to="/financial-freedom">
+              <Button variant="outline" size="sm">
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Financial Freedom
+              </Button>
+            </Link>
             <Button 
               variant="outline" 
               size="icon"
