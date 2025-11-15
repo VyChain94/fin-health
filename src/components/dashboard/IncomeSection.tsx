@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FinancialData } from "@/pages/Index";
+import { FinancialData } from "@/types/financial";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Info } from "lucide-react";

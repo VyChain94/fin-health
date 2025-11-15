@@ -65,13 +65,19 @@ const DashboardHeader = ({ onMonthYearChange, onArchiveClick, onDateSelect, date
           </div>
 
           <div className="flex items-center gap-3">
+            <Link to="/financial-statement">
+              <Button variant="outline" size="sm">
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Financial Statement
+              </Button>
+            </Link>
             <Link to="/financial-freedom">
               <Button variant="outline" size="sm">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Financial Freedom
               </Button>
             </Link>
-            <Button 
+            <Button
               variant="outline" 
               size="icon"
               onClick={onArchiveClick}
