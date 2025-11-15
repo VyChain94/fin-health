@@ -12,6 +12,9 @@ import Glossary from "./pages/Glossary";
 import Professionals from "./pages/Professionals";
 import PassiveIncome from "./pages/PassiveIncome";
 import HowWhyTools from "./pages/HowWhyTools";
+import AboutUs from "./pages/AboutUs";
+import FinancialLiteracy from "./pages/FinancialLiteracy";
+import NowWhat from "./pages/NowWhat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +35,9 @@ const App = () => (
           <Route path="/professionals" element={<Professionals />} />
           <Route path="/passive-income" element={<PassiveIncome />} />
           <Route path="/how-why-tools" element={<HowWhyTools />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/financial-literacy" element={<FinancialLiteracy />} />
+          <Route path="/now-what" element={<NowWhat />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
