@@ -8,6 +8,7 @@ import MoneyLevels from "./pages/MoneyLevels";
 import FinancialFreedom from "./pages/FinancialFreedom";
 import FinancialStatement from "./pages/FinancialStatement";
 import GuidedTour from "./pages/GuidedTour";
+import Glossary from "./pages/Glossary";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/financial-freedom" element={<FinancialFreedom />} />
           <Route path="/financial-statement" element={<FinancialStatement />} />
           <Route path="/guided-tour" element={<GuidedTour />} />
+          <Route path="/glossary" element={<Glossary />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
