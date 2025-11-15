@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, Users, Calculator, FileText, Building } from "lucide-react";
+import { ExternalLink, Users, Calculator, FileText, Building, Wallet } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 const Professionals = () => {
@@ -38,6 +38,17 @@ const Professionals = () => {
       resources: [
         { name: "National Association of Personal Financial Advisors", url: "https://www.napfa.org/", description: "Find fee-only financial advisors" },
         { name: "Financial Planning Association", url: "https://www.financialplanningassociation.org/", description: "Connect with certified financial planners" }
+      ]
+    },
+    {
+      title: "Specialized Account Resources",
+      icon: Wallet,
+      description: "Resources for self-directed retirement accounts, health savings, and tax-advantaged investing.",
+      resources: [
+        { name: "Self-Directed IRA Providers", url: "https://www.irs.gov/retirement-plans/individual-retirement-arrangements-iras", description: "Learn about self-directed IRAs for alternative investments" },
+        { name: "HSA Search", url: "https://www.hsasearch.com/", description: "Compare Health Savings Account providers and fees" },
+        { name: "Roth IRA Information", url: "https://www.irs.gov/retirement-plans/roth-iras", description: "Official IRS guidance on Roth IRA accounts" },
+        { name: "IRA Financial Group", url: "https://www.irafinancialgroup.com/", description: "Specialists in self-directed retirement accounts" }
       ]
     }
   ];
