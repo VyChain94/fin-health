@@ -53,15 +53,17 @@ const DashboardHeader = ({ onMonthYearChange, onArchiveClick, onDateSelect, date
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <img src={logo} alt="The Sol Group LLC" className="h-12 w-auto" />
-            <div>
+            <Link to="/" className="flex items-center gap-4">
+              <img src={logo} alt="The Sol Group LLC" className="h-12 w-auto" />
+              <div>
               <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Financial Freedom Tracker
               </h1>
               <p className="text-sm text-muted-foreground">
                 Monitor your path to financial independence
               </p>
-            </div>
+              </div>
+            </Link>
           </div>
 
           <div className="flex items-center gap-3">
