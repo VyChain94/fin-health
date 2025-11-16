@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Calendar as CalendarIcon, Archive, TrendingUp, ChevronDown, HelpCircle } from "lucide-react";
+import { Calendar as CalendarIcon, Archive, TrendingUp, ChevronDown, HelpCircle, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -22,6 +23,7 @@ const DashboardHeader = ({
   onLoadReport
 }: DashboardHeaderProps) => {
   const [archiveOpen, setArchiveOpen] = useState(false);
+  const { signOut } = useAuth();
   const currentDate = new Date();
   const currentMonth = (currentDate.getMonth() + 1).toString();
   const currentYear = currentDate.getFullYear().toString();
@@ -222,6 +224,16 @@ const DashboardHeader = ({
               }} initialFocus />
               </PopoverContent>
             </Popover>
+
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={signOut}
+              title="Sign Out"
+              className="ml-2"
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
           </div>
         </div>
       </div>
