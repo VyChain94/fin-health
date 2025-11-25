@@ -114,6 +114,24 @@ const FinancialStatement = () => {
     localStorage.setItem("dataSources", JSON.stringify(dataSources));
   }, [dataSources]);
 
+  // Load draft on mount
+  useEffect(() => {
+    if (user) {
+      loadDraft();
+    }
+  }, [user]);
+
+  // Auto-save with debounce
+  useEffect(() => {
+    if (!user) return;
+
+    const timeoutId = setTimeout(() => {
+      autoSaveReport();
+    }, 2000); // Wait 2 seconds after last change
+
+    return () => clearTimeout(timeoutId);
+  }, [financialData, dataSources, user]);
+
   const updateIncome = (field: keyof FinancialData["income"], value: number) => {
     setFinancialData((prev) => ({
       ...prev,
@@ -214,6 +232,83 @@ const FinancialStatement = () => {
     }));
   };
 
+  // Auto-save draft report (non-archived)
+  const autoSaveReport = async () => {
+    if (!user) return;
+    
+    try {
+      // Check if a draft already exists
+      const { data: existingDraft } = await supabase
+        .from("reports")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("is_archived", false)
+        .maybeSingle();
+
+      if (existingDraft) {
+        // Update existing draft
+        const { error } = await supabase
+          .from("reports")
+          .update({
+            report_date: new Date().toISOString(),
+            income_data: financialData.income as any,
+            assets_data: financialData.assets as any,
+            expenses_data: financialData.expenses as any,
+            liabilities_data: financialData.liabilities as any,
+            data_sources: dataSources as any,
+          })
+          .eq("id", existingDraft.id);
+
+        if (error) throw error;
+      } else {
+        // Create new draft
+        const { error } = await supabase.from("reports").insert({
+          user_id: user.id,
+          report_name: "Draft",
+          report_date: new Date().toISOString(),
+          income_data: financialData.income as any,
+          assets_data: financialData.assets as any,
+          expenses_data: financialData.expenses as any,
+          liabilities_data: financialData.liabilities as any,
+          data_sources: dataSources as any,
+          is_archived: false,
+        } as any);
+
+        if (error) throw error;
+      }
+    } catch (error: any) {
+      console.error("Auto-save error:", error);
+    }
+  };
+
+  // Load draft on mount
+  const loadDraft = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: draft, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("is_archived", false)
+        .maybeSingle();
+
+      if (error) throw error;
+      
+      if (draft) {
+        setFinancialData({
+          income: (draft.income_data as any) || {},
+          expenses: (draft.expenses_data as any) || {},
+          assets: (draft.assets_data as any) || {},
+          liabilities: (draft.liabilities_data as any) || {},
+        });
+        setDataSources((draft.data_sources as any) || { income: [], expenses: [], assets: [], liabilities: [] });
+      }
+    } catch (error: any) {
+      console.error("Load draft error:", error);
+    }
+  };
+
   const handleSaveReport = async () => {
     if (!user) return;
     
@@ -228,6 +323,7 @@ const FinancialStatement = () => {
         expenses_data: financialData.expenses as any,
         liabilities_data: financialData.liabilities as any,
         data_sources: dataSources as any,
+        is_archived: true,
       } as any);
 
       if (error) throw error;
