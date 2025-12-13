@@ -30,86 +30,67 @@ const FinancialStatement = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
-  const [financialData, setFinancialData] = useState<FinancialData>(() => {
-    const saved = localStorage.getItem("financialData");
-    return saved ? JSON.parse(saved) : {
-      income: {
-        earned1: 0,
-        earned2: 0,
-        realEstate: 0,
-        business: 0,
-        interest: 0,
-        dividends: 0,
-        other: 0
-      },
-      expenses: {
-        homeLoan: 0,
-        homeMaintenance: 0,
-        homeUtilities: 0,
-        carTravel: 0,
-        cellPhones: 0,
-        investments: 0,
-        otherExpenses: 0,
-        carLoans: 0,
-        creditCards: 0,
-        schoolLoans: 0,
-        personalCare: 0,
-        subscriptions: 0,
-        shopping: 0,
-        travelVacation: 0,
-        medicalExpenses: 0,
-        medicalInsurance: 0,
-        taxes: 0
-      },
-      assets: {
-        bankAccounts: 0,
-        preciousMetals: 0,
-        retirement: 0,
-        stocks: 0,
-        otherAssets: 0,
-        business: 0,
-        realEstate: 0,
-        doodadsHome: 0,
-        doodadsCar: 0,
-        doodadsOther: 0
-      },
-      liabilities: {
-        creditCards: 0,
-        carLoans: 0,
-        homeMortgage: 0,
-        personalLoans: 0,
-        schoolLoans: 0,
-        otherDebt: 0
-      }
-    };
+  const [financialData, setFinancialData] = useState<FinancialData>({
+    income: {
+      earned1: 0,
+      earned2: 0,
+      realEstate: 0,
+      business: 0,
+      interest: 0,
+      dividends: 0,
+      other: 0
+    },
+    expenses: {
+      homeLoan: 0,
+      homeMaintenance: 0,
+      homeUtilities: 0,
+      carTravel: 0,
+      cellPhones: 0,
+      investments: 0,
+      otherExpenses: 0,
+      carLoans: 0,
+      creditCards: 0,
+      schoolLoans: 0,
+      personalCare: 0,
+      subscriptions: 0,
+      shopping: 0,
+      travelVacation: 0,
+      medicalExpenses: 0,
+      medicalInsurance: 0,
+      taxes: 0
+    },
+    assets: {
+      bankAccounts: 0,
+      preciousMetals: 0,
+      retirement: 0,
+      stocks: 0,
+      otherAssets: 0,
+      business: 0,
+      realEstate: 0,
+      doodadsHome: 0,
+      doodadsCar: 0,
+      doodadsOther: 0
+    },
+    liabilities: {
+      creditCards: 0,
+      carLoans: 0,
+      homeMortgage: 0,
+      personalLoans: 0,
+      schoolLoans: 0,
+      otherDebt: 0
+    }
   });
   const [dataSources, setDataSources] = useState<{
     income: DataSource[];
     expenses: DataSource[];
     assets: DataSource[];
     liabilities: DataSource[];
-  }>(() => {
-    const saved = localStorage.getItem("dataSources");
-    return saved ? JSON.parse(saved) : {
-      income: [],
-      expenses: [],
-      assets: [],
-      liabilities: []
-    };
+  }>({
+    income: [],
+    expenses: [],
+    assets: [],
+    liabilities: []
   });
-  useEffect(() => {
-    localStorage.setItem("financialData", JSON.stringify(financialData));
-  }, [financialData]);
-  useEffect(() => {
-    localStorage.setItem("dataSources", JSON.stringify(dataSources));
-  }, [dataSources]);
-
-  // Load draft on mount
-  useEffect(() => {
-    if (user) {
-      loadDraft();
-    }
-  }, [user]);
   const updateIncome = (field: keyof FinancialData["income"], value: number) => {
     setFinancialData(prev => ({
       ...prev,
@@ -246,33 +227,6 @@ const FinancialStatement = () => {
     }
   };
 
-  // Load draft on mount
-  const loadDraft = async () => {
-    if (!user) return;
-    try {
-      const {
-        data: draft,
-        error
-      } = await supabase.from("reports").select("*").eq("user_id", user.id).eq("is_archived", false).maybeSingle();
-      if (error) throw error;
-      if (draft) {
-        setFinancialData({
-          income: draft.income_data as any || {},
-          expenses: draft.expenses_data as any || {},
-          assets: draft.assets_data as any || {},
-          liabilities: draft.liabilities_data as any || {}
-        });
-        setDataSources(draft.data_sources as any || {
-          income: [],
-          expenses: [],
-          assets: [],
-          liabilities: []
-        });
-      }
-    } catch (error: any) {
-      console.error("Load draft error:", error);
-    }
-  };
   const handleSaveReport = async () => {
     if (!user) return;
     setIsSaving(true);
