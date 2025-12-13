@@ -88,7 +88,7 @@ const IncomeSection = ({
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-80">
-                    <p className="text-sm">Write the net income (i.e. cashflow after expenses) from your real estate investment(s) here.</p>
+                    <p className="text-sm">Write the net income (i.e. cash flow after taxes and expenses) from your real estate investment(s) here.</p>
                   </PopoverContent>
                 </Popover>
               </div>
