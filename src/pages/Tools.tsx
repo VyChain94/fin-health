@@ -14,12 +14,12 @@ const Tools = () => {
       title: "Games",
       terms: [
         {
-          term: "CASHFLOW® Classic",
-          definition: "Board game created by Robert Kiyosaki that teaches financial literacy through simulated investing, real estate, and business decisions."
-        },
-        {
           term: "CASHFLOW® 101",
           definition: "The original CASHFLOW game focused on escaping the 'Rat Race' by building passive income through assets."
+        },
+        {
+          term: "CASHFLOW® Classic",
+          definition: "Board game created by Robert Kiyosaki that teaches financial literacy through simulated investing, real estate, and business decisions."
         },
         {
           term: "CASHFLOW® for Kids",
@@ -31,24 +31,32 @@ const Tools = () => {
       title: "Books",
       terms: [
         {
-          term: "Rich Dad Poor Dad",
-          definition: "Robert Kiyosaki's bestselling book contrasting the financial philosophies of his 'rich dad' and 'poor dad,' emphasizing financial education and asset building."
+          term: "FAKE: Fake Money, Fake Teachers, Fake Assets",
+          definition: "Exposes the hidden forces behind the global economy and teaches how to distinguish real financial education from fake."
         },
         {
-          term: "The CASHFLOW Quadrant",
-          definition: "Explains the four ways people earn income: Employee, Self-Employed, Business Owner, and Investor, and how to move toward financial freedom."
+          term: "Money: Master the Game",
+          definition: "Tony Robbins' guide presenting 7 simple steps to financial freedom, featuring insights from the world's greatest financial minds."
+        },
+        {
+          term: "Rich Dad Poor Dad",
+          definition: "Robert Kiyosaki's bestselling book contrasting the financial philosophies of his 'rich dad' and 'poor dad,' emphasizing financial education and asset building."
         },
         {
           term: "Rich Dad's Guide to Investing",
           definition: "Covers the investing strategies of the rich, including how to reduce risk and increase returns."
         },
         {
+          term: "The CASHFLOW Quadrant",
+          definition: "Explains the four ways people earn income: Employee, Self-Employed, Business Owner, and Investor, and how to move toward financial freedom."
+        },
+        {
           term: "Why the Rich Are Getting Richer",
           definition: "Explores why financial education is more valuable than money and how the rich think differently about wealth."
         },
         {
-          term: "FAKE: Fake Money, Fake Teachers, Fake Assets",
-          definition: "Exposes the hidden forces behind the global economy and teaches how to distinguish real financial education from fake."
+          term: "You Deserve to Be Rich",
+          definition: "A guide to mastering the inner game of wealth and claiming your future through mindset and practical strategies."
         }
       ]
     },
@@ -56,16 +64,16 @@ const Tools = () => {
       title: "Media",
       terms: [
         {
+          term: "Rich Dad Blog",
+          definition: "Online articles and resources covering current financial topics, investment opportunities, and educational content."
+        },
+        {
           term: "Rich Dad Radio Show",
           definition: "Weekly podcast hosted by Robert Kiyosaki featuring interviews with experts on money, investing, and personal finance."
         },
         {
           term: "The Rich Dad Channel",
           definition: "YouTube channel with educational videos on financial literacy, investing strategies, and wealth building."
-        },
-        {
-          term: "Rich Dad Blog",
-          definition: "Online articles and resources covering current financial topics, investment opportunities, and educational content."
         }
       ]
     },
@@ -73,16 +81,32 @@ const Tools = () => {
       title: "Events & Networks",
       terms: [
         {
-          term: "Rich Dad Workshops",
-          definition: "Educational seminars and workshops teaching practical financial skills, investing strategies, and business development."
+          term: "CASHFLOW Clubs",
+          definition: "Local meetup groups where people play the CASHFLOW game together and discuss financial strategies."
+        },
+        {
+          term: "Eventbrite.com",
+          definition: "Event discovery platform to find local and virtual financial education workshops, investment seminars, and networking events."
+        },
+        {
+          term: "Meetup.com",
+          definition: "Platform to discover and join local groups focused on investing, real estate, entrepreneurship, and financial independence."
+        },
+        {
+          term: "Protectwealth.com",
+          definition: "Resource for wealth protection strategies, asset protection education, and financial planning events."
+        },
+        {
+          term: "Real Estate Investment Association (REIA)",
+          definition: "Local associations providing networking, education, and resources for real estate investors at all experience levels."
         },
         {
           term: "Rich Dad Community",
           definition: "Online community of like-minded individuals focused on financial education and wealth building."
         },
         {
-          term: "CASHFLOW Clubs",
-          definition: "Local meetup groups where people play the CASHFLOW game together and discuss financial strategies."
+          term: "Rich Dad Workshops",
+          definition: "Educational seminars and workshops teaching practical financial skills, investing strategies, and business development."
         }
       ]
     },
@@ -90,16 +114,48 @@ const Tools = () => {
       title: "Leaders",
       terms: [
         {
-          term: "Robert Kiyosaki",
-          definition: "Author of Rich Dad Poor Dad and founder of the Rich Dad Company. Known for teaching financial literacy and the importance of financial education."
+          term: "19 Keys",
+          definition: "Entrepreneur and educator known for teaching financial literacy, wealth building, and economic empowerment in underserved communities."
+        },
+        {
+          term: "Don Peebles",
+          definition: "Real estate entrepreneur, author, and advocate for diversity in business, known for building one of the largest Black-owned real estate development companies."
+        },
+        {
+          term: "Ian Dunlap",
+          definition: "Investment strategist and educator known for teaching stock market investing and wealth building strategies."
+        },
+        {
+          term: "Kenney Conwell",
+          definition: "Financial educator and wealth coach focused on helping individuals build generational wealth through strategic investing."
         },
         {
           term: "Kim Kiyosaki",
           definition: "Author of Rich Woman and advocate for women's financial independence. Co-founder of the Rich Dad Company."
         },
         {
+          term: "Rashad Bilal",
+          definition: "Co-host of Earn Your Leisure, entrepreneur, and financial educator focused on making financial literacy accessible."
+        },
+        {
+          term: "Ray Dalio",
+          definition: "Founder of Bridgewater Associates, author of Principles, and thought leader on economic cycles and investment strategies."
+        },
+        {
+          term: "Robert Kiyosaki",
+          definition: "Author of Rich Dad Poor Dad and founder of the Rich Dad Company. Known for teaching financial literacy and the importance of financial education."
+        },
+        {
+          term: "Shannon Brooks",
+          definition: "Financial educator and advocate for wealth building and economic empowerment."
+        },
+        {
           term: "Sharon Lechter",
           definition: "Co-author of Rich Dad Poor Dad and financial literacy advocate. CPA and founder of Pay Your Family First."
+        },
+        {
+          term: "Troy Millings",
+          definition: "Co-host of Earn Your Leisure and entrepreneur dedicated to financial education and community wealth building."
         }
       ]
     }
