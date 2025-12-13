@@ -5,7 +5,6 @@ import { FinancialData } from "@/types/financial";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Info } from "lucide-react";
-
 interface AssetsSectionProps {
   assets: FinancialData["assets"];
   updateAssets: (field: keyof FinancialData["assets"], value: number) => void;
@@ -17,7 +16,6 @@ interface AssetsSectionProps {
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
 }
-
 const AssetsSection = ({
   assets,
   updateAssets,
@@ -27,29 +25,21 @@ const AssetsSection = ({
   netWorthRichDad,
   dataSources,
   onAddSource,
-  onRemoveSource,
+  onRemoveSource
 }: AssetsSectionProps) => {
   const handleChange = (field: keyof FinancialData["assets"], value: string) => {
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       updateAssets(field, parseFloat(value) || 0);
     }
   };
-
   const formatCurrency = (value: number) => {
     return value === 0 ? '' : value.toString();
   };
-
-  return (
-    <Card className="shadow-lg border-primary/10 bg-gradient-to-br from-card to-card/80">
+  return <Card className="shadow-lg border-primary/10 bg-gradient-to-br from-card to-card/80">
       <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl">Assets</CardTitle>
-          <DataSourceDropdown
-            sectionName="Assets"
-            dataSources={dataSources}
-            onAddSource={onAddSource}
-            onRemoveSource={onRemoveSource}
-          />
+          <DataSourceDropdown sectionName="Assets" dataSources={dataSources} onAddSource={onAddSource} onRemoveSource={onRemoveSource} />
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
@@ -70,25 +60,11 @@ const AssetsSection = ({
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Bank Accounts</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.bankAccounts)}
-                onChange={(e) => handleChange("bankAccounts", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.bankAccounts)} onChange={e => handleChange("bankAccounts", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Precious Metals</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.preciousMetals)}
-                onChange={(e) => handleChange("preciousMetals", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.preciousMetals)} onChange={e => handleChange("preciousMetals", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center gap-1">
@@ -100,62 +76,27 @@ const AssetsSection = ({
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-80">
-                    <p className="text-sm">Include all retirement accounts such as 401(k), 403(b), Traditional IRA, Roth IRA, SEP IRA, SIMPLE IRA, pension plans, and TSP (Thrift Savings Plan).</p>
+                    <p className="text-sm">Include all retirement accounts such as 401(k), 403(b), Traditional IRA, Roth IRA</p>
                   </PopoverContent>
                 </Popover>
               </div>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.retirement)}
-                onChange={(e) => handleChange("retirement", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.retirement)} onChange={e => handleChange("retirement", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Stocks & Bonds</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.stocks)}
-                onChange={(e) => handleChange("stocks", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.stocks)} onChange={e => handleChange("stocks", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Other</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.otherAssets)}
-                onChange={(e) => handleChange("otherAssets", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.otherAssets)} onChange={e => handleChange("otherAssets", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Business (fair value less loans)</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.business)}
-                onChange={(e) => handleChange("business", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.business)} onChange={e => handleChange("business", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Real Estate (fair value less mortgage)</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.realEstate)}
-                onChange={(e) => handleChange("realEstate", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.realEstate)} onChange={e => handleChange("realEstate", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
@@ -195,36 +136,15 @@ const AssetsSection = ({
                   </PopoverContent>
                 </Popover>
               </div>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.doodadsHome)}
-                onChange={(e) => handleChange("doodadsHome", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.doodadsHome)} onChange={e => handleChange("doodadsHome", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Car(s)</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.doodadsCar)}
-                onChange={(e) => handleChange("doodadsCar", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.doodadsCar)} onChange={e => handleChange("doodadsCar", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Other</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(assets.doodadsOther)}
-                onChange={(e) => handleChange("doodadsOther", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(assets.doodadsOther)} onChange={e => handleChange("doodadsOther", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
@@ -250,8 +170,6 @@ const AssetsSection = ({
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default AssetsSection;
