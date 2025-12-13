@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { MilestonesSection } from "@/components/dashboard/MilestonesSection";
 import { WinsRisksSection } from "@/components/dashboard/WinsRisksSection";
 import { StreaksSection } from "@/components/dashboard/StreaksSection";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const Index = () => {
   const { user, loading: authLoading } = useAuth();
@@ -28,6 +29,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader />
       <div className="container mx-auto px-4 py-8 space-y-8">
+        <WhyToolsMatterSection />
         <MilestonesSection latestReport={latestReport} annualIncome={annualIncome} />
         <WinsRisksSection latestReport={latestReport} previousReport={previousReport} />
         <StreaksSection 
