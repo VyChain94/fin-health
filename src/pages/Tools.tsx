@@ -150,7 +150,7 @@ const Tools = () => {
           definition: "Author of Rich Dad Poor Dad and founder of the Rich Dad Company. Known for teaching financial literacy and the importance of financial education."
         },
         {
-          term: "Shannon Brooks",
+          term: "Shaquanna Brooks",
           definition: "CPA, financial educator, and advocate for wealth building and economic empowerment."
         },
         {
