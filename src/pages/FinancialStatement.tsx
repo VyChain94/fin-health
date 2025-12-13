@@ -121,17 +121,6 @@ const FinancialStatement = () => {
     }
   }, [user]);
 
-  // Auto-save with debounce
-  useEffect(() => {
-    if (!user) return;
-
-    const timeoutId = setTimeout(() => {
-      autoSaveReport();
-    }, 2000); // Wait 2 seconds after last change
-
-    return () => clearTimeout(timeoutId);
-  }, [financialData, dataSources, user]);
-
   const updateIncome = (field: keyof FinancialData["income"], value: number) => {
     setFinancialData((prev) => ({
       ...prev,
@@ -232,10 +221,11 @@ const FinancialStatement = () => {
     }));
   };
 
-  // Auto-save draft report (non-archived)
-  const autoSaveReport = async () => {
+  // Save draft report (non-archived)
+  const handleSaveDraft = async () => {
     if (!user) return;
     
+    setIsSaving(true);
     try {
       // Check if a draft already exists
       const { data: existingDraft } = await supabase
@@ -276,8 +266,19 @@ const FinancialStatement = () => {
 
         if (error) throw error;
       }
+
+      toast({
+        title: "Draft Saved!",
+        description: "Your financial data has been saved as a draft.",
+      });
     } catch (error: any) {
-      console.error("Auto-save error:", error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -454,6 +455,15 @@ const FinancialStatement = () => {
               <CardTitle>Submit Report</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <Button 
+                className="w-full" 
+                variant="outline" 
+                size="lg" 
+                disabled={isSaving}
+                onClick={handleSaveDraft}
+              >
+                {isSaving ? "Saving..." : "Save Draft"}
+              </Button>
               <div>
                 <Label htmlFor="reportName">Report Name (Optional)</Label>
                 <Input
