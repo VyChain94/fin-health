@@ -372,7 +372,7 @@ const FinancialStatement = () => {
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button className="w-full" size="lg" disabled={isSaving}>
-                    {isSaving ? "Saving..." : "Submit Report to Archives"}
+                    {isSaving ? "Saving..." : "Submit Monthly Report to Archives"}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
