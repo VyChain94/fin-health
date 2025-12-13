@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Info } from "lucide-react";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface AnalysisSectionProps {
   totalIncome: number;
@@ -60,18 +59,16 @@ const AnalysisSection = ({
         <div className="flex items-center gap-1">
           <h4 className="font-semibold text-sm">{title}</h4>
           {titleHint && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Info className="h-3 w-3" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-[250px]">
-                  <p className="text-sm">{titleHint}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="h-3 w-3" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="max-w-[250px] text-sm">
+                {titleHint}
+              </PopoverContent>
+            </Popover>
           )}
         </div>
         {isGood ? (
@@ -84,18 +81,16 @@ const AnalysisSection = ({
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
         <span>{target}</span>
         {targetHint && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="text-muted-foreground hover:text-foreground transition-colors">
-                  <Info className="h-3 w-3" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-[250px]">
-                <p className="text-sm">{targetHint}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="text-muted-foreground hover:text-foreground transition-colors">
+                <Info className="h-3 w-3" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="max-w-[250px] text-sm">
+              {targetHint}
+            </PopoverContent>
+          </Popover>
         )}
       </div>
     </div>
