@@ -18,6 +18,8 @@ import { useToast } from "@/hooks/use-toast";
 import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
 import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
+
 const FinancialStatement = () => {
   const {
     user,
@@ -241,8 +243,9 @@ const FinancialStatement = () => {
       <DashboardHeader onMonthYearChange={handleMonthYearChange} onLoadReport={loadReport} />
       <GuidedTourButton />
       <div className="container mx-auto px-4 py-8">
+        <WhyToolsMatterSection />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-8">
           <IncomeSection income={financialData.income} updateIncome={updateIncome} totalEarned={totalEarned} totalPassive={totalPassive} totalPortfolio={totalPortfolio} totalIncome={totalIncome} dataSources={dataSources.income} onAddSource={source => addDataSource("income", source)} onRemoveSource={id => removeDataSource("income", id)} />
 
           <AnalysisSection totalIncome={totalIncome} netMonthlyCashFlow={netMonthlyCashFlow} totalExpenses={totalExpenses} totalPassive={totalPassive} totalPortfolio={totalPortfolio} totalAssets={totalAssets} totalDoodads={totalDoodads} netWorthRichDad={netWorthRichDad} taxes={financialData.expenses.taxes} housingExpenses={financialData.expenses.homeLoan + financialData.expenses.homeMaintenance + financialData.expenses.homeUtilities} />

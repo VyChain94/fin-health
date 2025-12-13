@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle2, TrendingUp, Target, Eye, Brain, Compass } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const HowWhyTools = () => {
   return (
@@ -9,7 +10,8 @@ const HowWhyTools = () => {
       <DashboardHeader />
       
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+        <WhyToolsMatterSection />
+        <div className="mb-8 mt-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4">
             How and Why Our Tools Help
           </h1>

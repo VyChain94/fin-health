@@ -5,11 +5,20 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
+const STORAGE_KEY = "disclaimer-toggle-open";
+
 export function WhyToolsMatterSection() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored === null ? true : stored === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, String(isOpen));
+  }, [isOpen]);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
