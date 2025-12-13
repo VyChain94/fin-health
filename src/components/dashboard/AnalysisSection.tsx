@@ -116,6 +116,8 @@ const AnalysisSection = ({
           value={`${passiveIncomePercentage.toFixed(2)}%`}
           target="Should be increasing"
           isGood={passiveIncomePercentage > 20}
+          titleHint="Calculated as: (Portfolio Total + Passive Total) ÷ Total Income"
+          targetHint="Your Portfolio and Passive Income work while you sleep, so you don't have to work so long and hard yourself."
         />
         
         <MetricCard
@@ -123,6 +125,7 @@ const AnalysisSection = ({
           value={`${taxPercentage.toFixed(2)}%`}
           target="Taxes/Total Income"
           isGood={taxPercentage < 25}
+          titleHint="Calculated as: Income Tax Expenses ÷ Total Income"
         />
         
         <MetricCard
@@ -130,6 +133,8 @@ const AnalysisSection = ({
           value={`${housingPercentage.toFixed(2)}%`}
           target="Keep under 33 percent"
           isGood={housingPercentage < 33}
+          titleHint="Calculated as: (Home Loan/Rent + Home Maintenance + Home Utilities) ÷ Total Income"
+          targetHint="Every dollar spent on a primary residence is money that is not being used to acquire assets that generate cash flow."
         />
         
         <MetricCard
@@ -137,6 +142,8 @@ const AnalysisSection = ({
           value={`${doodadPercentage.toFixed(2)}%`}
           target="Should be decreasing"
           isGood={doodadPercentage < 10}
+          titleHint="Calculated as: Doodads Total ÷ Total Assets per Banker"
+          targetHint="Doodads are not cash flow generating. You may make money when you sell, but it's only money out of your pocket until that time."
         />
         
         <MetricCard
@@ -151,6 +158,8 @@ const AnalysisSection = ({
           value={richDadRatio.toFixed(1)}
           target="Measured in months"
           isGood={richDadRatio > 12}
+          titleHint="Calculated as: Total Assets per Rich Dad ÷ Total Expenses"
+          targetHint="The number of months that your assets can cover your expenses."
         />
       </CardContent>
     </Card>
