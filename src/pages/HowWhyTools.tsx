@@ -22,7 +22,7 @@ const HowWhyTools = () => {
 
         <Tabs defaultValue="statement" className="space-y-6">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-            <TabsTrigger value="statement">Financial Statement</TabsTrigger>
+            <TabsTrigger value="statement">Monthly Financial Statement</TabsTrigger>
             <TabsTrigger value="freedom">Financial Freedom</TabsTrigger>
           </TabsList>
 
@@ -33,7 +33,7 @@ const HowWhyTools = () => {
                   <div className="p-2 rounded-lg bg-primary/10">
                     <Eye className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl">Financial Statement Tool</CardTitle>
+                  <CardTitle className="text-2xl">Monthly Financial Statement Tool</CardTitle>
                 </div>
                 <CardDescription className="text-base">
                   Your complete financial snapshot—clear, organized, and actionable

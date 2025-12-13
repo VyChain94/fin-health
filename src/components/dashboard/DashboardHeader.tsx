@@ -100,7 +100,7 @@ const DashboardHeader = ({
               <DropdownMenuContent align="end" className="bg-card">
                 <DropdownMenuItem asChild>
                   <Link to="/financial-statement" className="cursor-pointer">
-                    Financial Statement
+                    Monthly Financial Statement
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

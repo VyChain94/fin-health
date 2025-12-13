@@ -32,7 +32,7 @@ const GuidedTour = () => {
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="financial-statement" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
-              Financial Statement
+              Monthly Financial Statement
             </TabsTrigger>
             <TabsTrigger value="financial-freedom" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
@@ -45,7 +45,7 @@ const GuidedTour = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-6 w-6 text-primary" />
-                  Financial Statement Tool Guide
+                  Monthly Financial Statement Tool Guide
                 </CardTitle>
                 <CardDescription>
                   Learn how to track and analyze your complete financial picture
@@ -231,7 +231,7 @@ const GuidedTour = () => {
                     Create your first financial statement and take control of your financial future.
                   </p>
                   <Link to="/financial-statement">
-                    <Button>Go to Financial Statement Tool</Button>
+                    <Button>Go to Monthly Financial Statement Tool</Button>
                   </Link>
                 </div>
               </CardContent>
