@@ -112,7 +112,7 @@ const ExpenseSection = ({
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
             <div className="flex items-center gap-1">
-              <Label className="text-sm">Travel/Vacation</Label>
+              <Label className="text-sm">Vacation/Trips</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <button className="text-muted-foreground hover:text-foreground transition-colors">
