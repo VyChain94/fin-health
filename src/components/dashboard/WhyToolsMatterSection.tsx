@@ -26,6 +26,24 @@ export function WhyToolsMatterSection() {
         
         <CollapsibleContent>
           <div className="px-4 pb-4 space-y-6">
+            {/* Important disclaimer */}
+            <div className="p-4 rounded-lg bg-destructive/5 border border-destructive/20">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 rounded-lg bg-destructive/10">
+                  <Scale className="h-4 w-4 text-destructive" />
+                </div>
+                <h3 className="text-base font-semibold text-foreground">Important disclaimer</h3>
+              </div>
+              <div className="flex gap-3 text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground shrink-0">1.</span>
+                <p>
+                  <strong className="text-foreground">Not financial advice.</strong>
+                  <br />
+                  I am <strong className="text-foreground">not a financial advisor</strong>. This tool is for <strong className="text-foreground">education and visibility only</strong>. You should <strong className="text-foreground">do your own research</strong> and consider speaking with a qualified professional before making financial decisions.
+                </p>
+              </div>
+            </div>
+
             {/* Why these tools matter */}
             <div className="p-4 rounded-lg bg-muted/30">
               <div className="flex items-center gap-3 mb-4">
@@ -36,7 +54,7 @@ export function WhyToolsMatterSection() {
               </div>
               <div className="space-y-3 text-sm text-muted-foreground">
                 <div className="flex gap-3">
-                  <span className="font-semibold text-foreground shrink-0">1.</span>
+                  <span className="font-semibold text-foreground shrink-0">2.</span>
                   <p>
                     <strong className="text-foreground">Social Security may not be enough (and may not last as you expect).</strong>
                     <br />
@@ -44,7 +62,7 @@ export function WhyToolsMatterSection() {
                   </p>
                 </div>
                 <div className="flex gap-3">
-                  <span className="font-semibold text-foreground shrink-0">2.</span>
+                  <span className="font-semibold text-foreground shrink-0">3.</span>
                   <p>
                     <strong className="text-foreground">Prices keep going up.</strong>
                     <br />
@@ -52,7 +70,7 @@ export function WhyToolsMatterSection() {
                   </p>
                 </div>
                 <div className="flex gap-3">
-                  <span className="font-semibold text-foreground shrink-0">3.</span>
+                  <span className="font-semibold text-foreground shrink-0">4.</span>
                   <div>
                     <strong className="text-foreground">People's top 2 concerns (what we hear most):</strong>
                     <ul className="mt-2 ml-4 space-y-1 list-disc list-inside">
@@ -74,7 +92,7 @@ export function WhyToolsMatterSection() {
               </div>
               <div className="space-y-3 text-sm text-muted-foreground">
                 <div className="flex gap-3">
-                  <span className="font-semibold text-foreground shrink-0">4.</span>
+                  <span className="font-semibold text-foreground shrink-0">5.</span>
                   <div>
                     <strong className="text-foreground">Provides you visibility—based on your monthly spending.</strong>
                     <br />
@@ -87,31 +105,13 @@ export function WhyToolsMatterSection() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="font-semibold text-foreground shrink-0">5.</span>
+                  <span className="font-semibold text-foreground shrink-0">6.</span>
                   <p>
                     <strong className="text-foreground">Helps you move with intention.</strong>
                     <br />
                     When you can see the full picture, you can make clearer decisions and adjust faster.
                   </p>
                 </div>
-              </div>
-            </div>
-
-            {/* Important disclaimer */}
-            <div className="p-4 rounded-lg bg-destructive/5 border border-destructive/20">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-destructive/10">
-                  <Scale className="h-4 w-4 text-destructive" />
-                </div>
-                <h3 className="text-base font-semibold text-foreground">Important disclaimer</h3>
-              </div>
-              <div className="flex gap-3 text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground shrink-0">6.</span>
-                <p>
-                  <strong className="text-foreground">Not financial advice.</strong>
-                  <br />
-                  I am <strong className="text-foreground">not a financial advisor</strong>. This tool is for <strong className="text-foreground">education and visibility only</strong>. You should <strong className="text-foreground">do your own research</strong> and consider speaking with a qualified professional before making financial decisions.
-                </p>
               </div>
             </div>
 
