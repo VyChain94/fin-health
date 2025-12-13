@@ -7,6 +7,7 @@ import FinancialFreedomTracker from "@/components/dashboard/FinancialFreedomTrac
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
+import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
 
 export default function FinancialFreedom() {
   const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
@@ -149,6 +150,7 @@ export default function FinancialFreedom() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader />
+      <GuidedTourButton />
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-2xl mx-auto p-12 text-center">
           <div className="space-y-6">

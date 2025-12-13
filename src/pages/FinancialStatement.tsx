@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
+import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
 const FinancialStatement = () => {
   const {
     user,
@@ -238,6 +239,7 @@ const FinancialStatement = () => {
   }
   return <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader onMonthYearChange={handleMonthYearChange} onLoadReport={loadReport} />
+      <GuidedTourButton />
       <div className="container mx-auto px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
