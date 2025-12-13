@@ -182,6 +182,11 @@ const DashboardHeader = ({
                     Passive Income
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/tools" className="cursor-pointer">
+                    Tools
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
