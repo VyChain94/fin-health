@@ -64,6 +64,10 @@ const Tools = () => {
       title: "Media",
       terms: [
         {
+          term: "Earn Your Leisure",
+          definition: "Popular podcast and media platform hosted by Rashad Bilal and Troy Millings, focused on business, finance, and economic empowerment."
+        },
+        {
           term: "Rich Dad Blog",
           definition: "Online articles and resources covering current financial topics, investment opportunities, and educational content."
         },
