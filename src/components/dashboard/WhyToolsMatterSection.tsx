@@ -1,27 +1,18 @@
 import { Card } from "@/components/ui/card";
 import { AlertTriangle, Eye, Scale, Wrench, Info } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
-
 const STORAGE_KEY = "disclaimer-toggle-open";
-
 export function WhyToolsMatterSection() {
   const [isOpen, setIsOpen] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored === null ? true : stored === "true";
   });
-
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, String(isOpen));
   }, [isOpen]);
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+  return <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <Card className="border-primary/10">
         <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors rounded-lg">
           <div className="flex items-center gap-3">
@@ -79,7 +70,7 @@ export function WhyToolsMatterSection() {
                 <div className="p-2 rounded-lg bg-primary/10">
                   <Eye className="h-4 w-4 text-primary" />
                 </div>
-                <h3 className="text-base font-semibold text-foreground">What this tool does</h3>
+                <h3 className="text-base font-semibold text-foreground">What the Financial Statement tool does</h3>
               </div>
               <div className="space-y-3 text-sm text-muted-foreground">
                 <div className="flex gap-3">
@@ -144,6 +135,5 @@ export function WhyToolsMatterSection() {
           </div>
         </CollapsibleContent>
       </Card>
-    </Collapsible>
-  );
+    </Collapsible>;
 }
