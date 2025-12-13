@@ -5,7 +5,6 @@ import { FinancialData } from "@/types/financial";
 import DataSourceDropdown, { DataSource } from "./DataSourceDropdown";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Info } from "lucide-react";
-
 interface IncomeSectionProps {
   income: FinancialData["income"];
   updateIncome: (field: keyof FinancialData["income"], value: number) => void;
@@ -17,7 +16,6 @@ interface IncomeSectionProps {
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
 }
-
 const IncomeSection = ({
   income,
   updateIncome,
@@ -27,29 +25,21 @@ const IncomeSection = ({
   totalIncome,
   dataSources,
   onAddSource,
-  onRemoveSource,
+  onRemoveSource
 }: IncomeSectionProps) => {
   const handleChange = (field: keyof FinancialData["income"], value: string) => {
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       updateIncome(field, parseFloat(value) || 0);
     }
   };
-
   const formatCurrency = (value: number) => {
     return value === 0 ? '' : value.toString();
   };
-
-  return (
-    <Card className="shadow-lg border-primary/10 bg-gradient-to-br from-card to-card/80">
+  return <Card className="shadow-lg border-primary/10 bg-gradient-to-br from-card to-card/80">
       <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl">Income</CardTitle>
-          <DataSourceDropdown
-            sectionName="Income"
-            dataSources={dataSources}
-            onAddSource={onAddSource}
-            onRemoveSource={onRemoveSource}
-          />
+          <DataSourceDropdown sectionName="Income" dataSources={dataSources} onAddSource={onAddSource} onRemoveSource={onRemoveSource} />
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
@@ -63,32 +53,18 @@ const IncomeSection = ({
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-80">
-                <p className="text-sm">Put the Gross (not Net) amount from your monthly pay here. If there are deductions from your paycheck such as taxes or insurance, include those in your expenses below.</p>
+                <p className="text-sm">​Put the Gross (w/o taxes taken out) amount from your monthly pay here. If there are deductions from your paycheck, such as taxes or insurance, include those in your expenses below.</p>
               </PopoverContent>
             </Popover>
           </div>
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Earned #1</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(income.earned1)}
-                onChange={(e) => handleChange("earned1", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(income.earned1)} onChange={e => handleChange("earned1", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Earned #2</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(income.earned2)}
-                onChange={(e) => handleChange("earned2", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(income.earned2)} onChange={e => handleChange("earned2", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
@@ -116,14 +92,7 @@ const IncomeSection = ({
                   </PopoverContent>
                 </Popover>
               </div>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(income.realEstate)}
-                onChange={(e) => handleChange("realEstate", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(income.realEstate)} onChange={e => handleChange("realEstate", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center gap-1">
@@ -139,14 +108,7 @@ const IncomeSection = ({
                   </PopoverContent>
                 </Popover>
               </div>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(income.business)}
-                onChange={(e) => handleChange("business", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(income.business)} onChange={e => handleChange("business", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
@@ -162,36 +124,15 @@ const IncomeSection = ({
           <div className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Interest</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(income.interest)}
-                onChange={(e) => handleChange("interest", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(income.interest)} onChange={e => handleChange("interest", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Dividends</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(income.dividends)}
-                onChange={(e) => handleChange("dividends", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(income.dividends)} onChange={e => handleChange("dividends", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Label className="self-center text-sm">Other</Label>
-              <Input
-                type="text"
-                inputMode="decimal"
-                value={formatCurrency(income.other)}
-                onChange={(e) => handleChange("other", e.target.value)}
-                className="transition-all focus:ring-2 focus:ring-primary"
-                placeholder="$0"
-              />
+              <Input type="text" inputMode="decimal" value={formatCurrency(income.other)} onChange={e => handleChange("other", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2 border-t">
@@ -209,8 +150,6 @@ const IncomeSection = ({
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default IncomeSection;
