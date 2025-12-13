@@ -151,7 +151,7 @@ const Tools = () => {
         },
         {
           term: "Shannon Brooks",
-          definition: "Financial educator and advocate for wealth building and economic empowerment."
+          definition: "CPA, financial educator, and advocate for wealth building and economic empowerment."
         },
         {
           term: "Sharon Lechter",
