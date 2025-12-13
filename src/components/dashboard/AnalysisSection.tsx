@@ -147,7 +147,7 @@ const AnalysisSection = ({
         />
         
         <MetricCard
-          title="Return On Assets?"
+          title="What Is Your Return On Assets?"
           value={`${returnOnAssets.toFixed(2)}%`}
           target="Should be increasing"
           isGood={returnOnAssets > 5}
