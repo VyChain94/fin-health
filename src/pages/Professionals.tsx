@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink, Users, Calculator, FileText, Building, Wallet } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const Professionals = () => {
   const professionalCategories = [
@@ -58,7 +59,8 @@ const Professionals = () => {
       <DashboardHeader />
       
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+        <WhyToolsMatterSection />
+        <div className="mb-8 mt-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4">
             Professional Resources
           </h1>

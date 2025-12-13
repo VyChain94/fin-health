@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ExternalLink, TrendingUp, Shield, DollarSign, Clock } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Button } from "@/components/ui/button";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const PassiveIncome = () => {
   const opportunities = [
@@ -61,7 +62,8 @@ const PassiveIncome = () => {
       <DashboardHeader />
       
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+        <WhyToolsMatterSection />
+        <div className="mb-8 mt-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4">
             Passive Income Opportunities
           </h1>

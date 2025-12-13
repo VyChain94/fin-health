@@ -3,13 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Target, TrendingUp, Users, BookOpen, Heart, Rocket, ArrowRight, ExternalLink } from "lucide-react";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const NowWhat = () => {
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <WhyToolsMatterSection />
+        <div className="max-w-4xl mx-auto space-y-8 mt-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Now What?

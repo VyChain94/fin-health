@@ -8,6 +8,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
 import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 export default function FinancialFreedom() {
   const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
@@ -152,7 +153,8 @@ export default function FinancialFreedom() {
       <DashboardHeader />
       <GuidedTourButton />
       <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-2xl mx-auto p-12 text-center">
+        <WhyToolsMatterSection />
+        <Card className="max-w-2xl mx-auto p-12 text-center mt-8">
           <div className="space-y-6">
             <div className="w-24 h-24 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
               <Home className="w-12 h-12 text-primary" />

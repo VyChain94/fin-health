@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const Tools = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -178,7 +179,8 @@ const Tools = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
       <DashboardHeader />
       <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <div className="mb-8">
+        <WhyToolsMatterSection />
+        <div className="mb-8 mt-8">
           <h1 className="text-4xl font-bold text-foreground mb-3">Financial Education Tools</h1>
           <p className="text-muted-foreground text-lg">
             Discover resources to expand your financial knowledge through games, books, media, events, and thought leaders.

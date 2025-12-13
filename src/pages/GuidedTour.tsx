@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowLeft, FileText, TrendingUp, CheckCircle2 } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const GuidedTour = () => {
   return (
@@ -12,7 +13,8 @@ const GuidedTour = () => {
       <DashboardHeader />
       
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Link to="/">
+        <WhyToolsMatterSection />
+        <Link to="/" className="mt-8 inline-block">
           <Button variant="ghost" className="mb-6">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home

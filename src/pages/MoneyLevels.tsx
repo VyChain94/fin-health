@@ -9,6 +9,7 @@ import { IncomeAssetsStep } from "@/components/money-levels/IncomeAssetsStep";
 import { ExpensesStep } from "@/components/money-levels/ExpensesStep";
 import { ResultsStep } from "@/components/money-levels/ResultsStep";
 import { LevelKey } from "@/types/moneyLevels";
+import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 
 const LEVELS: LevelKey[] = ['security', 'vitality', 'independence', 'freedom', 'absoluteFreedom'];
 
@@ -109,7 +110,8 @@ export default function MoneyLevels() {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader />
       <div className="container mx-auto px-4 py-8">
-        <Card className="bg-primary text-primary-foreground">
+        <WhyToolsMatterSection />
+        <Card className="bg-primary text-primary-foreground mt-8">
           <div className="p-6">
             <div className="mb-4">
               <h1 className="text-3xl font-bold">Money Levels Calculator</h1>
