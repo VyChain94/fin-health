@@ -91,11 +91,35 @@ const AssetsSection = ({
               <Input type="text" inputMode="decimal" value={formatCurrency(assets.otherAssets)} onChange={e => handleChange("otherAssets", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Business (fair value less loans)</Label>
+              <div className="flex items-center gap-1">
+                <Label className="self-center text-sm">Business (Fair Market Value)</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="h-3 w-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <p className="text-sm">This is calculated by multiplying net profit from the past 2 years multiplied by 2.</p>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Input type="text" inputMode="decimal" value={formatCurrency(assets.business)} onChange={e => handleChange("business", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Real Estate (fair value less mortgage)</Label>
+              <div className="flex items-center gap-1">
+                <Label className="self-center text-sm">Real Estate (Fair Market Value)</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="h-3 w-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <p className="text-sm">This is the property's current value. It is considered an asset for if and when you sell.</p>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Input type="text" inputMode="decimal" value={formatCurrency(assets.realEstate)} onChange={e => handleChange("realEstate", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
             </div>
           </div>
