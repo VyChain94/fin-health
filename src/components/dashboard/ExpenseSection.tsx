@@ -95,7 +95,7 @@ const ExpenseSection = ({
             <Input type="text" inputMode="decimal" value={formatCurrency(expenses.subscriptions)} onChange={e => handleChange("subscriptions", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
-            <Label className="text-sm">Food/Clothing/Entertainment/Shopping</Label>
+            <Label className="text-sm">Shopping</Label>
             <Input type="text" inputMode="decimal" value={formatCurrency(expenses.shopping)} onChange={e => handleChange("shopping", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
