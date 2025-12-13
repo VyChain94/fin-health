@@ -19,17 +19,17 @@ const PassiveIncome = () => {
       icon: Building2
     },
     {
-      name: "Ignite Funding",
-      url: "https://ignitefunding.com/",
-      tagline: "Short Term Investments for Long Term Investors",
-      description: "Access short-term real estate investment opportunities with competitive returns and professional management.",
+      name: "Eckard Enterprises",
+      url: "https://eckardenterprises.com/",
+      tagline: "A Family Energy Business Where Relationships Matter",
+      description: "Invest in mineral rights and oil & gas assets with a team backed by 40 years of industry expertise, transparency, and personalized investor education.",
       features: [
-        "Short-term investment periods",
-        "Real estate backed investments",
-        "Transparent investment process",
-        "Regular investor updates"
+        "Direct ownership of mineral rights",
+        "40 years of oil & gas expertise",
+        "Transparent performance tracking",
+        "Educational resources for investors"
       ],
-      icon: Flame
+      icon: Fuel
     }
   ];
 
@@ -195,9 +195,12 @@ const Building2 = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const Flame = ({ className }: { className?: string }) => (
+const Fuel = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+    <line x1="3" x2="15" y1="22" y2="22"/>
+    <line x1="4" x2="14" y1="9" y2="9"/>
+    <path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/>
+    <path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/>
   </svg>
 );
 
