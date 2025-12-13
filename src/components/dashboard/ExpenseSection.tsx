@@ -111,7 +111,19 @@ const ExpenseSection = ({
             <Input type="text" inputMode="decimal" value={formatCurrency(expenses.shopping)} onChange={e => handleChange("shopping", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
-            <Label className="text-sm">Travel/Vacation</Label>
+            <div className="flex items-center gap-1">
+              <Label className="text-sm">Travel/Vacation</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Info className="h-3 w-3" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <p className="text-sm">Tickets and Lodging</p>
+                </PopoverContent>
+              </Popover>
+            </div>
             <Input type="text" inputMode="decimal" value={formatCurrency(expenses.travelVacation)} onChange={e => handleChange("travelVacation", e.target.value)} className="transition-all focus:ring-2 focus:ring-primary" placeholder="$0" />
           </div>
           <div className="grid grid-cols-2 gap-2 items-center">
