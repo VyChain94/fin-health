@@ -91,7 +91,19 @@ const AssetsSection = ({
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Label className="self-center text-sm">Retirement (401K, IRA)</Label>
+              <div className="flex items-center gap-1">
+                <Label className="self-center text-sm">Retirement (401K, IRA)</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="h-3 w-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <p className="text-sm">Include all retirement accounts such as 401(k), 403(b), Traditional IRA, Roth IRA, SEP IRA, SIMPLE IRA, pension plans, and TSP (Thrift Savings Plan).</p>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Input
                 type="text"
                 inputMode="decimal"
