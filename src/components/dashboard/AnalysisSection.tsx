@@ -1,5 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AnalysisSectionProps {
   totalIncome: number;
@@ -38,16 +44,36 @@ const AnalysisSection = ({
     title, 
     value, 
     target, 
-    isGood 
+    isGood,
+    titleHint,
+    targetHint,
   }: { 
     title: string; 
     value: string; 
     target: string; 
     isGood: boolean;
+    titleHint?: string;
+    targetHint?: string;
   }) => (
     <div className="p-4 rounded-lg bg-gradient-to-br from-secondary/50 to-secondary/30 border border-border">
       <div className="flex items-start justify-between mb-2">
-        <h4 className="font-semibold text-sm">{title}</h4>
+        <div className="flex items-center gap-1">
+          <h4 className="font-semibold text-sm">{title}</h4>
+          {titleHint && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Info className="h-3 w-3" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px]">
+                  <p className="text-sm">{titleHint}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
         {isGood ? (
           <TrendingUp className="w-4 h-4 text-green-500" />
         ) : (
@@ -55,7 +81,23 @@ const AnalysisSection = ({
         )}
       </div>
       <div className="text-2xl font-bold text-primary mb-1">{value}</div>
-      <div className="text-xs text-muted-foreground">{target}</div>
+      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        <span>{target}</span>
+        {targetHint && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="h-3 w-3" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[250px]">
+                <p className="text-sm">{targetHint}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
     </div>
   );
 
@@ -70,6 +112,8 @@ const AnalysisSection = ({
           value={`${cashFlowPercentage.toFixed(2)}%`}
           target="Should be increasing"
           isGood={cashFlowPercentage > 50}
+          titleHint="Calculated as: Net Monthly Cash Flow ÷ Total Income"
+          targetHint="Every expense reduces your income, leaving less for you to keep. Lower expenses = higher percentage kept."
         />
         
         <MetricCard
