@@ -37,7 +37,7 @@ export const ArchivedReportsSheet = ({ open, onOpenChange, onLoadReport }: Archi
         .from("reports")
         .select("*")
         .eq("user_id", user.id)
-        .eq("is_archived", false)
+        .eq("is_archived", true)
         .order("report_date", { ascending: false });
 
       if (error) throw error;

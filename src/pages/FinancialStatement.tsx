@@ -173,60 +173,6 @@ const FinancialStatement = () => {
     }));
   };
 
-  // Save draft report (non-archived)
-  const handleSaveDraft = async () => {
-    if (!user) return;
-    setIsSaving(true);
-    try {
-      // Check if a draft already exists
-      const {
-        data: existingDraft
-      } = await supabase.from("reports").select("id").eq("user_id", user.id).eq("is_archived", false).maybeSingle();
-      if (existingDraft) {
-        // Update existing draft
-        const {
-          error
-        } = await supabase.from("reports").update({
-          report_date: new Date().toISOString(),
-          income_data: financialData.income as any,
-          assets_data: financialData.assets as any,
-          expenses_data: financialData.expenses as any,
-          liabilities_data: financialData.liabilities as any,
-          data_sources: dataSources as any
-        }).eq("id", existingDraft.id);
-        if (error) throw error;
-      } else {
-        // Create new draft
-        const {
-          error
-        } = await supabase.from("reports").insert({
-          user_id: user.id,
-          report_name: "Draft",
-          report_date: new Date().toISOString(),
-          income_data: financialData.income as any,
-          assets_data: financialData.assets as any,
-          expenses_data: financialData.expenses as any,
-          liabilities_data: financialData.liabilities as any,
-          data_sources: dataSources as any,
-          is_archived: false
-        } as any);
-        if (error) throw error;
-      }
-      toast({
-        title: "Draft Saved!",
-        description: "Your financial data has been saved as a draft."
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const handleSaveReport = async () => {
     if (!user) return;
     setIsSaving(true);
@@ -316,9 +262,6 @@ const FinancialStatement = () => {
               <CardTitle>Submit Monthly Report</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="w-full" variant="outline" size="lg" disabled={isSaving} onClick={handleSaveDraft}>
-                {isSaving ? "Saving..." : "Save Draft"}
-              </Button>
               <div>
                 <Label htmlFor="reportName">Report Name (Optional)</Label>
                 <Input id="reportName" placeholder={`Report ${new Date().toLocaleDateString()}`} value={reportName} onChange={e => setReportName(e.target.value)} />
