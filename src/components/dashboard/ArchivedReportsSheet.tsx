@@ -97,17 +97,20 @@ export const ArchivedReportsSheet = ({ open, onOpenChange, onLoadReport }: Archi
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Archived Financial Reports</SheetTitle>
+            <SheetTitle>Past Statements</SheetTitle>
+            <p className="text-sm text-muted-foreground">
+              View and modify your previous monthly financial statements.
+            </p>
           </SheetHeader>
 
           <div className="mt-6 space-y-4">
             {loading ? (
               <div className="text-center py-8 text-muted-foreground">
-                Loading archives...
+                Loading statements...
               </div>
             ) : reports.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                No archived reports found.
+                No past statements found.
               </div>
             ) : (
               reports.map((report) => (
@@ -124,14 +127,11 @@ export const ArchivedReportsSheet = ({ open, onOpenChange, onLoadReport }: Archi
                         </h3>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {format(new Date(report.report_date), "PPP 'at' p")}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Created: {format(new Date(report.created_at), "PPP")}
+                        {format(new Date(report.report_date), "MMMM yyyy")}
                       </p>
                       {report.updated_at !== report.created_at && (
-                        <p className="text-xs text-muted-foreground">
-                          Updated: {format(new Date(report.updated_at), "PPP")}
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Last updated: {format(new Date(report.updated_at), "PPP")}
                         </p>
                       )}
                     </div>
@@ -140,7 +140,7 @@ export const ArchivedReportsSheet = ({ open, onOpenChange, onLoadReport }: Archi
                         variant="outline"
                         size="icon"
                         onClick={() => handleEdit(report)}
-                        title="Edit report"
+                        title="Edit statement"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -148,7 +148,7 @@ export const ArchivedReportsSheet = ({ open, onOpenChange, onLoadReport }: Archi
                         variant="outline"
                         size="icon"
                         onClick={() => handleDeleteClick(report.id)}
-                        title="Delete report"
+                        title="Delete statement"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
