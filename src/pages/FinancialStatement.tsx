@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Save } from "lucide-react";
 import IncomeSection from "@/components/dashboard/IncomeSection";
 import ExpenseSection from "@/components/dashboard/ExpenseSection";
 import AssetsSection from "@/components/dashboard/AssetsSection";
@@ -19,19 +19,43 @@ import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
 import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
 import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
+import { format, addMonths, startOfMonth, isBefore } from "date-fns";
+
+// Helper to determine the statement month based on current date
+// Before the 7th: show previous month
+// On or after the 7th: show current month
+const getStatementMonth = (): Date => {
+  const now = new Date();
+  const dayOfMonth = now.getDate();
+  
+  if (dayOfMonth < 7) {
+    // Before 7th, show previous month
+    return startOfMonth(addMonths(now, -1));
+  }
+  // On or after 7th, show current month
+  return startOfMonth(now);
+};
+
+const getEditableUntilDate = (statementMonth: Date): Date => {
+  // Editable until the 7th of the next month
+  const nextMonth = addMonths(statementMonth, 1);
+  return new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 7);
+};
 
 const FinancialStatement = () => {
-  const {
-    user,
-    loading
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
+  
+  // Calculate statement month
+  const statementMonth = useMemo(() => getStatementMonth(), []);
+  const editableUntil = useMemo(() => getEditableUntilDate(statementMonth), [statementMonth]);
+  
+  const currentMonthLabel = `${format(statementMonth, "MMMM yyyy")} Statement`;
+  const editableUntilLabel = `Editable until ${format(editableUntil, "MMMM d, yyyy")}`;
+  
+  const [currentReportId, setCurrentReportId] = useState<string | null>(null);
   const [reportName, setReportName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState<string>("");
-  const [selectedYear, setSelectedYear] = useState<string>("");
   const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
   const [financialData, setFinancialData] = useState<FinancialData>({
     income: {
@@ -94,6 +118,53 @@ const FinancialStatement = () => {
     assets: [],
     liabilities: []
   });
+
+  // Load existing report for the current statement month
+  useEffect(() => {
+    const loadCurrentMonthReport = async () => {
+      if (!user) return;
+      
+      // Get start and end of statement month
+      const monthStart = startOfMonth(statementMonth);
+      const monthEnd = startOfMonth(addMonths(statementMonth, 1));
+      
+      try {
+        const { data, error } = await supabase
+          .from("reports")
+          .select("*")
+          .eq("user_id", user.id)
+          .gte("report_date", monthStart.toISOString())
+          .lt("report_date", monthEnd.toISOString())
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (error) throw error;
+        
+        if (data) {
+          setCurrentReportId(data.id);
+          setReportName(data.report_name || "");
+          setFinancialData({
+            income: data.income_data as any || {},
+            expenses: data.expenses_data as any || {},
+            assets: data.assets_data as any || {},
+            liabilities: data.liabilities_data as any || {}
+          });
+          setDataSources(data.data_sources as any || {
+            income: [],
+            expenses: [],
+            assets: [],
+            liabilities: []
+          });
+        }
+      } catch (error: any) {
+        console.error("Error loading current month report:", error);
+      }
+    };
+    
+    loadCurrentMonthReport();
+  }, [user, statementMonth]);
+
   const updateIncome = (field: keyof FinancialData["income"], value: number) => {
     setFinancialData(prev => ({
       ...prev,
@@ -146,6 +217,7 @@ const FinancialStatement = () => {
       [section]: prev[section].filter(s => s.id !== id)
     }));
   };
+  
   const totalEarned = financialData.income.earned1 + financialData.income.earned2;
   const totalPassive = financialData.income.realEstate + financialData.income.business;
   const totalPortfolio = financialData.income.interest + financialData.income.dividends + financialData.income.other;
@@ -169,6 +241,7 @@ const FinancialStatement = () => {
     freedom: customLevelTargets?.freedom ?? (annualExpenses > 0 ? annualExpenses * 1.5 / withdrawalRate : 0),
     absoluteFreedom: customLevelTargets?.absoluteFreedom ?? (annualExpenses > 0 ? annualExpenses * 2.5 / withdrawalRate : 0)
   };
+  
   const handleUpdateLevelTarget = (level: LevelKey, newTarget: number) => {
     setCustomLevelTargets(prev => ({
       ...prev,
@@ -178,27 +251,56 @@ const FinancialStatement = () => {
 
   const handleSaveReport = async () => {
     if (!user) return;
+    
+    // Check if still editable
+    const now = new Date();
+    if (!isBefore(now, editableUntil)) {
+      toast({
+        title: "Cannot Save",
+        description: "The editing period for this statement has ended.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsSaving(true);
     try {
-      const {
-        error
-      } = await supabase.from("reports").insert({
+      const reportData = {
         user_id: user.id,
-        report_name: reportName || `Report ${new Date().toLocaleDateString()}`,
-        report_date: new Date().toISOString(),
+        report_name: reportName || `${format(statementMonth, "MMMM yyyy")} Statement`,
+        report_date: statementMonth.toISOString(),
         income_data: financialData.income as any,
         assets_data: financialData.assets as any,
         expenses_data: financialData.expenses as any,
         liabilities_data: financialData.liabilities as any,
         data_sources: dataSources as any,
-        is_archived: true
-      } as any);
-      if (error) throw error;
+        is_archived: false
+      };
+      
+      if (currentReportId) {
+        // Update existing report
+        const { error } = await supabase
+          .from("reports")
+          .update(reportData)
+          .eq("id", currentReportId);
+        
+        if (error) throw error;
+      } else {
+        // Create new report
+        const { data, error } = await supabase
+          .from("reports")
+          .insert(reportData as any)
+          .select()
+          .single();
+        
+        if (error) throw error;
+        setCurrentReportId(data.id);
+      }
+      
       toast({
-        title: "Report Saved!",
-        description: "Your financial report has been saved to archives."
+        title: "Statement Saved!",
+        description: `Your ${format(statementMonth, "MMMM yyyy")} statement has been saved.`
       });
-      setReportName("");
     } catch (error: any) {
       toast({
         title: "Error",
@@ -209,11 +311,10 @@ const FinancialStatement = () => {
       setIsSaving(false);
     }
   };
-  const handleMonthYearChange = (month: string, year: string) => {
-    setSelectedMonth(month);
-    setSelectedYear(year);
-  };
+
   const loadReport = (report: any) => {
+    setCurrentReportId(report.id);
+    setReportName(report.report_name || "");
     setFinancialData({
       income: report.income_data || {},
       expenses: report.expenses_data || {},
@@ -227,75 +328,127 @@ const FinancialStatement = () => {
       liabilities: []
     });
     toast({
-      title: "Report Loaded",
+      title: "Statement Loaded",
       description: `Loaded: ${report.report_name}`
     });
   };
+
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">
+    return (
+      <div className="min-h-screen flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
-      </div>;
+      </div>
+    );
   }
+  
   if (!user) {
     return <AuthForm />;
   }
-  return <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
-      <DashboardHeader onMonthYearChange={handleMonthYearChange} onLoadReport={loadReport} />
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
+      <DashboardHeader 
+        onLoadReport={loadReport}
+        currentMonthLabel={currentMonthLabel}
+        editableUntilLabel={editableUntilLabel}
+      />
       <GuidedTourButton />
       <div className="container mx-auto px-4 py-8">
         <WhyToolsMatterSection />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-8">
-          <IncomeSection income={financialData.income} updateIncome={updateIncome} totalEarned={totalEarned} totalPassive={totalPassive} totalPortfolio={totalPortfolio} totalIncome={totalIncome} dataSources={dataSources.income} onAddSource={source => addDataSource("income", source)} onRemoveSource={id => removeDataSource("income", id)} />
-
-          <AnalysisSection totalIncome={totalIncome} netMonthlyCashFlow={netMonthlyCashFlow} totalExpenses={totalExpenses} totalPassive={totalPassive} totalPortfolio={totalPortfolio} totalAssets={totalAssets} totalDoodads={totalDoodads} netWorthRichDad={netWorthRichDad} taxes={financialData.expenses.taxes} housingExpenses={financialData.expenses.homeLoan + financialData.expenses.homeMaintenance + financialData.expenses.homeUtilities} />
-        </div>
-
-        <div className="mb-6">
-          <ExpenseSection expenses={financialData.expenses} updateExpenses={updateExpenses} totalExpenses={totalExpenses} netMonthlyCashFlow={netMonthlyCashFlow} dataSources={dataSources.expenses} onAddSource={source => addDataSource("expenses", source)} onRemoveSource={id => removeDataSource("expenses", id)} />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AssetsSection assets={financialData.assets} updateAssets={updateAssets} totalAssets={totalAssets} totalDoodads={totalDoodads} netWorthBanker={netWorthBanker} netWorthRichDad={netWorthRichDad} dataSources={dataSources.assets} onAddSource={source => addDataSource("assets", source)} onRemoveSource={id => removeDataSource("assets", id)} />
-
-          <LiabilitiesSection liabilities={financialData.liabilities} updateLiabilities={updateLiabilities} totalLiabilities={totalLiabilities} netWorthBanker={netWorthBanker} netWorthRichDad={netWorthRichDad} dataSources={dataSources.liabilities} onAddSource={source => addDataSource("liabilities", source)} onRemoveSource={id => removeDataSource("liabilities", id)} />
-        </div>
-
-        <div className="mt-8 mb-6 flex justify-center">
-          <Card className="w-full max-w-2xl">
-            <CardHeader>
-              <CardTitle>Submit Monthly Report</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="reportName">Report Name (Optional)</Label>
-                <Input id="reportName" placeholder={`Report ${new Date().toLocaleDateString()}`} value={reportName} onChange={e => setReportName(e.target.value)} />
+        {/* Save Report Section */}
+        <div className="mt-8 mb-6">
+          <Card className="max-w-2xl mx-auto">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row gap-4 items-end">
+                <div className="flex-1">
+                  <Label htmlFor="reportName">Statement Name (Optional)</Label>
+                  <Input
+                    id="reportName"
+                    placeholder={`${format(statementMonth, "MMMM yyyy")} Statement`}
+                    value={reportName}
+                    onChange={e => setReportName(e.target.value)}
+                  />
+                </div>
+                <Button 
+                  onClick={handleSaveReport} 
+                  disabled={isSaving}
+                  className="w-full sm:w-auto"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {isSaving ? "Saving..." : "Save Statement"}
+                </Button>
               </div>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button className="w-full" size="lg" disabled={isSaving}>
-                    {isSaving ? "Saving..." : "Submit Monthly Report to Archives"}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will save your current financial report to the archives. You can review it later by selecting the month and year from the header.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSaveReport}>
-                      Yes, Submit Report
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
             </CardContent>
           </Card>
         </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <IncomeSection
+            income={financialData.income}
+            updateIncome={updateIncome}
+            totalEarned={totalEarned}
+            totalPassive={totalPassive}
+            totalPortfolio={totalPortfolio}
+            totalIncome={totalIncome}
+            dataSources={dataSources.income}
+            onAddSource={source => addDataSource("income", source)}
+            onRemoveSource={id => removeDataSource("income", id)}
+          />
+
+          <AnalysisSection
+            totalIncome={totalIncome}
+            netMonthlyCashFlow={netMonthlyCashFlow}
+            totalExpenses={totalExpenses}
+            totalPassive={totalPassive}
+            totalPortfolio={totalPortfolio}
+            totalAssets={totalAssets}
+            totalDoodads={totalDoodads}
+            netWorthRichDad={netWorthRichDad}
+            taxes={financialData.expenses.taxes}
+            housingExpenses={financialData.expenses.homeLoan + financialData.expenses.homeMaintenance + financialData.expenses.homeUtilities}
+          />
+        </div>
+
+        <div className="mb-6">
+          <ExpenseSection
+            expenses={financialData.expenses}
+            updateExpenses={updateExpenses}
+            totalExpenses={totalExpenses}
+            netMonthlyCashFlow={netMonthlyCashFlow}
+            dataSources={dataSources.expenses}
+            onAddSource={source => addDataSource("expenses", source)}
+            onRemoveSource={id => removeDataSource("expenses", id)}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AssetsSection
+            assets={financialData.assets}
+            updateAssets={updateAssets}
+            totalAssets={totalAssets}
+            totalDoodads={totalDoodads}
+            netWorthBanker={netWorthBanker}
+            netWorthRichDad={netWorthRichDad}
+            dataSources={dataSources.assets}
+            onAddSource={source => addDataSource("assets", source)}
+            onRemoveSource={id => removeDataSource("assets", id)}
+          />
+
+          <LiabilitiesSection
+            liabilities={financialData.liabilities}
+            updateLiabilities={updateLiabilities}
+            totalLiabilities={totalLiabilities}
+            netWorthBanker={netWorthBanker}
+            netWorthRichDad={netWorthRichDad}
+            dataSources={dataSources.liabilities}
+            onAddSource={source => addDataSource("liabilities", source)}
+            onRemoveSource={id => removeDataSource("liabilities", id)}
+          />
+        </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default FinancialStatement;
