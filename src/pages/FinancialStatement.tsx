@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
+import { Save, AlertTriangle, CheckCircle } from "lucide-react";
 import IncomeSection from "@/components/dashboard/IncomeSection";
 import ExpenseSection from "@/components/dashboard/ExpenseSection";
 import AssetsSection from "@/components/dashboard/AssetsSection";
@@ -20,6 +20,16 @@ import { FinancialData } from "@/types/financial";
 import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
 import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
 import { format, addMonths, startOfMonth, isBefore } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // Helper to determine the statement month based on current date
 // Before the 7th: show previous month
@@ -56,6 +66,8 @@ const FinancialStatement = () => {
   const [currentReportId, setCurrentReportId] = useState<string | null>(null);
   const [reportName, setReportName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [existingReportConflict, setExistingReportConflict] = useState<string | null>(null);
   const [customLevelTargets, setCustomLevelTargets] = useState<Record<LevelKey, number> | null>(null);
   const [financialData, setFinancialData] = useState<FinancialData>({
     income: {
@@ -249,7 +261,8 @@ const FinancialStatement = () => {
     }));
   };
 
-  const handleSaveReport = async () => {
+  // Check for existing report before showing save dialog
+  const handleSaveClick = async () => {
     if (!user) return;
     
     // Check if still editable
@@ -263,7 +276,78 @@ const FinancialStatement = () => {
       return;
     }
     
+    // Check if a report already exists for this month
+    const monthStart = startOfMonth(statementMonth);
+    const monthEnd = startOfMonth(addMonths(statementMonth, 1));
+    
+    const { data: existingReport } = await supabase
+      .from("reports")
+      .select("id")
+      .eq("user_id", user.id)
+      .gte("report_date", monthStart.toISOString())
+      .lt("report_date", monthEnd.toISOString())
+      .maybeSingle();
+    
+    if (existingReport && existingReport.id !== currentReportId) {
+      // Conflict! A different report exists for this month
+      setExistingReportConflict(existingReport.id);
+    } else {
+      setExistingReportConflict(null);
+    }
+    
+    setShowSaveDialog(true);
+  };
+
+  const handleLoadExistingReport = async () => {
+    if (!existingReportConflict || !user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("id", existingReportConflict)
+        .single();
+      
+      if (error) throw error;
+      
+      if (data) {
+        setCurrentReportId(data.id);
+        setReportName(data.report_name || "");
+        setFinancialData({
+          income: data.income_data as any || {},
+          expenses: data.expenses_data as any || {},
+          assets: data.assets_data as any || {},
+          liabilities: data.liabilities_data as any || {}
+        });
+        setDataSources(data.data_sources as any || {
+          income: [],
+          expenses: [],
+          assets: [],
+          liabilities: []
+        });
+        toast({
+          title: "Existing Statement Loaded",
+          description: `Loaded your existing ${format(statementMonth, "MMMM yyyy")} statement for editing.`
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+    
+    setShowSaveDialog(false);
+    setExistingReportConflict(null);
+  };
+
+  const handleSaveReport = async () => {
+    if (!user) return;
+    
+    setShowSaveDialog(false);
     setIsSaving(true);
+    
     try {
       const reportData = {
         user_id: user.id,
@@ -274,7 +358,7 @@ const FinancialStatement = () => {
         expenses_data: financialData.expenses as any,
         liabilities_data: financialData.liabilities as any,
         data_sources: dataSources as any,
-        is_archived: false
+        is_archived: true
       };
       
       if (currentReportId) {
@@ -299,7 +383,7 @@ const FinancialStatement = () => {
       
       toast({
         title: "Statement Saved!",
-        description: `Your ${format(statementMonth, "MMMM yyyy")} statement has been saved.`
+        description: `Your ${format(statementMonth, "MMMM yyyy")} statement has been saved and added to Past Statements.`
       });
     } catch (error: any) {
       toast({
@@ -371,13 +455,59 @@ const FinancialStatement = () => {
                   />
                 </div>
                 <Button 
-                  onClick={handleSaveReport} 
+                  onClick={handleSaveClick} 
                   disabled={isSaving}
                   className="w-full sm:w-auto"
                 >
                   <Save className="h-4 w-4 mr-2" />
                   {isSaving ? "Saving..." : "Save Statement"}
                 </Button>
+                
+                {/* Save Verification Dialog */}
+                <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      {existingReportConflict ? (
+                        <>
+                          <div className="flex items-center gap-2 text-destructive">
+                            <AlertTriangle className="h-5 w-5" />
+                            <AlertDialogTitle>Statement Already Exists</AlertDialogTitle>
+                          </div>
+                          <AlertDialogDescription className="text-left">
+                            A statement for <strong>{format(statementMonth, "MMMM yyyy")}</strong> already exists. 
+                            Only one statement per month is allowed.
+                            <br /><br />
+                            Would you like to load and edit the existing statement instead?
+                          </AlertDialogDescription>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-2 text-primary">
+                            <CheckCircle className="h-5 w-5" />
+                            <AlertDialogTitle>Verify Statement</AlertDialogTitle>
+                          </div>
+                          <AlertDialogDescription className="text-left">
+                            You are saving your <strong>{format(statementMonth, "MMMM yyyy")}</strong> statement.
+                            <br /><br />
+                            This will be added to your Past Statements. Only one statement per month is allowed.
+                          </AlertDialogDescription>
+                        </>
+                      )}
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      {existingReportConflict ? (
+                        <AlertDialogAction onClick={handleLoadExistingReport}>
+                          Load Existing Statement
+                        </AlertDialogAction>
+                      ) : (
+                        <AlertDialogAction onClick={handleSaveReport}>
+                          Confirm & Save
+                        </AlertDialogAction>
+                      )}
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </CardContent>
           </Card>
