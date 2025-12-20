@@ -11,7 +11,8 @@ const Professionals = () => {
       description: "Licensed professionals who can help with tax planning, audits, and financial reporting.",
       resources: [
         { name: "American Institute of CPAs (AICPA)", url: "https://www.aicpa.org/", description: "Find CPAs and access professional resources" },
-        { name: "State CPA Societies", url: "https://www.aicpa.org/membership/join/cpa-societies", description: "Locate CPAs in your state" }
+        { name: "State CPA Societies", url: "https://www.aicpa.org/membership/join/cpa-societies", description: "Locate CPAs in your state" },
+        { name: "Brooks Alliance", url: "https://www.brooksalliance.com/", description: "CPA services for individuals and businesses" }
       ]
     },
     {
@@ -28,7 +29,7 @@ const Professionals = () => {
       icon: Users,
       description: "Professionals who manage financial records and provide accounting services.",
       resources: [
-        { name: "National Association of Certified Public Bookkeepers", url: "https://www.nacpb.org/", description: "Find certified bookkeepers" },
+        { name: "Fintegrity Accounting", url: "https://fintegrityaccounting.com/", description: "Professional accounting and bookkeeping services" },
         { name: "American Accounting Association", url: "https://aaahq.org/", description: "Access accounting resources and professionals" }
       ]
     },
@@ -46,10 +47,9 @@ const Professionals = () => {
       icon: Wallet,
       description: "Resources for self-directed retirement accounts, health savings, and tax-advantaged investing.",
       resources: [
-        { name: "Self-Directed IRA Providers", url: "https://www.irs.gov/retirement-plans/individual-retirement-arrangements-iras", description: "Learn about self-directed IRAs for alternative investments" },
-        { name: "HSA Search", url: "https://www.hsasearch.com/", description: "Compare Health Savings Account providers and fees" },
-        { name: "Roth IRA Information", url: "https://www.irs.gov/retirement-plans/roth-iras", description: "Official IRS guidance on Roth IRA accounts" },
-        { name: "IRA Financial Group", url: "https://www.irafinancialgroup.com/", description: "Specialists in self-directed retirement accounts" }
+        { name: "Equity Trust Company", url: "https://www.trustetc.com/", description: "Self-directed IRA and alternative investment solutions" },
+        { name: "Mid Atlantic IRA", url: "https://www.midatlanticira.com/", description: "Self-directed retirement account services" },
+        { name: "CamaPlan", url: "https://www.camaplan.com/", description: "Self-directed IRA and Solo 401(k) provider" }
       ]
     }
   ];
