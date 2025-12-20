@@ -163,8 +163,11 @@ const DashboardHeader = ({
         {currentMonthLabel && (
           <div className="mt-4 text-center">
             <h2 className="text-xl font-semibold text-foreground">{currentMonthLabel}</h2>
+            <p className="text-xs text-muted-foreground mt-1 italic">
+              The current statement below is ONLY for the current month unless editing a previous month from your archives
+            </p>
             {editableUntilLabel && (
-              <p className="text-sm text-muted-foreground">{editableUntilLabel}</p>
+              <p className="text-sm text-muted-foreground mt-1">{editableUntilLabel}</p>
             )}
           </div>
         )}
