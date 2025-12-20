@@ -15,6 +15,7 @@ interface LiabilitiesSectionProps {
   dataSources: DataSource[];
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
+  onUpdateSource?: (id: string, updates: Omit<DataSource, "id">) => void;
 }
 
 const LiabilitiesSection = ({
@@ -26,6 +27,7 @@ const LiabilitiesSection = ({
   dataSources,
   onAddSource,
   onRemoveSource,
+  onUpdateSource,
 }: LiabilitiesSectionProps) => {
   const handleChange = (field: keyof FinancialData["liabilities"], value: string) => {
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -47,6 +49,7 @@ const LiabilitiesSection = ({
             dataSources={dataSources}
             onAddSource={onAddSource}
             onRemoveSource={onRemoveSource}
+            onUpdateSource={onUpdateSource}
           />
         </div>
       </CardHeader>
