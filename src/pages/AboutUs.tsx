@@ -23,11 +23,17 @@ const AboutUs = () => {
               <CardTitle>Our Story</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <p className="text-foreground leading-relaxed">These Financial Health Resources were created out of necessity—to provide a clear, systematic roadmap for achieving Financial Freedom. While many people already use budgeting tools to manage day-to-day expenses, very few tools focus on the bigger picture: tracking progress toward long-term financial independence.
+              <p className="text-foreground leading-relaxed">​We created these Financial Health Tools out of necessity—because real financial freedom requires more than just day-to-day budgeting.
 
-This app fills that gap.
+Too often, the average person lacks access to clear, strategic tools that go beyond tracking expenses and actually help map out a path to long-term financial independence.
 
-It complements your existing budgeting tools by providing insightful, goal-oriented tracking—not just where your money goes today, but how each decision impacts your journey to Financial Freedom. Whether you're just starting out or fine-tuning an existing plan, these tools are designed to give you a complete view of your financial health.</p>
+We’re here to change that.
+
+Our mission is to provide a systematic, easy-to-use framework for understanding, planning, and achieving your Financial Freedom goals. While traditional budgeting apps show you where your money goes today, our tools are designed to show you where your money can take you tomorrow.
+
+Whether you're just starting your journey or looking to level up your current financial strategy, our resources complement your existing budgeting habits and provide a full-spectrum view of your financial health—from daily spending to long-term freedom.
+
+We believe financial clarity is power—and everyone deserves access to it.</p>
 
               <div className="grid md:grid-cols-2 gap-6 pt-6">
                 <div className="space-y-4">
