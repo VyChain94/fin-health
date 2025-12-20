@@ -3,10 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Facebook, Linkedin, Instagram, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
-
 const AboutUs = () => {
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <DashboardHeader />
       <main className="container mx-auto px-4 py-8">
         <WhyToolsMatterSection />
@@ -25,9 +23,11 @@ const AboutUs = () => {
               <CardTitle>Our Story</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <p className="text-foreground leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-              </p>
+              <p className="text-foreground leading-relaxed">These Financial Health Resources were created out of necessity—to provide a clear, systematic roadmap for achieving Financial Freedom. While many people already use budgeting tools to manage day-to-day expenses, very few tools focus on the bigger picture: tracking progress toward long-term financial independence.
+
+This app fills that gap.
+
+It complements your existing budgeting tools by providing insightful, goal-oriented tracking—not just where your money goes today, but how each decision impacts your journey to Financial Freedom. Whether you're just starting out or fine-tuning an existing plan, these tools are designed to give you a complete view of your financial health.</p>
 
               <div className="grid md:grid-cols-2 gap-6 pt-6">
                 <div className="space-y-4">
@@ -88,8 +88,6 @@ const AboutUs = () => {
           </Card>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default AboutUs;

@@ -6,23 +6,21 @@ import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArchivedReportsSheet } from "./ArchivedReportsSheet";
 import logo from "@/assets/logo.png";
-
 interface DashboardHeaderProps {
   onLoadReport?: (report: any) => void;
   currentMonthLabel?: string;
   editableUntilLabel?: string;
 }
-
 const DashboardHeader = ({
   onLoadReport,
   currentMonthLabel,
   editableUntilLabel
 }: DashboardHeaderProps) => {
   const [archiveOpen, setArchiveOpen] = useState(false);
-  const { signOut } = useAuth();
-
-  return (
-    <header className="bg-card border-b border-border shadow-sm mb-8">
+  const {
+    signOut
+  } = useAuth();
+  return <header className="bg-card border-b border-border shadow-sm mb-8">
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -32,7 +30,7 @@ const DashboardHeader = ({
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   Financial Health Tools
                 </h1>
-                <p className="text-sm text-muted-foreground">Know Your Financial Health, Position Yourself to Prosper</p>
+                <p className="text-sm text-muted-foreground">Where Your Financial Journey Becomes a Strategy</p>
               </div>
             </Link>
           </div>
@@ -139,47 +137,23 @@ const DashboardHeader = ({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={() => setArchiveOpen(true)} 
-              title="View/Modify Past Statements"
-            >
+            <Button variant="outline" size="icon" onClick={() => setArchiveOpen(true)} title="View/Modify Past Statements">
               <FolderArchive className="h-5 w-5" />
             </Button>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={signOut}
-              title="Sign Out"
-              className="ml-2"
-            >
+            <Button variant="ghost" size="icon" onClick={signOut} title="Sign Out" className="ml-2">
               <LogOut className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
-        {currentMonthLabel && (
-          <div className="mt-4 text-center">
+        {currentMonthLabel && <div className="mt-4 text-center">
             <h2 className="text-xl font-semibold text-foreground">{currentMonthLabel}</h2>
-            <p className="text-xs text-muted-foreground mt-1 italic">
-              The current statement below is ONLY for the current month unless editing a previous month from your archives
-            </p>
-            {editableUntilLabel && (
-              <p className="text-sm text-muted-foreground mt-1">{editableUntilLabel}</p>
-            )}
-          </div>
-        )}
+            {editableUntilLabel && <p className="text-sm text-muted-foreground">{editableUntilLabel}</p>}
+          </div>}
       </div>
 
-      <ArchivedReportsSheet
-        open={archiveOpen}
-        onOpenChange={setArchiveOpen}
-        onLoadReport={onLoadReport}
-      />
-    </header>
-  );
+      <ArchivedReportsSheet open={archiveOpen} onOpenChange={setArchiveOpen} onLoadReport={onLoadReport} />
+    </header>;
 };
-
 export default DashboardHeader;
