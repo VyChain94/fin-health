@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -10,11 +10,11 @@ import AssetsSection from "@/components/dashboard/AssetsSection";
 import LiabilitiesSection from "@/components/dashboard/LiabilitiesSection";
 import AnalysisSection from "@/components/dashboard/AnalysisSection";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import { DataSource } from "@/components/dashboard/DataSourceDropdown";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useDataSources } from "@/hooks/useDataSources";
 import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
 import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
@@ -55,6 +55,7 @@ const getEditableUntilDate = (statementMonth: Date): Date => {
 const FinancialStatement = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
+  const { dataSources, loading: dataSourcesLoading, addDataSource, removeDataSource, updateDataSource } = useDataSources();
   
   // Calculate statement month
   const statementMonth = useMemo(() => getStatementMonth(), []);
@@ -119,17 +120,6 @@ const FinancialStatement = () => {
       otherDebt: 0
     }
   });
-  const [dataSources, setDataSources] = useState<{
-    income: DataSource[];
-    expenses: DataSource[];
-    assets: DataSource[];
-    liabilities: DataSource[];
-  }>({
-    income: [],
-    expenses: [],
-    assets: [],
-    liabilities: []
-  });
 
   // Load existing report for the current statement month
   useEffect(() => {
@@ -162,12 +152,7 @@ const FinancialStatement = () => {
             assets: data.assets_data as any || {},
             liabilities: data.liabilities_data as any || {}
           });
-          setDataSources(data.data_sources as any || {
-            income: [],
-            expenses: [],
-            assets: [],
-            liabilities: []
-          });
+          // Note: Data sources are now loaded separately via useDataSources hook
         }
       } catch (error: any) {
         console.error("Error loading current month report:", error);
@@ -213,22 +198,8 @@ const FinancialStatement = () => {
       }
     }));
   };
-  const addDataSource = (section: keyof typeof dataSources, source: Omit<DataSource, "id">) => {
-    const newSource = {
-      ...source,
-      id: crypto.randomUUID()
-    };
-    setDataSources(prev => ({
-      ...prev,
-      [section]: [...prev[section], newSource]
-    }));
-  };
-  const removeDataSource = (section: keyof typeof dataSources, id: string) => {
-    setDataSources(prev => ({
-      ...prev,
-      [section]: prev[section].filter(s => s.id !== id)
-    }));
-  };
+  // Data source functions are now provided by useDataSources hook
+  // which auto-saves to the database
   
   const totalEarned = financialData.income.earned1 + financialData.income.earned2;
   const totalPassive = financialData.income.realEstate + financialData.income.business;
@@ -319,12 +290,7 @@ const FinancialStatement = () => {
           assets: data.assets_data as any || {},
           liabilities: data.liabilities_data as any || {}
         });
-        setDataSources(data.data_sources as any || {
-          income: [],
-          expenses: [],
-          assets: [],
-          liabilities: []
-        });
+        // Note: Data sources are now user-level and loaded via useDataSources hook
         toast({
           title: "Existing Statement Loaded",
           description: `Loaded your existing ${format(statementMonth, "MMMM yyyy")} statement for editing.`
@@ -405,12 +371,7 @@ const FinancialStatement = () => {
       assets: report.assets_data || {},
       liabilities: report.liabilities_data || {}
     });
-    setDataSources(report.data_sources || {
-      income: [],
-      expenses: [],
-      assets: [],
-      liabilities: []
-    });
+    // Note: Data sources are now user-level and loaded via useDataSources hook
     toast({
       title: "Statement Loaded",
       description: `Loaded: ${report.report_name}`
@@ -524,6 +485,7 @@ const FinancialStatement = () => {
             dataSources={dataSources.income}
             onAddSource={source => addDataSource("income", source)}
             onRemoveSource={id => removeDataSource("income", id)}
+            onUpdateSource={(id, updates) => updateDataSource("income", id, updates)}
           />
 
           <AnalysisSection
@@ -549,6 +511,7 @@ const FinancialStatement = () => {
             dataSources={dataSources.expenses}
             onAddSource={source => addDataSource("expenses", source)}
             onRemoveSource={id => removeDataSource("expenses", id)}
+            onUpdateSource={(id, updates) => updateDataSource("expenses", id, updates)}
           />
         </div>
 
@@ -563,6 +526,7 @@ const FinancialStatement = () => {
             dataSources={dataSources.assets}
             onAddSource={source => addDataSource("assets", source)}
             onRemoveSource={id => removeDataSource("assets", id)}
+            onUpdateSource={(id, updates) => updateDataSource("assets", id, updates)}
           />
 
           <LiabilitiesSection
@@ -574,6 +538,7 @@ const FinancialStatement = () => {
             dataSources={dataSources.liabilities}
             onAddSource={source => addDataSource("liabilities", source)}
             onRemoveSource={id => removeDataSource("liabilities", id)}
+            onUpdateSource={(id, updates) => updateDataSource("liabilities", id, updates)}
           />
         </div>
       </div>

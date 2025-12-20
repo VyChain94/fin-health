@@ -15,6 +15,7 @@ interface IncomeSectionProps {
   dataSources: DataSource[];
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
+  onUpdateSource?: (id: string, updates: Omit<DataSource, "id">) => void;
 }
 const IncomeSection = ({
   income,
@@ -25,7 +26,8 @@ const IncomeSection = ({
   totalIncome,
   dataSources,
   onAddSource,
-  onRemoveSource
+  onRemoveSource,
+  onUpdateSource
 }: IncomeSectionProps) => {
   const handleChange = (field: keyof FinancialData["income"], value: string) => {
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -39,7 +41,7 @@ const IncomeSection = ({
       <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl">Income</CardTitle>
-          <DataSourceDropdown sectionName="Income" dataSources={dataSources} onAddSource={onAddSource} onRemoveSource={onRemoveSource} />
+          <DataSourceDropdown sectionName="Income" dataSources={dataSources} onAddSource={onAddSource} onRemoveSource={onRemoveSource} onUpdateSource={onUpdateSource} />
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">

@@ -24,6 +24,7 @@ interface DataSourceDropdownProps {
   dataSources: DataSource[];
   onAddSource: (source: Omit<DataSource, "id">) => void;
   onRemoveSource: (id: string) => void;
+  onUpdateSource?: (id: string, updates: Omit<DataSource, "id">) => void;
 }
 
 const DataSourceDropdown = ({
@@ -31,6 +32,7 @@ const DataSourceDropdown = ({
   dataSources,
   onAddSource,
   onRemoveSource,
+  onUpdateSource,
 }: DataSourceDropdownProps) => {
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -50,8 +52,13 @@ const DataSourceDropdown = ({
 
   const handleEditSource = () => {
     if (editingSource && newSourceName.trim() && newSourceUrl.trim()) {
-      onRemoveSource(editingSource.id);
-      onAddSource({ name: newSourceName, url: newSourceUrl });
+      if (onUpdateSource) {
+        onUpdateSource(editingSource.id, { name: newSourceName, url: newSourceUrl });
+      } else {
+        // Fallback to remove + add if no update function provided
+        onRemoveSource(editingSource.id);
+        onAddSource({ name: newSourceName, url: newSourceUrl });
+      }
       setNewSourceName("");
       setNewSourceUrl("");
       setEditingSource(null);
