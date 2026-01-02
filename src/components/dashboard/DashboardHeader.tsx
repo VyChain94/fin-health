@@ -5,15 +5,19 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArchivedReportsSheet } from "./ArchivedReportsSheet";
+import { MonthYearPicker } from "@/components/ui/MonthYearPicker";
 import logo from "@/assets/logo.png";
+
 interface DashboardHeaderProps {
   onLoadReport?: (report: any) => void;
-  currentMonthLabel?: string;
+  selectedMonth?: Date;
+  onMonthChange?: (date: Date) => void;
   editableUntilLabel?: string;
 }
 const DashboardHeader = ({
   onLoadReport,
-  currentMonthLabel,
+  selectedMonth,
+  onMonthChange,
   editableUntilLabel
 }: DashboardHeaderProps) => {
   const [archiveOpen, setArchiveOpen] = useState(false);
@@ -147,10 +151,18 @@ const DashboardHeader = ({
           </div>
         </div>
 
-        {currentMonthLabel && <div className="mt-4 text-center">
-            <h2 className="text-xl font-semibold text-foreground">{currentMonthLabel}</h2>
+        {selectedMonth && onMonthChange && (
+          <div className="mt-4 flex flex-col items-center gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-semibold text-foreground">Statement for:</span>
+              <MonthYearPicker 
+                selectedDate={selectedMonth} 
+                onDateChange={onMonthChange} 
+              />
+            </div>
             {editableUntilLabel && <p className="text-sm text-muted-foreground">{editableUntilLabel}</p>}
-          </div>}
+          </div>
+        )}
       </div>
 
       <ArchivedReportsSheet open={archiveOpen} onOpenChange={setArchiveOpen} onLoadReport={onLoadReport} />

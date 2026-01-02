@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,24 +32,24 @@ import {
 } from "@/components/ui/alert-dialog";
 
 // Helper to determine the statement month based on current date
-// Before the 7th: show previous month
-// On or after the 7th: show current month
+// Before the 15th: show previous month
+// On or after the 15th: show current month
 const getStatementMonth = (): Date => {
   const now = new Date();
   const dayOfMonth = now.getDate();
   
-  if (dayOfMonth < 7) {
-    // Before 7th, show previous month
+  if (dayOfMonth < 15) {
+    // Before 15th, show previous month
     return startOfMonth(addMonths(now, -1));
   }
-  // On or after 7th, show current month
+  // On or after 15th, show current month
   return startOfMonth(now);
 };
 
 const getEditableUntilDate = (statementMonth: Date): Date => {
-  // Editable until the 7th of the next month
+  // Editable until the 15th of the next month
   const nextMonth = addMonths(statementMonth, 1);
-  return new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 7);
+  return new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 15);
 };
 
 const FinancialStatement = () => {
@@ -57,12 +57,16 @@ const FinancialStatement = () => {
   const { toast } = useToast();
   const { dataSources, loading: dataSourcesLoading, addDataSource, removeDataSource, updateDataSource } = useDataSources();
   
-  // Calculate statement month
-  const statementMonth = useMemo(() => getStatementMonth(), []);
-  const editableUntil = useMemo(() => getEditableUntilDate(statementMonth), [statementMonth]);
+  // Statement month state - user can change via picker
+  const [statementMonth, setStatementMonth] = useState<Date>(() => getStatementMonth());
+  const editableUntil = getEditableUntilDate(statementMonth);
   
-  const currentMonthLabel = `${format(statementMonth, "MMMM yyyy")} Statement`;
-  const editableUntilLabel = `Editable until ${format(editableUntil, "MMMM d, yyyy")}`;
+  // Check if this is the current editable period
+  const now = new Date();
+  const isCurrentPeriod = statementMonth.getTime() === getStatementMonth().getTime();
+  const editableUntilLabel = isCurrentPeriod 
+    ? `Editable until ${format(editableUntil, "MMMM d, yyyy")}` 
+    : undefined;
   
   const [currentReportId, setCurrentReportId] = useState<string | null>(null);
   const [reportName, setReportName] = useState("");
@@ -390,11 +394,26 @@ const FinancialStatement = () => {
     return <AuthForm />;
   }
 
+  // Handle month change from picker
+  const handleMonthChange = (newMonth: Date) => {
+    setStatementMonth(newMonth);
+    // Clear current form data and report ID when switching months
+    setCurrentReportId(null);
+    setReportName("");
+    setFinancialData({
+      income: { earned1: 0, earned2: 0, realEstate: 0, business: 0, interest: 0, dividends: 0, other: 0 },
+      expenses: { homeLoan: 0, homeMaintenance: 0, homeUtilities: 0, carTravel: 0, cellPhones: 0, investments: 0, otherExpenses: 0, carLoans: 0, creditCards: 0, schoolLoans: 0, personalCare: 0, subscriptions: 0, shopping: 0, travelVacation: 0, medicalExpenses: 0, medicalInsurance: 0, taxes: 0 },
+      assets: { bankAccounts: 0, preciousMetals: 0, retirement: 0, stocks: 0, otherAssets: 0, business: 0, realEstate: 0, doodadsHome: 0, doodadsCar: 0, doodadsOther: 0 },
+      liabilities: { creditCards: 0, carLoans: 0, homeMortgage: 0, personalLoans: 0, schoolLoans: 0, otherDebt: 0 }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <DashboardHeader 
         onLoadReport={loadReport}
-        currentMonthLabel={currentMonthLabel}
+        selectedMonth={statementMonth}
+        onMonthChange={handleMonthChange}
         editableUntilLabel={editableUntilLabel}
       />
       <GuidedTourButton />

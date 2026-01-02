@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
     const now = new Date();
     const dayOfMonth = now.getDate();
     
-    // Only run archiving logic on the 7th of each month (or after)
+    // Only run archiving logic on the 15th of each month (or after)
     // This archives the previous month's statements
     console.log(`Auto-archive function called on day ${dayOfMonth}`);
     
