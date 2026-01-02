@@ -19,7 +19,7 @@ import { LevelKey } from "@/types/moneyLevels";
 import { FinancialData } from "@/types/financial";
 import { GuidedTourButton } from "@/components/ui/GuidedTourButton";
 import { WhyToolsMatterSection } from "@/components/dashboard/WhyToolsMatterSection";
-import { format, addMonths, startOfMonth, isBefore } from "date-fns";
+import { format, addMonths, startOfMonth } from "date-fns";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,10 +62,9 @@ const FinancialStatement = () => {
   const editableUntil = getEditableUntilDate(statementMonth);
   
   // Check if this is the current editable period
-  const now = new Date();
   const isCurrentPeriod = statementMonth.getTime() === getStatementMonth().getTime();
   const editableUntilLabel = isCurrentPeriod 
-    ? `Editable until ${format(editableUntil, "MMMM d, yyyy")}` 
+    ? "Please submit by the 15th, after then this report will be placed in the archives" 
     : undefined;
   
   const [currentReportId, setCurrentReportId] = useState<string | null>(null);
@@ -239,17 +238,6 @@ const FinancialStatement = () => {
   // Check for existing report before showing save dialog
   const handleSaveClick = async () => {
     if (!user) return;
-    
-    // Check if still editable
-    const now = new Date();
-    if (!isBefore(now, editableUntil)) {
-      toast({
-        title: "Cannot Save",
-        description: "The editing period for this statement has ended.",
-        variant: "destructive"
-      });
-      return;
-    }
     
     // Check if a report already exists for this month
     const monthStart = startOfMonth(statementMonth);
